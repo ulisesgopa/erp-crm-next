@@ -30,32 +30,31 @@ const DocumentViewModal = ({
     return null;
   }
 
-  if (
-    document.document_file_mimeType !== "application/png" ||
-    document.document_file_mimeType !== "application/jpg" ||
-    document.document_file_mimeType !== "application/jpeg" ||
-    document.document_file_mimeType !== "application/gif" ||
-    document.document_file_mimeType !== "images/png" ||
-    document.document_file_mimeType !== "images/jpg" ||
-    document.document_file_mimeType !== "images/jpeg" ||
-    document.document_file_mimeType !== "images/gif"
-  ) {
+  const imageTypes = [
+    "application/png",
+    "application/jpg",
+    "application/jpeg",
+    "application/gif",
+    "images/png",
+    "images/jpg",
+    "images/jpeg",
+    "images/gif",
+    "image/png",
+    "image/jpg",
+    "image/jpeg",
+    "image/gif",
+  ];
+
+  console.log(document.document_file_mimeType, "mimeType");
+
+  if (imageTypes.includes(document.document_file_mimeType)) {
+    console.log("image");
     return (
       <ModalDocumentView isOpen={isOpen} onClose={onClose}>
         <div className="flex flex-col h-full ">
-          {/*           <DocViewer
-            documents={docs}
-            pluginRenderers={DocViewerRenderers}
-            style={{ height: 800 }}
-          /> */}
-          <Image
-            width={0}
-            height={0}
-            src={`document.document_file_url`}
-            sizes="100vw" 
-            alt="Image"
-            style={{ width: '100%', height: 'auto' }}        
-          />
+          <div className="relative h-full p-10">
+            <Image fill alt="Image preview" src={document.document_file_url} />
+          </div>
           <div className="pt-6 space-x-2 flex items-center justify-end w-full ">
             <Button disabled={loading} variant={"outline"} onClick={onClose}>
               Cancel
