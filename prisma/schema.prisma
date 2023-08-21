@@ -358,6 +358,12 @@ enum DocumentSystemType {
   RECEIPT
   CONTRACT
   OFFER
+  ID
+  PASSPORT
+  VISA
+  INSURANCE
+  HEALTH
+  CERTIFICATE
   OTHER
 }
 
