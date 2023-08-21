@@ -1,6 +1,7 @@
 import { prismadb } from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { newUserNotify } from "./new-user-notify";
@@ -34,6 +35,10 @@ export const authOptions: NextAuthOptions = {
       clientId: getGoogleCredentials().clientId,
       clientSecret: getGoogleCredentials().clientSecret,
     }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
+    }),    
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -76,7 +81,7 @@ export const authOptions: NextAuthOptions = {
     async session({ token, session }: any) {
       const user = await prismadb.users.findFirst({
         where: {
-          email: token.email,
+          email: token.email as string,
         },
       });
 
@@ -84,13 +89,13 @@ export const authOptions: NextAuthOptions = {
         try {
           const newUser = await prismadb.users.create({
             data: {
-              email: token.email,
+              email: token.email as string,
               name: token.name,
               avatar: token.picture,
               is_admin: false,
               is_account_admin: false,
               userStatus:
-                process.env.NEXT_PUBLIC_APP_URL === "https://demo.saashq.org"
+                process.env.NEXT_PUBLIC_APP_URL === "http://localhost:3000"
                   ? "ACTIVE"
                   : "PENDING",
             },
