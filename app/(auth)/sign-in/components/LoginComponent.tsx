@@ -223,7 +223,7 @@ export function LoginComponent() {
                       : "hidden"
                   }
                 >
-                  HQ
+                  Q
                 </span>
                 <span className={isLoading ? " " : "hidden"}>Loading ...</span>
                 <span className={isLoading ? "hidden" : ""}>Login</span>
