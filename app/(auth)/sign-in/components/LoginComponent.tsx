@@ -155,9 +155,9 @@ export function LoginComponent() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <Icons.google className="mr-2 h-4 w-4 animate-spin" />
+              <Icons.gitHub className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <Icons.google className="mr-2 h-4 w-4" />
+              <Icons.gitHub className="mr-2 h-4 w-4" />
             )}{" "}
             Github
           </Button>
