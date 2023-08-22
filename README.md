@@ -11,9 +11,9 @@ shadcn - UI</br>
 Prisma ORM - together with Postgresql</br>
 useSWR - for client side data fetching</br>
 NextAUTH - for user authentication</br>
-Rossum - for invoice data parsing with AI
-OpenAI API - for automated email notifications
-Tremor - for creating charts
+Rossum - for invoice data parsing with AI</br>
+OpenAI API - for automated email notifications</br>
+Tremor - for creating charts</br>
 
 ![hero](/public/og.png)
 
