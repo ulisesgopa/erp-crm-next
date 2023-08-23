@@ -24,7 +24,7 @@ const SecondBrainPage = async (props: Props) => {
     return (
       <div>
         <H4Title>
-          Notions are not enable. Please enable it in your profile
+          Notions are not enabled. Please enable it in your profile
         </H4Title>
 
         <div>
