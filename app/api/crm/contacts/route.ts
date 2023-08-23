@@ -43,9 +43,8 @@ export async function POST(req: Request) {
 
     const newContact = await prismadb.crm_Contacts.create({
       data: {
-        created_on: new Date(),
-        last_activity: new Date(),
-        last_activity_by: userId,
+        createdBy: userId,
+        updatedBy: userId,
         accountsIDs: [account],
         assigned_to,
         birthday,
@@ -145,8 +144,7 @@ export async function PUT(req: Request) {
         id,
       },
       data: {
-        last_activity: new Date(),
-        last_activity_by: userId,
+        updatedBy: userId,
         accountsIDs: [account],
         assigned_to,
         birthday,

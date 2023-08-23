@@ -12,9 +12,10 @@ datasource db {
 
 model crm_Accounts {
   id                   String              @id @default(cuid())
-  date_created         DateTime?           @default(now()) @db.Date
-  date_last_modified   DateTime?           @default(now()) @db.Date
-  created_by           String?             
+  createdAt            DateTime?           @default(now()) @db.Date
+  createdBy            String?             
+  updatedAt            DateTime?           @updatedAt @db.Date
+  updatedBy            String?                         
   annual_revenue       String?
   assigned_to          String?             
   billing_city         String?
@@ -152,9 +153,13 @@ model crm_Contacts {
   account                String?             
   assigned_to            String?             
   birthday               String?
-  created_by             String              
+  created_by             String
+  createdBy              String?                           
   created_on             DateTime            @default(now())
+  createdAt              DateTime?           @default(now()) @db.Date
   last_activity          DateTime?           @default(now()) @db.Date
+  updatedAt              DateTime?           @updatedAt @db.Date
+  updatedBy              String?               
   last_activity_by       String?             
   description            String?
   email                  String?
@@ -179,7 +184,9 @@ model crm_Contacts {
   opportunitiesIDs       String[]            
   assigned_opportunities crm_Opportunities[] 
   accountsIDs            String[]            
-  assigned_accounts      crm_Accounts[]      
+  assigned_accounts      crm_Accounts[]
+  documentsIDs           String[]            
+  assigned_documents     Documents[]           
 }
 
 enum crm_Contact_Type {
@@ -353,10 +360,12 @@ model Documents {
   assigned_user          String?             
   account                String?             
   invoiceIDs             String[]            
-  opportunityIDs         String[]            
+  opportunityIDs         String[]
+  contactsIDs            String[]                       
   tasksIDs               String[]            
   invoices               Invoices[]          
-  opportunities          crm_Opportunities[] 
+  opportunities          crm_Opportunities[]
+  contacts               crm_Contacts[]        
   tasks                  Tasks[]             
   created_by             Users?              @relation(name: "created_by_user", fields: [created_by_user], references: [id])
   assigned_to_user       Users?              @relation(name: "assigned_to_user", fields: [assigned_user], references: [id])
