@@ -66,6 +66,8 @@ Will be soon at domain: http://docs.saashq.org
 
 </details>
 
+5. Import initial data from initial-data folder
+
 ## Contact
 
 [www.saashq.org](https://www.saashq.org).
