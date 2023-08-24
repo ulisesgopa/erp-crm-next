@@ -338,7 +338,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
                             <SelectValue placeholder="Choose an user " />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="h-96 overflow-y-auto">
                           {
                             //TODO: fix this
                             users.map((user: any) => (
@@ -525,7 +525,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
                       <FormControl>
                         <Input
                           disabled={isLoading}
-                          placeholder="https://www.youtube.com/nextcrmio"
+                          placeholder="https://www.youtube.com/saashqorg"
                           {...field}
                         />
                       </FormControl>

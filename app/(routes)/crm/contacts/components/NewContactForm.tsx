@@ -301,10 +301,10 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Choose an user " />
+                            <SelectValue placeholder="Choose a user " />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="h-96 overflow-y-auto">
                           {users.map((user) => (
                             <SelectItem key={user.id} value={user.id}>
                               {user.name}
