@@ -45,10 +45,9 @@ export async function POST(req: Request) {
       data: {
         createdBy: userId,
         updatedBy: userId,
-        accountsIDs: [account],
+        accountsIDs: account,
         assigned_to,
         birthday,
-        created_by: userId,
         description,
         email,
         personal_email,
@@ -139,13 +138,16 @@ export async function PUT(req: Request) {
       type,
     } = body;
 
+    console.log(account, "account");    
+
     const newContact = await prismadb.crm_Contacts.update({
       where: {
         id,
       },
       data: {
         updatedBy: userId,
-        accountsIDs: [account],
+        account: account,
+        accountsIDs: account,
         assigned_to,
         birthday,
         created_by: userId,
