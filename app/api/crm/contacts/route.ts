@@ -46,7 +46,11 @@ export async function POST(req: Request) {
         createdBy: userId,
         updatedBy: userId,
         accountsIDs: account,
-        assigned_to,
+        assigned_to_user: {
+          connect: {
+            id: assigned_to,
+          },
+        },
         birthday,
         description,
         email,
@@ -146,11 +150,13 @@ export async function PUT(req: Request) {
       },
       data: {
         updatedBy: userId,
-        account: account,
         accountsIDs: account,
-        assigned_to,
+        assigned_to_user: {
+          connect: {
+            id: assigned_to,
+          },
+        },
         birthday,
-        created_by: userId,
         description,
         email,
         personal_email,

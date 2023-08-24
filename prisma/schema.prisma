@@ -152,9 +152,9 @@ model crm_Contacts {
   account                String?             
   assigned_to            String?             
   birthday               String?
-  created_by             String
+  created_by             String?
   createdBy              String?                           
-  created_on             DateTime            @default(now())
+  created_on             DateTime?           @default(now())
   createdAt              DateTime?           @default(now()) @db.Date
   last_activity          DateTime?           @default(now()) @db.Date
   updatedAt              DateTime?           @updatedAt @db.Date
