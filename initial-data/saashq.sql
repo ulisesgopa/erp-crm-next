@@ -511,18 +511,6 @@ CREATE TABLE public."_DocumentsTocrm_Opportunities" (
 ALTER TABLE public."_DocumentsTocrm_Opportunities" OWNER TO postgres;
 
 --
--- Name: _crm_AccountsTocrm_Contacts; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."_crm_AccountsTocrm_Contacts" (
-    "A" text NOT NULL,
-    "B" text NOT NULL
-);
-
-
-ALTER TABLE public."_crm_AccountsTocrm_Contacts" OWNER TO postgres;
-
---
 -- Name: _crm_ContactsTocrm_Opportunities; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -565,7 +553,6 @@ CREATE TABLE public."crm_Accounts" (
     type text DEFAULT 'Customer'::text,
     vat text,
     website text,
-    connected_contacts text[],
     "createdAt" date DEFAULT CURRENT_TIMESTAMP,
     "createdBy" text,
     "updatedAt" date,
@@ -584,8 +571,8 @@ CREATE TABLE public."crm_Contacts" (
     account text,
     assigned_to text,
     birthday text,
-    created_by text NOT NULL,
-    created_on timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_by text,
+    created_on timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     last_activity date DEFAULT CURRENT_TIMESTAMP,
     last_activity_by text,
     description text,
@@ -606,7 +593,7 @@ CREATE TABLE public."crm_Contacts" (
     social_youtube text,
     social_tiktok text,
     type text DEFAULT 'Customer'::text,
-    "accountsIDs" text[],
+    "accountsIDs" text,
     "opportunitiesIDs" text[],
     "createdAt" date DEFAULT CURRENT_TIMESTAMP,
     "createdBy" text,
@@ -951,14 +938,6 @@ COPY public."_DocumentsTocrm_Opportunities" ("A", "B") FROM stdin;
 
 
 --
--- Data for Name: _crm_AccountsTocrm_Contacts; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."_crm_AccountsTocrm_Contacts" ("A", "B") FROM stdin;
-\.
-
-
---
 -- Data for Name: _crm_ContactsTocrm_Opportunities; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -970,7 +949,7 @@ COPY public."_crm_ContactsTocrm_Opportunities" ("A", "B") FROM stdin;
 -- Data for Name: crm_Accounts; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."crm_Accounts" (id, annual_revenue, assigned_to, billing_city, billing_country, billing_postal_code, billing_state, billing_street, company_id, description, email, employees, fax, industry, member_of, name, office_phone, shipping_city, shipping_country, shipping_postal_code, shipping_state, shipping_street, status, type, vat, website, connected_contacts, "createdAt", "createdBy", "updatedAt", "updatedBy") FROM stdin;
+COPY public."crm_Accounts" (id, annual_revenue, assigned_to, billing_city, billing_country, billing_postal_code, billing_state, billing_street, company_id, description, email, employees, fax, industry, member_of, name, office_phone, shipping_city, shipping_country, shipping_postal_code, shipping_state, shipping_street, status, type, vat, website, "createdAt", "createdBy", "updatedAt", "updatedBy") FROM stdin;
 \.
 
 
@@ -1395,20 +1374,6 @@ CREATE INDEX "_DocumentsTocrm_Opportunities_B_index" ON public."_DocumentsTocrm_
 
 
 --
--- Name: _crm_AccountsTocrm_Contacts_AB_unique; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX "_crm_AccountsTocrm_Contacts_AB_unique" ON public."_crm_AccountsTocrm_Contacts" USING btree ("A", "B");
-
-
---
--- Name: _crm_AccountsTocrm_Contacts_B_index; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "_crm_AccountsTocrm_Contacts_B_index" ON public."_crm_AccountsTocrm_Contacts" USING btree ("B");
-
-
---
 -- Name: _crm_ContactsTocrm_Opportunities_AB_unique; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1567,22 +1532,6 @@ ALTER TABLE ONLY public."_DocumentsTocrm_Opportunities"
 
 
 --
--- Name: _crm_AccountsTocrm_Contacts _crm_AccountsTocrm_Contacts_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."_crm_AccountsTocrm_Contacts"
-    ADD CONSTRAINT "_crm_AccountsTocrm_Contacts_A_fkey" FOREIGN KEY ("A") REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: _crm_AccountsTocrm_Contacts _crm_AccountsTocrm_Contacts_B_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."_crm_AccountsTocrm_Contacts"
-    ADD CONSTRAINT "_crm_AccountsTocrm_Contacts_B_fkey" FOREIGN KEY ("B") REFERENCES public."crm_Contacts"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: _crm_ContactsTocrm_Opportunities _crm_ContactsTocrm_Opportunities_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1615,6 +1564,14 @@ ALTER TABLE ONLY public."crm_Accounts"
 
 
 --
+-- Name: crm_Contacts crm_Contacts_accountsIDs_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."crm_Contacts"
+    ADD CONSTRAINT "crm_Contacts_accountsIDs_fkey" FOREIGN KEY ("accountsIDs") REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: crm_Contacts crm_Contacts_assigned_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1627,7 +1584,7 @@ ALTER TABLE ONLY public."crm_Contacts"
 --
 
 ALTER TABLE ONLY public."crm_Contacts"
-    ADD CONSTRAINT "crm_Contacts_created_by_fkey" FOREIGN KEY (created_by) REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "crm_Contacts_created_by_fkey" FOREIGN KEY (created_by) REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
