@@ -19,12 +19,13 @@ import axios from "axios";
 import { Link, PlusIcon, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { ContactsDataTable } from "../../../contacts/table-components/data-table";
-import { columns } from "../../../contacts/table-components/columns";
-import RightViewModal from "@/components/modals/right-view-modal";
-import { NewContactForm } from "../../../contacts/components/NewContactForm";
 
-const ContactView = ({ data, opportunityId, crmData }: any) => {
+import { LeadDataTable } from "../../../leads/table-components/data-table";
+import { columns } from "../../../leads/table-components/columns";
+import RightViewModal from "@/components/modals/right-view-modal";
+import { NewLeadForm } from "../../../leads/components/NewLeadForm";
+
+const LeadsView = ({ data, opportunityId, crmData }: any) => {
   const router = useRouter();
 
   const { toast } = useToast();
@@ -74,20 +75,24 @@ const ContactView = ({ data, opportunityId, crmData }: any) => {
         <CardHeader className="pb-3">
           <div className="flex justify-between">
             <div>
-              <CardTitle>Contacts</CardTitle>
+              <CardTitle>Leads</CardTitle>
               <CardDescription></CardDescription>
             </div>
             <div className="flex space-x-2">
               <Button onClick={onAddNew}>
                 <Link className="h-3 w-3" />
               </Button>
-              <RightViewModal label={"+"} title="Create Contact" description="">
-                <NewContactForm users={users} accounts={accounts} />
-              </RightViewModal>              
+              <RightViewModal
+                label={"+"}
+                title="Create new lead"
+                description=""
+              >
+                <NewLeadForm users={users} accounts={accounts} />
+              </RightViewModal>
             </div>
           </div>
         </CardHeader>
-        <CardContent>No assigned contacts found</CardContent>
+        <CardContent>No assigned leads found</CardContent>
       </Card>
     );
 
@@ -96,24 +101,24 @@ const ContactView = ({ data, opportunityId, crmData }: any) => {
       <CardHeader className="pb-3">
         <div className="flex justify-between">
           <div>
-            <CardTitle>Contacts</CardTitle>
+            <CardTitle>Leads</CardTitle>
             <CardDescription></CardDescription>
           </div>
           <div className="flex space-x-2">
             <Button onClick={onAddNew}>
               <Link className="h-3 w-3" />
             </Button>
-            <RightViewModal label={"+"} title="Create Contact" description="">
-              <NewContactForm users={users} accounts={accounts} />
-            </RightViewModal>            
+            <RightViewModal label={"+"} title="Create new lead" description="">
+              <NewLeadForm users={users} accounts={accounts} />
+            </RightViewModal>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <ContactsDataTable data={data} columns={columns} />
+        <LeadDataTable data={data} columns={columns} />
       </CardContent>
     </Card>
   );
 };
 
-export default ContactView;
+export default LeadsView;
