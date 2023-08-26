@@ -64,9 +64,9 @@ Will be soon at domain: http://docs.saashq.org
    npm run dev
    ```
 
-</details>
-
 5. Import initial data from initial-data folder
+
+</details>
 
 ## Contact
 
