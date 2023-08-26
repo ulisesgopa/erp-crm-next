@@ -42,7 +42,8 @@ model crm_Accounts {
   vat                  String?
   website              String?
   invoices             Invoices[]
-  documents            Documents[]
+  documentsIDs         String[]            
+  assigned_documents   Documents[]         
   contacts             crm_Contacts[]
   leads                crm_Leads[]        
   industry_type        crm_Industry_Type?  @relation(fields: [industry], references: [id])
@@ -351,10 +352,13 @@ model invoice_States {
 model Documents {
   id                     String              @id @default(cuid())
   connected_documents    String[]
-  date_created           DateTime            @default(now()) @db.Date
+  date_created           DateTime?           @default(now()) @db.Date
+  createdAt              DateTime?           @default(now()) @db.Date
   last_updated           DateTime?           @updatedAt
+  updatedAt              DateTime?           @updatedAt @db.Date  
   document_name          String?
-  created_by_user        String?             
+  created_by_user        String?
+  createdBy              String?                            
   description            String?
   document_type          String?             
   favourite              Boolean?
@@ -366,20 +370,20 @@ model Documents {
   key                    String?
   size                   Int?
   assigned_user          String?             
-  account                String?             
   invoiceIDs             String[]            
   opportunityIDs         String[]
   contactsIDs            String[]                       
   tasksIDs               String[]
-  leadsIDs               String[]                        
+  leadsIDs               String[]
+  accountsIDs            String[]                                 
   invoices               Invoices[]          
   opportunities          crm_Opportunities[]
   contacts               crm_Contacts[]        
   tasks                  Tasks[]
-  leads                  crm_Leads[]         
+  leads                  crm_Leads[]
+  accounts               crm_Accounts[]                 
   created_by             Users?              @relation(name: "created_by_user", fields: [created_by_user], references: [id])
   assigned_to_user       Users?              @relation(name: "assigned_to_user", fields: [assigned_user], references: [id])
-  crm_account            crm_Accounts?       @relation(fields: [account], references: [id])
   documents_type         Documents_Types?    @relation(fields: [document_type], references: [id])
   document_system_type   DocumentSystemType? @default(OTHER)
 }
