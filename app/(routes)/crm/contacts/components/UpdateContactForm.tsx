@@ -6,10 +6,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-
-import { cn } from "@/lib/utils";
 
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -30,12 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+
 import { Switch } from "@/components/ui/switch";
 import fetcher from "@/lib/fetcher";
 import useSWR from "swr";
@@ -66,7 +57,9 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
 
   const formSchema = z.object({
     id: z.string().min(5).max(30),
-    birthday: z.date().nullable().optional(),
+    birthday_year: z.string().optional().nullable(),
+    birthday_month: z.string().optional().nullable(),
+    birthday_day: z.string().optional().nullable(),
     first_name: z.string().nullable().optional(),
     last_name: z.string(),
     description: z.string().nullable().optional(),
@@ -80,7 +73,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
     type: z.string(),
     assigned_to: z.string(),
     accountsIDs: z.string().nullable().optional(),
-    account: z.string().nullable().optional(),    
+    account: z.string().nullable().optional(),
     social_twitter: z.string().nullable().optional(),
     social_facebook: z.string().nullable().optional(),
     social_linkedin: z.string().nullable().optional(),
@@ -131,9 +124,15 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
       </div>
     );
 
+  const yearArray = Array.from(
+    //start in 1923 and count to +100 years
+    { length: 100 },
+    (_, i) => i + 1923
+  );
+
   const filteredData = users.filter((item: any) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );    
+  );
 
   if (!users || !accounts || !initialData)
     return <div>Something went wrong, there is no data for form</div>;
@@ -150,7 +149,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
         {/*     <pre>
           <code>{JSON.stringify(initialData, null, 2)}</code>
         </pre> */}
-        {/*    <div>
+        {/*   <div>
           <pre>
             <code>{JSON.stringify(form.watch(), null, 2)}</code>
           </pre>
@@ -269,47 +268,87 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="birthday"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Birthday</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+            <h3>Birthday - (optional)</h3>
+            <div className="flex space-x-3 w-full mx-auto">
+              <FormField
+                control={form.control}
+                name="birthday_year"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <div className="flex space-x-2 w-32">
+                      <Select onValueChange={field.onChange}>
+                        <SelectTrigger>Year</SelectTrigger>
+                        <SelectContent className="flex overflow-y-auto h-56">
+                          {yearArray.map((yearOption) => (
+                            <SelectItem
+                              key={yearOption}
+                              value={yearOption.toString()}
+                            >
+                              {yearOption}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="birthday_month"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <div className="flex space-x-2 w-28">
+                      <Select onValueChange={field.onChange}>
+                        <SelectTrigger>Month</SelectTrigger>
+                        <SelectContent>
+                          {/* Replace this with the range of months you want to allow */}
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                            (monthOption) => (
+                              <SelectItem
+                                key={monthOption}
+                                value={monthOption.toString()}
+                              >
+                                {monthOption}
+                              </SelectItem>
+                            )
                           )}
-                        >
-                          {field.value || field.value !== null ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a contact birth day</span>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="birthday_day"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <div className="flex space-x-2">
+                      <Select onValueChange={field.onChange}>
+                        <SelectTrigger>Day</SelectTrigger>
+                        <SelectContent>
+                          {/* Replace this with the range of months you want to allow */}
+                          {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                            (dayOption) => (
+                              <SelectItem
+                                key={dayOption}
+                                value={dayOption.toString()}
+                              >
+                                {dayOption}
+                              </SelectItem>
+                            )
                           )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        //@ts-ignore
-                        //TODO: fix this
-                        onSelect={field.onChange}
-                        disabled={(date) => date < new Date("1900-01-01")}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -362,7 +401,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
                             <SelectItem key={item.id} value={item.id}>
                               {item.name}
                             </SelectItem>
-                          ))}                          
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -541,7 +580,7 @@ export function UpdateContactForm({ initialData }: NewTaskFormProps) {
                       <FormControl>
                         <Input
                           disabled={isLoading}
-                          placeholder="https://www.youtube.com/saashqorg"
+                          placeholder="https://www.youtube.com/nextcrmio"
                           {...field}
                         />
                       </FormControl>
