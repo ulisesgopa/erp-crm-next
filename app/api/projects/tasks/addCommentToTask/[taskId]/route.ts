@@ -27,7 +27,6 @@ export async function POST(
   try {
     const newComment = await prismadb.tasksComments.create({
       data: {
-        createdAt: new Date(),
         comment: comment,
         task: taskId,
         user: session.user.id,
