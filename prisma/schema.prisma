@@ -468,7 +468,7 @@ model tasksComments {
   createdAt     DateTime @default(now()) @db.Date
   task          String   
   user          String   
-  assigned_task Tasks?   @relation(fields: [task], references: [id])
+  assigned_task Tasks?   @relation(fields: [task], references: [id], onDelete: Cascade)
   assigned_user Users?   @relation(fields: [user], references: [id])
 }
 
