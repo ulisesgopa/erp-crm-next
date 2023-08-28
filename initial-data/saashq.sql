@@ -396,18 +396,23 @@ ALTER TABLE public."Sections" OWNER TO postgres;
 CREATE TABLE public."Tasks" (
     id text NOT NULL,
     content text,
-    "createdAt" date NOT NULL,
+    "createdAt" date DEFAULT CURRENT_TIMESTAMP,
     "createdBy" text,
     "dueDateAt" date DEFAULT CURRENT_TIMESTAMP,
     "lastEditedAt" date DEFAULT CURRENT_TIMESTAMP,
     "position" integer NOT NULL,
     priority text NOT NULL,
-    section text NOT NULL,
+    section text,
     tags jsonb,
     title text NOT NULL,
     "user" text,
     "documentIDs" text[],
-    "taskStatus" public."taskStatus" DEFAULT 'ACTIVE'::public."taskStatus"
+    "taskStatus" public."taskStatus" DEFAULT 'ACTIVE'::public."taskStatus",
+    account text,
+    contact text,
+    opportunity text,
+    "updatedAt" date,
+    "updatedBy" text
 );
 
 
@@ -834,7 +839,7 @@ ALTER TABLE public."system_Modules_Enabled" OWNER TO postgres;
 CREATE TABLE public."tasksComments" (
     id text NOT NULL,
     comment text NOT NULL,
-    "createdAt" date NOT NULL,
+    "createdAt" date DEFAULT CURRENT_TIMESTAMP NOT NULL,
     task text NOT NULL,
     "user" text NOT NULL
 );
@@ -910,7 +915,7 @@ COPY public."Sections" (id, board, title, "position") FROM stdin;
 -- Data for Name: Tasks; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Tasks" (id, content, "createdAt", "createdBy", "dueDateAt", "lastEditedAt", "position", priority, section, tags, title, "user", "documentIDs", "taskStatus") FROM stdin;
+COPY public."Tasks" (id, content, "createdAt", "createdBy", "dueDateAt", "lastEditedAt", "position", priority, section, tags, title, "user", "documentIDs", "taskStatus", account, contact, opportunity, "updatedAt", "updatedBy") FROM stdin;
 \.
 
 
@@ -1523,11 +1528,35 @@ ALTER TABLE ONLY public."Invoices"
 
 
 --
+-- Name: Tasks Tasks_account_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Tasks"
+    ADD CONSTRAINT "Tasks_account_fkey" FOREIGN KEY (account) REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Tasks Tasks_contact_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Tasks"
+    ADD CONSTRAINT "Tasks_contact_fkey" FOREIGN KEY (contact) REFERENCES public."crm_Contacts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Tasks Tasks_opportunity_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Tasks"
+    ADD CONSTRAINT "Tasks_opportunity_fkey" FOREIGN KEY (opportunity) REFERENCES public."crm_Opportunities"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: Tasks Tasks_section_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."Tasks"
-    ADD CONSTRAINT "Tasks_section_fkey" FOREIGN KEY (section) REFERENCES public."Sections"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "Tasks_section_fkey" FOREIGN KEY (section) REFERENCES public."Sections"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
