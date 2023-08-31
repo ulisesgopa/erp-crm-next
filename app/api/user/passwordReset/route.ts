@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
 import { prismadb } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+
 import { generateRandomPassword } from "@/lib/utils";
-import sendEmail from "@/lib/sendmail";
+
 import { hash } from "bcryptjs";
+import PasswordResetEmail from "@/emails/PasswordReset";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email } = body;
 
-    console.log(body, "body");
-    console.log(email, "email");
+    //console.log(body, "body");
+    //console.log(email, "email");
 
     if (!email) {
       return new NextResponse("Email is required!", {
@@ -46,26 +49,23 @@ export async function POST(req: Request) {
         status: 401,
       });
     } else {
-      let message = "";
-
-      switch (user.userLanguage) {
-        case "en":
-          message = `Your password was reset,\n\n Your username: ${email}, now has password: ${password} \n\n Please login to ${process.env.NEXT_PUBLIC_APP_URL} \n\n Thank you \n\n ${process.env.NEXT_PUBLIC_APP_NAME}`;
-          break;
-        case "de":
-          message = `Ihr Passwort wurde zurückgesetzt,\n\n Dein Benutzername: ${email}, hat jetzt ein Passwort: \n\n  ${password} \n\n Bitte melden Sie sich an ${process.env.NEXT_PUBLIC_APP_URL} \n\n Danke \n\n ${process.env.NEXT_PUBLIC_APP_NAME}`;
-          break;
-        default:
-          message = `Ihr Passwort wurde zurückgesetzt,\n\n Dein Benutzername: ${email}, hat jetzt ein Passwort: \n\n  ${password} \n\n Bitte melden Sie sich an ${process.env.NEXT_PUBLIC_APP_URL} \n\n Danke \n\n ${process.env.NEXT_PUBLIC_APP_NAME}`;
-          break;
-      }
-
-      await sendEmail({
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: `Password reset from ${process.env.NEXT_PUBLIC_APP_NAME}`,
-        text: message,
+      const data = await resend.emails.send({
+        from: "SaasHQ <saashqdev@saashq.org>",
+        to: user.email,
+        //to: ["saashqdev@gmail.com"],
+        subject: "SaasHQ - Password reset",
+        text: "", // Add this line to fix the types issue
+        //react: DemoTemplate({ firstName: "John" }),
+        react: PasswordResetEmail({
+          username: user?.name!,
+          avatar: user.avatar,
+          email: user.email,
+          password: password,
+          userLanguage: user.userLanguage,
+        }),
       });
+      console.log(data, "data");
+      console.log("Email sent to: " + user.email);      
     }
 
     return NextResponse.json({ message: "Password changed!", status: true });
