@@ -83,7 +83,7 @@ Will be soon at domain: http://docs.saashq.org
 
 ## Contact Us
 
-[SaasHQ](mailto:saashqdev@gmail.com).
+[SaasHQ](mailto:saashqdev@gmail.com)
 
 ## License
 
