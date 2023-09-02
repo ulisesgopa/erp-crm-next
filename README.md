@@ -81,9 +81,9 @@ Will be soon at domain: http://docs.saashq.org
 
 </details>
 
-## Contact
+## Contact Us
 
-[www.saashq.org](https://www.saashq.org).
+[SaasHQ](mailto:saashqdev@gmail.com).
 
 ## License
 
