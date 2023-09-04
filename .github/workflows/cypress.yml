@@ -44,3 +44,4 @@ jobs:
           DO_REGION: ${{ secrets.DO_REGION }}
           DO_ACCESS_KEY_ID: ${{ secrets.DO_ACCESS_KEY_ID }}
           DO_ACCESS_KEY_SECRET: ${{ secrets.DO_ACCESS_KEY_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
