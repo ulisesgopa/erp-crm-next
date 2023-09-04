@@ -41,3 +41,6 @@ jobs:
           GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           DO_ENDPOINT: ${{ secrets.DO_ENDPOINT }}
+          DO_REGION: ${{ secrets.DO_REGION }}
+          DO_ACCESS_KEY_ID: ${{ secrets.DO_ACCESS_KEY_ID }}
+          DO_ACCESS_KEY_SECRET: ${{ secrets.DO_ACCESS_KEY_SECRET }}
