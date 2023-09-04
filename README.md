@@ -2,7 +2,7 @@
 
 SaasHQ is a CRM build on top of the Next.JS 13.4 using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Uploadthings as a S3 blob for document storage.
 
-Based off the awesome NextCRM only using Postgresql as the backend.
+Based off the awesome NextCRM only using Postgresql as the backend and added German translation.
 
 ## What we use to build it
 
