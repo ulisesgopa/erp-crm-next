@@ -11,10 +11,10 @@ datasource db {
 }
 
 model crm_Accounts {
-  id                   String              @id @default(cuid())
-  createdAt            DateTime?           @default(now()) @db.Date
+  id                   String               @id @default(cuid())
+  createdAt            DateTime?            @default(now()) @db.Date
   createdBy            String?             
-  updatedAt            DateTime?           @updatedAt @db.Date
+  updatedAt            DateTime?            @updatedAt @db.Date
   updatedBy            String?                         
   annual_revenue       String?
   assigned_to          String?             
@@ -37,8 +37,8 @@ model crm_Accounts {
   shipping_postal_code String?
   shipping_state       String?
   shipping_street      String?
-  status               String?             @default("Inactive")
-  type                 String?             @default("Customer")
+  status               String?              @default("Inactive")
+  type                 String?              @default("Customer")
   vat                  String?
   website              String?
   invoices             Invoices[]
@@ -46,10 +46,12 @@ model crm_Accounts {
   assigned_documents   Documents[]         
   contacts             crm_Contacts[]
   leads                crm_Leads[]        
-  industry_type        crm_Industry_Type?  @relation(fields: [industry], references: [id])
+  industry_type        crm_Industry_Type?   @relation(fields: [industry], references: [id])
   opportunities        crm_Opportunities[]
-  assigned_to_user     Users?              @relation(fields: [assigned_to], references: [id])
-  Tasks                Tasks[]
+  assigned_to_user     Users?               @relation(fields: [assigned_to], references: [id])
+  crm_accounts_tasks   crm_Accounts_Tasks[]
+  watchers             String[]             
+  watching_users       Users[]              @relation(name: "watching_accounts")       
 }
 
 model crm_Leads {
@@ -126,7 +128,6 @@ model crm_Opportunities {
   documents            Documents[]                     
   connected_contacts   String[]                        
   contacts             crm_Contacts[]
-  Tasks                Tasks[]                                      
 }
 
 enum crm_Opportunity_Status {
@@ -198,7 +199,6 @@ model crm_Contacts {
   assigned_accounts      crm_Accounts?       @relation(fields: [accountsIDs], references: [id])
   documentsIDs           String[]            
   assigned_documents     Documents[]
-  Tasks                  Tasks[]          
 }
 
 enum crm_Contact_Type {
@@ -380,12 +380,14 @@ model Documents {
   opportunityIDs         String[]
   contactsIDs            String[]                       
   tasksIDs               String[]
+  crm_accounts_tasksIDs  String?  
   leadsIDs               String[]
   accountsIDs            String[]                                 
   invoices               Invoices[]          
   opportunities          crm_Opportunities[]
   contacts               crm_Contacts[]        
   tasks                  Tasks[]
+  crm_accounts_tasks     crm_Accounts_Tasks? @relation(fields: [crm_accounts_tasksIDs], references: [id])  
   leads                  crm_Leads[]
   accounts               crm_Accounts[]                 
   created_by             Users?              @relation(name: "created_by_user", fields: [created_by_user], references: [id])
@@ -437,43 +439,61 @@ model modulStatus {
 model Tasks {
   id               String          @id @default(cuid())
   content          String?
-  createdAt        DateTime?          @default(now()) @db.Date
+  createdAt        DateTime?       @default(now()) @db.Date
   createdBy        String?            
-  updatedAt        DateTime?          @updatedAt @db.Date
+  updatedAt        DateTime?       @updatedAt @db.Date
   updatedBy        String?            
-  dueDateAt        DateTime?          @default(now()) @db.Date
-  lastEditedAt     DateTime?          @default(now()) @updatedAt @db.Date
+  dueDateAt        DateTime?       @default(now()) @db.Date
+  lastEditedAt     DateTime?       @default(now()) @updatedAt @db.Date
   position         Int
   priority         String
   section          String?          
   tags             Json?
   title            String
-  likes            Int?               @default(0)  
+  likes            Int?            @default(0)  
   user             String?         
   documentIDs      String[]        
   comments         tasksComments[]
-  documents        Documents[]        
-  assigned_user    Users?             @relation(fields: [user], references: [id])
-  assigned_section Sections?          @relation(fields: [section], references: [id])
-  //CRM assigments
-  account          String?            
-  crm_accounts     crm_Accounts?      @relation(fields: [account], references: [id])
-  opportunity      String?            
-  crm_opportunity  crm_Opportunities? @relation(fields: [opportunity], references: [id])
-  contact          String?            
-  crm_contact      crm_Contacts?      @relation(fields: [contact], references: [id])
+  documents        Documents[]     
+  assigned_user    Users?          @relation(fields: [user], references: [id])
+  assigned_section Sections?       @relation(fields: [section], references: [id])
   //Staus
-  taskStatus       taskStatus?        @default(ACTIVE)
+  taskStatus       taskStatus?     @default(ACTIVE)
+}
+
+model crm_Accounts_Tasks {
+  id            String          @id @default(cuid())
+  content       String?
+  createdAt     DateTime?       @default(now()) @db.Date
+  createdBy     String?         
+  updatedAt     DateTime?       @updatedAt @db.Date
+  updatedBy     String?         
+  dueDateAt     DateTime?       @default(now()) @db.Date
+  priority      String
+  tags          Json?
+  title         String
+  likes         Int?            @default(0)
+  user          String?         
+  comments      tasksComments[]
+  documents     Documents[]
+  assigned_user Users?          @relation(fields: [user], references: [id])
+  //CRM assigments
+  account       String?         
+  crm_accounts  crm_Accounts?   @relation(fields: [account], references: [id])
+  //Staus
+  taskStatus    taskStatus?     @default(ACTIVE)
 }
 
 model tasksComments {
-  id            String   @id @default(cuid())
-  comment       String
-  createdAt     DateTime @default(now()) @db.Date
-  task          String   
-  user          String   
-  assigned_task Tasks?   @relation(fields: [task], references: [id], onDelete: Cascade)
-  assigned_user Users?   @relation(fields: [user], references: [id])
+  id                             String              @id @default(cuid())
+  comment                        String
+  createdAt                      DateTime            @default(now()) @db.Date
+  task                           String              
+  user                           String              
+  assigned_crm_account_task      String?             
+  assigned_crm_account_task_task crm_Accounts_Tasks? @relation(fields: [assigned_crm_account_task], references: [id])
+  assigned_task                  Tasks?              @relation(fields: [task], references: [id], onDelete: Cascade)
+  assigned_user                  Users?              @relation(fields: [user], references: [id])
 }
 
 enum taskStatus {
@@ -514,6 +534,7 @@ model Users {
   created_by_documents Documents[]           @relation(name: "created_by_user")
   assigned_documents   Documents[]           @relation(name: "assigned_to_user")
   tasks                Tasks[]
+  crm_accounts_tasks   crm_Accounts_Tasks[]  
   accounts             crm_Accounts[]
   leads                crm_Leads[]
   created_by_user      crm_Opportunities[]   @relation(name: "created_by_user_relation")
@@ -524,7 +545,9 @@ model Users {
   assigned_invoices    Invoices[]
   boards               Boards[]              @relation(name: "assigned_user")
   watching_boardsIDs   String[]              
-  watching_boards      Boards[]              
+  watching_boards      Boards[]
+  watching_accountsIDs String[]              
+  watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts") 
 }
 
 enum Language {
