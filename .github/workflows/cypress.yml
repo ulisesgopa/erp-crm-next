@@ -15,14 +15,9 @@ jobs:
         run: |
           sudo systemctl start postgresql.service
 
-      - name: Start PostgreSQL on Ubuntu
-        run: |
-          sudo systemctl start postgresql.service
-
       - name: Create additional database
         run: |
           sudo -u postgres createdb saashq --owner=postgres 
-          PGPASSWORD=postgres
           
       - name: Test postgres connection
         run: psql postgres://postgres:postgres@localhost:5432/postgres -c 'SELECT 1;'
