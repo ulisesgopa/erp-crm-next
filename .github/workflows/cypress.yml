@@ -29,10 +29,6 @@ jobs:
       matrix:
         containers: [1, 2] # Uses 2 parallel instances
     steps:
-      - name: Create additional database
-        run: |
-          sudo -u postgres createdb saashq --owner=postgres 
-          
       - name: Test postgres connection
         run: psql postgres://postgres:postgres@localhost:5432/postgres -c 'SELECT 1;'
             
