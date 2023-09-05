@@ -46,8 +46,8 @@ jobs:
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           build: |
             npm install prisma @prisma/client
-            prisma generate
-            prisma db push
+            npx prisma generate
+            npx prisma db push
             npm run build
           start: npm start
           wait-on: 'http://localhost:3000' # Waits for above
