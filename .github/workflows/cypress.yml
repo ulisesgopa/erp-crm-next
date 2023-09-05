@@ -37,7 +37,7 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
@@ -45,9 +45,9 @@ jobs:
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           build: |
-            npm install
-            npx prisma generate
-            npx prisma db push
+            npm install prisma @prisma/client
+            prisma generate
+            prisma db push
             npm run build
           start: npm start
           wait-on: 'http://localhost:3000' # Waits for above
