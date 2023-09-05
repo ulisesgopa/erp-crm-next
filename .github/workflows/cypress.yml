@@ -24,6 +24,9 @@ jobs:
           sudo -u postgres createdb saashq --owner=postgres 
           PGPASSWORD=postgres
           
+      - name: Test postgres connection
+        run: psql postgres://postgres:postgres@postgres:5432/postgres -c 'SELECT 1;'
+            
       - name: Checkout
         uses: actions/checkout@v3
         
