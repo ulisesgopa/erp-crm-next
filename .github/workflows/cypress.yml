@@ -47,6 +47,8 @@ jobs:
         run: |
           npx prisma generate
           npx prisma db push
+        env: 
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}          
  
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
