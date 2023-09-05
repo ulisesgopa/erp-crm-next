@@ -42,6 +42,11 @@ jobs:
         uses: elijaholmos/prisma-schema-validate@v1.0.0
         env: 
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Prisma Generate and Push
+        run: |
+          npx prisma generate
+          npx prisma db push
  
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
