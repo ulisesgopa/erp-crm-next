@@ -105,6 +105,19 @@ export function RegisterComponent() {
     }
   };
 
+  const loginWithGithub = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("github", {
+        callbackUrl: process.env.NEXT_PUBLIC_APP_URL,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };  
+
   const languageOptions = [
     { value: "en", label: "English" },
     { value: "de", label: "German" },
@@ -118,16 +131,28 @@ export function RegisterComponent() {
       </CardHeader>
       <CardContent className="grid gap-4 overflow-auto">
         <div className="grid grid-cols-2 gap-6">
-          {/*        <Button variant="outline">
-            <Icons.gitHub className="mr-2 h-4 w-4" />
+          <Button 
+            variant="outline"
+            onClick={loginWithGithub}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Icons.gitHub className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Icons.gitHub className="mr-2 h-4 w-4" />
+            )}{" "}
             Github
-          </Button> */}
+          </Button>
           <Button
             variant="outline"
             onClick={loginWithGoogle}
             disabled={isLoading}
           >
-            <Icons.google className="mr-2 h-4 w-4" />
+            {isLoading ? (
+              <Icons.google className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Icons.google className="mr-2 h-4 w-4" />
+            )}{" "}
             Google
           </Button>
         </div>
