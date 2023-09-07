@@ -207,7 +207,7 @@ export function NewOpportunityForm({
                             <SelectValue placeholder="Choose type " />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="flex overflow-y-auto h-56">
                           {salesType.map((type) => (
                             <SelectItem key={type.id} value={type.id}>
                               {type.name}
@@ -234,7 +234,7 @@ export function NewOpportunityForm({
                             <SelectValue placeholder="Choose actual stage " />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="flex overflow-y-auto h-56">
                           {saleStages.map((stage) => (
                             <SelectItem key={stage.id} value={stage.id}>
                               {stage.name}
@@ -385,7 +385,7 @@ export function NewOpportunityForm({
                             <SelectValue placeholder="Select a user to assign the account" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="flex overflow-y-auto h-56">
                           {contacts.map((contact) => (
                             <SelectItem key={contact.id} value={contact.id}>
                               {contact.first_name + " " + contact.last_name}
@@ -412,7 +412,7 @@ export function NewOpportunityForm({
                             <SelectValue placeholder="Select a campaign" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="flex overflow-y-auto h-56">
                           {campaigns.map((campaign) => (
                             <SelectItem key={campaign.id} value={campaign.id}>
                               {campaign.name}
