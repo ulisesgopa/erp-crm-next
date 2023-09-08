@@ -82,6 +82,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SAASHQ_TOKEN: ${{ secrets.SAASHQ_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
           NEXT_PUBLIC_APP_V: ${{ secrets.NEXT_PUBLIC_APP_V }}
