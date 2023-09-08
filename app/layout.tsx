@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import {createTranslator, NextIntlClientProvider} from 'next-intl';
 
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
