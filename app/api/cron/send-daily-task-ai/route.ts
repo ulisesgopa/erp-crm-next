@@ -103,7 +103,7 @@ export async function GET(req: Request) {
             null,
             2
           )}
-        
+       
           \n\n
           Schreiben Sie am Ende eine Managementzusammenfassung, einschließlich einer netten Begrüßung, schreiben Sie für den Benutzer: ${
             user.name
@@ -117,7 +117,7 @@ export async function GET(req: Request) {
 
       if (!prompt) return NextResponse.json({ message: "No prompt found" });
 
-      const getAiResponse = await fetch(
+      /* const getAiResponse = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/openai/create-chat-completion`,
         {
           method: "POST",
@@ -142,7 +142,7 @@ export async function GET(req: Request) {
           subject: `${process.env.NEXT_PUBLIC_APP_NAME} OpenAI Project manager assistant`,
           text: getAiResponse.response.message.content,
         });
-      }
+      } */
     }
 
     return NextResponse.json({ message: "Emails sent" });
