@@ -175,7 +175,8 @@ CREATE TABLE public."Boards" (
     "user" text NOT NULL,
     visibility text,
     date_created date DEFAULT CURRENT_TIMESTAMP,
-    last_edited date
+    last_edited date,
+    watchers text[]
 );
 
 
@@ -190,13 +191,13 @@ CREATE TABLE public."Documents" (
     connected_documents text[],
     date_created date DEFAULT CURRENT_TIMESTAMP,
     last_updated timestamp(3) without time zone,
-    document_name text,
+    document_name text NOT NULL,
     created_by_user text,
     description text,
     document_type text,
     favourite boolean,
-    "document_file_mimeType" text,
-    document_file_url text,
+    "document_file_mimeType" text NOT NULL,
+    document_file_url text NOT NULL,
     status text,
     visibility text,
     tags jsonb,
@@ -212,7 +213,8 @@ CREATE TABLE public."Documents" (
     "accountsIDs" text[],
     "createdAt" date DEFAULT CURRENT_TIMESTAMP,
     "createdBy" text,
-    "updatedAt" date
+    "updatedAt" date,
+    "crm_accounts_tasksIDs" text
 );
 
 
@@ -408,11 +410,9 @@ CREATE TABLE public."Tasks" (
     "user" text,
     "documentIDs" text[],
     "taskStatus" public."taskStatus" DEFAULT 'ACTIVE'::public."taskStatus",
-    account text,
-    contact text,
-    opportunity text,
     "updatedAt" date,
-    "updatedBy" text
+    "updatedBy" text,
+    likes integer DEFAULT 0
 );
 
 
@@ -460,16 +460,30 @@ CREATE TABLE public."Users" (
     email text NOT NULL,
     is_account_admin boolean DEFAULT false NOT NULL,
     is_admin boolean DEFAULT false NOT NULL,
-    created_on date DEFAULT CURRENT_TIMESTAMP,
+    created_on date DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name text,
     password text,
     username text,
     "userStatus" public."ActiveStatus" DEFAULT 'PENDING'::public."ActiveStatus" NOT NULL,
-    "userLanguage" public."Language" DEFAULT 'en'::public."Language" NOT NULL
+    "userLanguage" public."Language" DEFAULT 'en'::public."Language" NOT NULL,
+    "watching_boardsIDs" text[],
+    "watching_accountsIDs" text[]
 );
 
 
 ALTER TABLE public."Users" OWNER TO postgres;
+
+--
+-- Name: _BoardsToUsers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."_BoardsToUsers" (
+    "A" text NOT NULL,
+    "B" text NOT NULL
+);
+
+
+ALTER TABLE public."_BoardsToUsers" OWNER TO postgres;
 
 --
 -- Name: _DocumentsToInvoices; Type: TABLE; Schema: public; Owner: postgres
@@ -556,6 +570,18 @@ CREATE TABLE public."_crm_ContactsTocrm_Opportunities" (
 ALTER TABLE public."_crm_ContactsTocrm_Opportunities" OWNER TO postgres;
 
 --
+-- Name: _watching_accounts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public._watching_accounts (
+    "A" text NOT NULL,
+    "B" text NOT NULL
+);
+
+
+ALTER TABLE public._watching_accounts OWNER TO postgres;
+
+--
 -- Name: crm_Accounts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -590,11 +616,36 @@ CREATE TABLE public."crm_Accounts" (
     "createdBy" text,
     "updatedAt" date,
     "updatedBy" text,
-    "documentsIDs" text[]
+    "documentsIDs" text[],
+    watchers text[]
 );
 
 
 ALTER TABLE public."crm_Accounts" OWNER TO postgres;
+
+--
+-- Name: crm_Accounts_Tasks; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."crm_Accounts_Tasks" (
+    id text NOT NULL,
+    content text,
+    "createdAt" date DEFAULT CURRENT_TIMESTAMP,
+    "createdBy" text,
+    "updatedAt" date,
+    "updatedBy" text,
+    "dueDateAt" date DEFAULT CURRENT_TIMESTAMP,
+    priority text NOT NULL,
+    tags jsonb,
+    title text NOT NULL,
+    likes integer DEFAULT 0,
+    "user" text,
+    account text,
+    "taskStatus" public."taskStatus" DEFAULT 'ACTIVE'::public."taskStatus"
+);
+
+
+ALTER TABLE public."crm_Accounts_Tasks" OWNER TO postgres;
 
 --
 -- Name: crm_Contacts; Type: TABLE; Schema: public; Owner: postgres
@@ -841,7 +892,8 @@ CREATE TABLE public."tasksComments" (
     comment text NOT NULL,
     "createdAt" date DEFAULT CURRENT_TIMESTAMP NOT NULL,
     task text NOT NULL,
-    "user" text NOT NULL
+    "user" text NOT NULL,
+    assigned_crm_account_task text
 );
 
 
@@ -851,7 +903,7 @@ ALTER TABLE public."tasksComments" OWNER TO postgres;
 -- Data for Name: Boards; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Boards" (id, description, favourite, "favouritePosition", icon, "position", title, "user", visibility, date_created, last_edited) FROM stdin;
+COPY public."Boards" (id, description, favourite, "favouritePosition", icon, "position", title, "user", visibility, date_created, last_edited, watchers) FROM stdin;
 \.
 
 
@@ -859,7 +911,7 @@ COPY public."Boards" (id, description, favourite, "favouritePosition", icon, "po
 -- Data for Name: Documents; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Documents" (id, connected_documents, date_created, last_updated, document_name, created_by_user, description, document_type, favourite, "document_file_mimeType", document_file_url, status, visibility, tags, key, size, assigned_user, "invoiceIDs", "tasksIDs", document_system_type, "opportunityIDs", "contactsIDs", "leadsIDs", "accountsIDs", "createdAt", "createdBy", "updatedAt") FROM stdin;
+COPY public."Documents" (id, connected_documents, date_created, last_updated, document_name, created_by_user, description, document_type, favourite, "document_file_mimeType", document_file_url, status, visibility, tags, key, size, assigned_user, "invoiceIDs", "tasksIDs", document_system_type, "opportunityIDs", "contactsIDs", "leadsIDs", "accountsIDs", "createdAt", "createdBy", "updatedAt", "crm_accounts_tasksIDs") FROM stdin;
 \.
 
 
@@ -915,7 +967,7 @@ COPY public."Sections" (id, board, title, "position") FROM stdin;
 -- Data for Name: Tasks; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Tasks" (id, content, "createdAt", "createdBy", "dueDateAt", "lastEditedAt", "position", priority, section, tags, title, "user", "documentIDs", "taskStatus", account, contact, opportunity, "updatedAt", "updatedBy") FROM stdin;
+COPY public."Tasks" (id, content, "createdAt", "createdBy", "dueDateAt", "lastEditedAt", "position", priority, section, tags, title, "user", "documentIDs", "taskStatus", "updatedAt", "updatedBy", likes) FROM stdin;
 \.
 
 
@@ -939,9 +991,17 @@ COPY public."Translation" (id, key, language, text, module) FROM stdin;
 -- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Users" (id, account_name, avatar, email, is_account_admin, is_admin, created_on, name, password, username, "userStatus", "userLanguage") FROM stdin;
-cllgvu9ry0000mmo645sbanhe	Shells		kubeworkz@gmail.com	t	t	2023-08-18	Dave Cook	$2a$12$EuWqtbbhoxX.luyJx48/x.8baxBaqsEZ3bOmH37iEG7aqNpC9CJPW	quasimotoca	ACTIVE	en
-clllcyfzm0000mmacstae8tdp	\N	https://avatars.githubusercontent.com/u/140992652?v=4	saashqdev@gmail.com	f	f	2023-08-21	SaashqDev	\N	\N	ACTIVE	en
+COPY public."Users" (id, account_name, avatar, email, is_account_admin, is_admin, created_on, name, password, username, "userStatus", "userLanguage", "watching_boardsIDs", "watching_accountsIDs") FROM stdin;
+cllgvu9ry0000mmo645sbanhe	Shells		kubeworkz@gmail.com	t	t	2023-08-18	Dave Cook	$2a$12$EuWqtbbhoxX.luyJx48/x.8baxBaqsEZ3bOmH37iEG7aqNpC9CJPW	quasimotoca	ACTIVE	en	\N	\N
+clllcyfzm0000mmacstae8tdp	\N	https://avatars.githubusercontent.com/u/140992652?v=4	saashqdev@gmail.com	f	f	2023-08-21	SaashqDev	\N	\N	ACTIVE	en	\N	\N
+\.
+
+
+--
+-- Data for Name: _BoardsToUsers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."_BoardsToUsers" ("A", "B") FROM stdin;
 \.
 
 
@@ -1002,10 +1062,26 @@ COPY public."_crm_ContactsTocrm_Opportunities" ("A", "B") FROM stdin;
 
 
 --
+-- Data for Name: _watching_accounts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public._watching_accounts ("A", "B") FROM stdin;
+\.
+
+
+--
 -- Data for Name: crm_Accounts; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."crm_Accounts" (id, annual_revenue, assigned_to, billing_city, billing_country, billing_postal_code, billing_state, billing_street, company_id, description, email, employees, fax, industry, member_of, name, office_phone, shipping_city, shipping_country, shipping_postal_code, shipping_state, shipping_street, status, type, vat, website, "createdAt", "createdBy", "updatedAt", "updatedBy", "documentsIDs") FROM stdin;
+COPY public."crm_Accounts" (id, annual_revenue, assigned_to, billing_city, billing_country, billing_postal_code, billing_state, billing_street, company_id, description, email, employees, fax, industry, member_of, name, office_phone, shipping_city, shipping_country, shipping_postal_code, shipping_state, shipping_street, status, type, vat, website, "createdAt", "createdBy", "updatedAt", "updatedBy", "documentsIDs", watchers) FROM stdin;
+\.
+
+
+--
+-- Data for Name: crm_Accounts_Tasks; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."crm_Accounts_Tasks" (id, content, "createdAt", "createdBy", "updatedAt", "updatedBy", "dueDateAt", priority, tags, title, likes, "user", account, "taskStatus") FROM stdin;
 \.
 
 
@@ -1154,7 +1230,7 @@ d8b47c7a-958b-498d-89e3-3d8907e73cab	openai	t	academicCap	open	/openAi	ChatGPT	1
 -- Data for Name: tasksComments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."tasksComments" (id, comment, "createdAt", task, "user") FROM stdin;
+COPY public."tasksComments" (id, comment, "createdAt", task, "user", assigned_crm_account_task) FROM stdin;
 \.
 
 
@@ -1252,6 +1328,14 @@ ALTER TABLE ONLY public."Translation"
 
 ALTER TABLE ONLY public."Users"
     ADD CONSTRAINT "Users_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: crm_Accounts_Tasks crm_Accounts_Tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."crm_Accounts_Tasks"
+    ADD CONSTRAINT "crm_Accounts_Tasks_pkey" PRIMARY KEY (id);
 
 
 --
@@ -1374,6 +1458,20 @@ CREATE UNIQUE INDEX "Users_email_key" ON public."Users" USING btree (email);
 
 
 --
+-- Name: _BoardsToUsers_AB_unique; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX "_BoardsToUsers_AB_unique" ON public."_BoardsToUsers" USING btree ("A", "B");
+
+
+--
+-- Name: _BoardsToUsers_B_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "_BoardsToUsers_B_index" ON public."_BoardsToUsers" USING btree ("B");
+
+
+--
 -- Name: _DocumentsToInvoices_AB_unique; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1472,6 +1570,20 @@ CREATE INDEX "_crm_ContactsTocrm_Opportunities_B_index" ON public."_crm_Contacts
 
 
 --
+-- Name: _watching_accounts_AB_unique; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX "_watching_accounts_AB_unique" ON public._watching_accounts USING btree ("A", "B");
+
+
+--
+-- Name: _watching_accounts_B_index; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "_watching_accounts_B_index" ON public._watching_accounts USING btree ("B");
+
+
+--
 -- Name: Boards Boards_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1493,6 +1605,14 @@ ALTER TABLE ONLY public."Documents"
 
 ALTER TABLE ONLY public."Documents"
     ADD CONSTRAINT "Documents_created_by_user_fkey" FOREIGN KEY (created_by_user) REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Documents Documents_crm_accounts_tasksIDs_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Documents"
+    ADD CONSTRAINT "Documents_crm_accounts_tasksIDs_fkey" FOREIGN KEY ("crm_accounts_tasksIDs") REFERENCES public."crm_Accounts_Tasks"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -1528,30 +1648,6 @@ ALTER TABLE ONLY public."Invoices"
 
 
 --
--- Name: Tasks Tasks_account_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Tasks"
-    ADD CONSTRAINT "Tasks_account_fkey" FOREIGN KEY (account) REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
--- Name: Tasks Tasks_contact_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Tasks"
-    ADD CONSTRAINT "Tasks_contact_fkey" FOREIGN KEY (contact) REFERENCES public."crm_Contacts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
--- Name: Tasks Tasks_opportunity_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Tasks"
-    ADD CONSTRAINT "Tasks_opportunity_fkey" FOREIGN KEY (opportunity) REFERENCES public."crm_Opportunities"(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
 -- Name: Tasks Tasks_section_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1565,6 +1661,22 @@ ALTER TABLE ONLY public."Tasks"
 
 ALTER TABLE ONLY public."Tasks"
     ADD CONSTRAINT "Tasks_user_fkey" FOREIGN KEY ("user") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: _BoardsToUsers _BoardsToUsers_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."_BoardsToUsers"
+    ADD CONSTRAINT "_BoardsToUsers_A_fkey" FOREIGN KEY ("A") REFERENCES public."Boards"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: _BoardsToUsers _BoardsToUsers_B_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."_BoardsToUsers"
+    ADD CONSTRAINT "_BoardsToUsers_B_fkey" FOREIGN KEY ("B") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -1680,6 +1792,38 @@ ALTER TABLE ONLY public."_crm_ContactsTocrm_Opportunities"
 
 
 --
+-- Name: _watching_accounts _watching_accounts_A_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public._watching_accounts
+    ADD CONSTRAINT "_watching_accounts_A_fkey" FOREIGN KEY ("A") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: _watching_accounts _watching_accounts_B_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public._watching_accounts
+    ADD CONSTRAINT "_watching_accounts_B_fkey" FOREIGN KEY ("B") REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: crm_Accounts_Tasks crm_Accounts_Tasks_account_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."crm_Accounts_Tasks"
+    ADD CONSTRAINT "crm_Accounts_Tasks_account_fkey" FOREIGN KEY (account) REFERENCES public."crm_Accounts"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: crm_Accounts_Tasks crm_Accounts_Tasks_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."crm_Accounts_Tasks"
+    ADD CONSTRAINT "crm_Accounts_Tasks_user_fkey" FOREIGN KEY ("user") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: crm_Accounts crm_Accounts_assigned_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1792,11 +1936,19 @@ ALTER TABLE ONLY public."secondBrain_notions"
 
 
 --
+-- Name: tasksComments tasksComments_assigned_crm_account_task_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."tasksComments"
+    ADD CONSTRAINT "tasksComments_assigned_crm_account_task_fkey" FOREIGN KEY (assigned_crm_account_task) REFERENCES public."crm_Accounts_Tasks"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
 -- Name: tasksComments tasksComments_task_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."tasksComments"
-    ADD CONSTRAINT "tasksComments_task_fkey" FOREIGN KEY (task) REFERENCES public."Tasks"(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "tasksComments_task_fkey" FOREIGN KEY (task) REFERENCES public."Tasks"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

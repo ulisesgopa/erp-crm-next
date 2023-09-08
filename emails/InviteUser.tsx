@@ -46,7 +46,7 @@ import {
             <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
               <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
                 {userLanguage === "en"
-                  ? "  You have been invited to cooperate on something special"
+                  ? "You have been invited to cooperate on something special"
                   : "Sie wurden eingeladen, an etwas Erstaunlichem mitzuarbeiten"}
               </Heading>
               <Text className="text-black text-[14px] leading-[24px]">

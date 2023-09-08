@@ -107,6 +107,7 @@ export function RegisterComponent() {
 
   const loginWithGithub = async () => {
     setIsLoading(true);
+
     try {
       await signIn("github", {
         callbackUrl: process.env.NEXT_PUBLIC_APP_URL,
@@ -129,7 +130,7 @@ export function RegisterComponent() {
         <CardTitle className="text-2xl">Create new account</CardTitle>
         <CardDescription>Create account by login with:</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4 overflow-auto">
+      <CardContent className="grid gap-4">
         <div className="grid grid-cols-2 gap-6">
           <Button 
             variant="outline"
