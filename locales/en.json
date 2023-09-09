@@ -2,5 +2,11 @@
   "RootLayout": {
     "title": "SaasHQ",
     "description": "Welcome to SaasHQ CRM/ERP with Prisma and Next.js 13"
+  },
+  "RegisterComponent": {
+    "cardTitle": "Create new account",
+    "cardDescription": "Create account by login with",
+    "label": "Language",
+    "locale": "{locale, select, de {German} en {Engish} cz {Czech} other {Unknown}}"    
   }
 }

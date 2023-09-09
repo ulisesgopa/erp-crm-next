@@ -2,5 +2,11 @@
   "RootLayout": {
     "title": "SaasHQ",
     "description": "Vítejte v SaasHQ CRM/ERP s Prisma a Next.js 13"
+  },
+  "RegisterComponent": {
+    "cardTitle": "Vytvořit nový účet",
+    "cardDescription": "Vytvořte si účet přihlášením pomocí",
+    "label": "Jazyk",
+    "locale": "{locale, select, de {Němec} en {Angličtina} cz {čeština} other {Neznámý}}"    
   }
 }

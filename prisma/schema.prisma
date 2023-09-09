@@ -98,7 +98,7 @@ model crm_Opportunities {
   id                   String                          @id @default(cuid())
   account              String?                         
   assigned_to          String?                         
-  budget               String?
+  budget               Int                             @default(0)
   campaign             String?                         
   close_date           DateTime?                       @db.Date
   contact              String?                         
@@ -112,7 +112,7 @@ model crm_Opportunities {
   last_activity_by     String?                         
   currency             String?
   description          String?
-  expected_revenue     String?
+  expected_revenue     Int                             @default(0)
   name                 String?
   next_step            String?
   sales_stage          String?                         

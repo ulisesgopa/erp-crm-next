@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { ChangeEvent, startTransition, useCallback } from "react";
 import { z, ZodType } from "zod";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-intl/client";
 //import { toast } from "react-hot-toast";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -39,6 +39,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "next-intl/client";
 
 export function RegisterComponent() {
   const router = useRouter();
@@ -119,16 +122,22 @@ export function RegisterComponent() {
     }
   };  
 
-  const languageOptions = [
-    { value: "en", label: "English" },
-    { value: "de", label: "German" },
-  ];
+  const t = useTranslations('RegisterComponent');
+  const locale = useLocale();
+  const pathname = usePathname();
+
+  function onValueChange( value: string ) {
+    const nextLocale = value;
+    startTransition(() => {
+      router.replace(pathname, {locale: nextLocale});
+    });
+  }
 
   return (
     <Card className="shadow-lg ">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Create new account</CardTitle>
-        <CardDescription>Create account by login with:</CardDescription>
+        <CardTitle className="text-2xl">{t('cardTitle')}</CardTitle>
+        <CardDescription>{t('cardDescription')}:</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-2 gap-6">
@@ -226,25 +235,24 @@ export function RegisterComponent() {
                 name="language"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Language</FormLabel>
+                    <FormLabel>{t('label')}</FormLabel>
                     <Select
                       disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
+                      onValueChange={onValueChange}
+                      defaultValue={locale}
                     >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue
-                            defaultValue={field.value}
+                            defaultValue={locale}
                             placeholder="Select a language"
                           />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {languageOptions.map((language, index) => (
-                          <SelectItem key={index} value={language.value}>
-                            {language.label}
+                        {['en', 'de', 'cz'].map((cur) => (
+                          <SelectItem key={cur} value={cur}>
+                            {t('locale', {locale: cur})}
                           </SelectItem>
                         ))}
                       </SelectContent>
