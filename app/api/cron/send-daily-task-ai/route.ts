@@ -6,11 +6,11 @@ import sendEmail from "@/lib/sendmail";
 import { data } from "autoprefixer";
 import axios from "axios";
 import dayjs from "dayjs";
-import { get } from "http";
+
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  try {
+  /*   try {
     const today = dayjs().startOf("day");
     const nextWeek = dayjs().add(7, "day").startOf("day");
     let prompt = "";
@@ -117,7 +117,7 @@ export async function GET(req: Request) {
 
       if (!prompt) return NextResponse.json({ message: "No prompt found" });
 
-      /* const getAiResponse = await fetch(
+      const getAiResponse = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/openai/create-chat-completion`,
         {
           method: "POST",
@@ -142,12 +142,13 @@ export async function GET(req: Request) {
           subject: `${process.env.NEXT_PUBLIC_APP_NAME} OpenAI Project manager assistant`,
           text: getAiResponse.response.message.content,
         });
-      } */
+      }
     }
 
     return NextResponse.json({ message: "Emails sent" });
   } catch (error) {
     console.log("[TASK_CRON_API]", error);
     return new NextResponse("Initial error", { status: 500 });
-  }
+  } */
+  return new NextResponse("Initial error", { status: 500 });
 }
