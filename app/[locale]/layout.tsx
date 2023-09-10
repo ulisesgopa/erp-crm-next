@@ -22,10 +22,6 @@ async function getLocales(locale: string) {
   }
 }
 
-export async function generateStaticParams() {
-  return ['en', 'de', 'cz'].map((locale) => ({locale}));
-}
-
 export async function generateMetadata({params: {locale}}: Props) {
   const messages = await getLocales(locale);
 
