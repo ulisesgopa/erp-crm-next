@@ -8,5 +8,11 @@
     "cardDescription": "Erstellen Sie ein Konto, indem Sie sich anmelden mit",
     "label": "Sprache",
     "locale": "{locale, select, de {Deutsch} en {Englisch} cz {Tschechisch} other {Unbekannt}}"
-  }
+  },
+  "CrmModuleMenuComponent": {
+    "menuTitle": "Verkäufe",
+    "cardDescription": "Erstellen Sie ein Konto, indem Sie sich anmelden mit",
+    "label": "Sprache",
+    "locale": "{locale, select, de {Deutsch} en {Englisch} cz {Tschechisch} other {Unbekannt}}"        
+  }  
 }
