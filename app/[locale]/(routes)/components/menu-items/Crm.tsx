@@ -9,10 +9,8 @@ import {
 import { Coins, UserIcon } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import React, { startTransition } from "react";
 
-import { usePathname } from "next-intl/client";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -23,15 +21,6 @@ const CrmModuleMenu = ({ open }: Props) => {
 
   //Localizations
   const t = useTranslations("CrmModuleMenuComponent");
-  const locale = useLocale();
-  const pathname = usePathname();
-
-  function onValueChange(value: string) {
-    const nextLocale = value;
-    startTransition(() => {
-      router.replace(pathname, { locale: nextLocale } as any );
-    });
-  }
 
   return (
     <div className="flex flex-row items-center mx-auto p-2">
