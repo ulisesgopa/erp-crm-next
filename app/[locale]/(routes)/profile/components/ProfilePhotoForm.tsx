@@ -26,7 +26,7 @@ export function ProfilePhotoForm({ data }: ProfileFormProps) {
     <div className="flex items-center space-x-5">
       <div>
         <Image
-          src={data?.avatar || "@/public/images/nouser.png"}
+          src={data?.avatar || "/images/nouser.png"}
           alt="avatar"
           width={100}
           height={100}
