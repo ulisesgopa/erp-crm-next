@@ -114,9 +114,9 @@ export function LoginComponent() {
         redirect: false,
         email: data.email,
         password: data.password,
-        callbackUrl: "/",
+        callbackUrl: process.env.NEXT_PUBLIC_APP_URL,
       });
-      console.log(status, "status");
+      //console.log(status, "status");
       if (status?.error) {
         toast({
           variant: "destructive",
@@ -129,7 +129,6 @@ export function LoginComponent() {
         toast({
           description: "Login successful.",
         });        
-        router.push("/");
       }      
     } catch (error: any) {
       console.log(error);
@@ -140,6 +139,7 @@ export function LoginComponent() {
       });
     } finally {
       setIsLoading(false);
+      router.push("/");
     }
   }
 
