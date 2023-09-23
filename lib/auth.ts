@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user?.password) {
-          throw new Error("Invalid credentials");
+          throw new Error("Email or password is missing");
         }
 
         const isCorrectPassword = await bcrypt.compare(
@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isCorrectPassword) {
-          throw new Error("Invalid credentials");
+          throw new Error("Password is incorrect");
         }
 
         //console.log(user, "user");
