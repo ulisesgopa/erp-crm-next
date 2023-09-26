@@ -5,6 +5,7 @@ import {
   Calculator,
   Calendar,
   CreditCard,
+  LogOut,
   Settings,
   Smile,
   User,
@@ -43,7 +44,7 @@ export function CommandComponent() {
       }
       if (e.key === "P" && e.metaKey && e.shiftKey) {
         router.push("/profile");
-        setOpen(false);        
+        setOpen(false);
       }
       if (e.key === "k" && e.metaKey) {
         signOut();
@@ -52,7 +53,7 @@ export function CommandComponent() {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [ router ]);
+  }, [router]);
 
   return (
     <div className="hidden lg:block">
@@ -66,7 +67,7 @@ export function CommandComponent() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
+          {/*           <CommandGroup heading="Suggestions">
             <CommandItem>
               <Calendar className="mr-2 h-4 w-4" />
               <span>Calendar</span>
@@ -79,33 +80,23 @@ export function CommandComponent() {
               <Calculator className="mr-2 h-4 w-4" />
               <span>Calculator</span>
             </CommandItem>
-          </CommandGroup>
+          </CommandGroup> */}
           <CommandSeparator />
           <CommandGroup heading="Settings">
             <CommandItem onClick={() => redirect("/")}>
               <User className="mr-2 h-4 w-4" />
               <span>Dashboard</span>
               <CommandShortcut>Shift + ⌘ + D</CommandShortcut>
-            </CommandItem>            
+            </CommandItem>
             <CommandItem onClick={() => redirect("/profile")}>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Profile settings</span>
               <CommandShortcut>Shift + ⌘ + P</CommandShortcut>
             </CommandItem>
-            <CommandItem>
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings className="mr-2 h-4 w-4" />
+            <CommandItem onClick={() => signOut()}>
+              <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
-              <CommandShortcut>⌘q</CommandShortcut>
+              <CommandShortcut>⌘k</CommandShortcut>
             </CommandItem>
           </CommandGroup>
         </CommandList>
