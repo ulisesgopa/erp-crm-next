@@ -133,6 +133,19 @@ const TaskPage = async ({ params }: TaskPageProps) => {
                     </p>
                   </div>
                 </div>
+                <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+                  <User className="mt-px h-5 w-5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      Created by
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {activeUsers.find(
+                        (user: any) => user.id === task.createdBy
+                      )?.name || "Unknown"}
+                    </p>
+                  </div>
+                </div>                
               </div>
             </CardContent>
             <CardFooter className="space-x-2">

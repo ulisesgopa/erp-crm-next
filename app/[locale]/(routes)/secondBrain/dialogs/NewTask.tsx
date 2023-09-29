@@ -43,7 +43,6 @@ type Props = {
   boards: any;
   open: boolean;
   setOpen: (open: boolean) => void;
-
   notionUrl: string;
 };
 
@@ -52,7 +51,6 @@ const NewTaskDialog = ({
   boards,
   open,
   setOpen,
-
   notionUrl,
 }: Props) => {
   //const [open, setOpen] = useState(false);

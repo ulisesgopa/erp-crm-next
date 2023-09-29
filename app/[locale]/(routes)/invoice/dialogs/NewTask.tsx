@@ -51,6 +51,8 @@ const NewTaskDialog = ({ users, boards }: Props) => {
 
   const [isMounted, setIsMounted] = useState(false);
 
+  const { notionUrl } = useAppStore();
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -60,6 +62,7 @@ const NewTaskDialog = ({ users, boards }: Props) => {
     board: z.string().min(3).max(255),
     priority: z.string().min(3).max(10),
     content: z.string().min(3).max(500),
+    notionUrl: z.string().min(3).max(500),    
   });
 
   type NewAccountFormValues = z.infer<typeof formSchema>;
@@ -70,7 +73,7 @@ const NewTaskDialog = ({ users, boards }: Props) => {
 
   useEffect(() => {
     setIsMounted(true);
-  }, [form]);
+  }, [form, notionUrl]);
 
   if (!isMounted) {
     return null;
