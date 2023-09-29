@@ -48,7 +48,7 @@ import {
             <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
               <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
                 {userLanguage === "en"
-                  ? "There is new comment on task you are watching"
+                  ? "There is a new comment on a task you are watching"
                   : "Es gibt einen neuen Kommentar zu der Aufgabe, der Sie folgen"}
               </Heading>
               <Text className="text-black text-[14px] leading-[24px]">
@@ -59,9 +59,13 @@ import {
               <Text className="text-black text-[14px] leading-[24px]">
                 <strong>{commentFromUser}</strong>
                 {userLanguage === "en"
-                  ? ` has leave a comment in Project - (Board) you are watching. `
+                  ? ` has left a comment in Project - (Board) you are watching. `
                   : ` hat einen Kommentar im Projekt hinterlassen - (Boardu), dem du folgst. `}
               </Text>
+              <Text className="text-black text-[14px] leading-[24px]">
+                {userLanguage === "en" ? `Comment: ` : `Kommentar: `}
+                <strong>{comment}</strong>
+              </Text>              
               <Text className="text-black text-[14px] leading-[24px]">
                 {userLanguage === "en"
                   ? `
