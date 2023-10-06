@@ -239,7 +239,7 @@ export function RegisterComponent() {
                 name="language"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Choose industry</FormLabel>
+                    <FormLabel>Choose your language</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
