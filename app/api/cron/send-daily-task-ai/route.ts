@@ -8,9 +8,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   /*
-This endpoint is not available in the demo version of NextCRM.
+This endpoint is not available in the demo version of SaasHQ.
 */
-  if (process.env.NEXT_PUBLIC_APP_URL === "demo.nextcrm.io") {
+  if (process.env.NEXT_PUBLIC_APP_URL === "demo.saashq.org") {
     return NextResponse.json({
       message: "AI assistant is not available in Demo version",
     });
