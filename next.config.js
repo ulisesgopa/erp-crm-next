@@ -15,6 +15,7 @@ const nextConfig = {
       "lh3.googleusercontent.com",
       "uploadthing.com",
       "avatars.githubusercontent.com",
+      "utfs.io",
     ],
   },
 };
