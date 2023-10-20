@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
--- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
+-- Dumped from database version 14.9 (Ubuntu 14.9-0ubuntu0.22.04.1)
+-- Dumped by pg_dump version 14.9 (Ubuntu 14.9-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -61,23 +61,6 @@ CREATE TYPE public."Language" AS ENUM (
 
 
 ALTER TYPE public."Language" OWNER TO postgres;
-
---
--- Name: Modules; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."Modules" AS ENUM (
-    'admin',
-    'crm',
-    'documents',
-    'projects',
-    'secondbrain',
-    'invoice',
-    'allmodules'
-);
-
-
-ALTER TYPE public."Modules" OWNER TO postgres;
 
 --
 -- Name: crm_Contact_Type; Type: TYPE; Schema: public; Owner: postgres
@@ -435,21 +418,6 @@ CREATE TABLE public."TodoList" (
 ALTER TABLE public."TodoList" OWNER TO postgres;
 
 --
--- Name: Translation; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."Translation" (
-    id text NOT NULL,
-    key text NOT NULL,
-    language text NOT NULL,
-    text text NOT NULL,
-    module public."Modules" DEFAULT 'allmodules'::public."Modules" NOT NULL
-);
-
-
-ALTER TABLE public."Translation" OWNER TO postgres;
-
---
 -- Name: Users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -708,11 +676,8 @@ ALTER TABLE public."crm_Industry_Type" OWNER TO postgres;
 
 CREATE TABLE public."crm_Leads" (
     id text NOT NULL,
-    date_created date DEFAULT CURRENT_TIMESTAMP,
-    date_modify date DEFAULT CURRENT_TIMESTAMP,
-    last_activity_by text,
     "firstName" text,
-    "lastName" text,
+    "lastName" text NOT NULL,
     company text,
     "jobTitle" text,
     email text,
@@ -743,7 +708,6 @@ CREATE TABLE public."crm_Opportunities" (
     id text NOT NULL,
     account text,
     assigned_to text,
-    budget text,
     campaign text,
     close_date date,
     contact text,
@@ -753,7 +717,6 @@ CREATE TABLE public."crm_Opportunities" (
     last_activity_by text,
     currency text,
     description text,
-    expected_revenue text,
     name text,
     next_step text,
     sales_stage text,
@@ -764,7 +727,9 @@ CREATE TABLE public."crm_Opportunities" (
     "createdAt" date DEFAULT CURRENT_TIMESTAMP,
     "createdBy" text,
     "updatedAt" date,
-    "updatedBy" text
+    "updatedBy" text,
+    budget integer DEFAULT 0 NOT NULL,
+    expected_revenue integer DEFAULT 0 NOT NULL
 );
 
 
@@ -798,10 +763,10 @@ CREATE TABLE public."crm_Opportunities_Type" (
 ALTER TABLE public."crm_Opportunities_Type" OWNER TO postgres;
 
 --
--- Name: crm_campains; Type: TABLE; Schema: public; Owner: postgres
+-- Name: crm_campaigns; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.crm_campains (
+CREATE TABLE public.crm_campaigns (
     id text NOT NULL,
     name text NOT NULL,
     description text,
@@ -809,7 +774,7 @@ CREATE TABLE public.crm_campains (
 );
 
 
-ALTER TABLE public.crm_campains OWNER TO postgres;
+ALTER TABLE public.crm_campaigns OWNER TO postgres;
 
 --
 -- Name: gpt_models; Type: TABLE; Schema: public; Owner: postgres
@@ -980,14 +945,6 @@ COPY public."TodoList" (id, "createdAt", description, title, url, "user") FROM s
 
 
 --
--- Data for Name: Translation; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Translation" (id, key, language, text, module) FROM stdin;
-\.
-
-
---
 -- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1125,7 +1082,7 @@ b5402a07-774d-4140-8213-25470186a020	Finance
 -- Data for Name: crm_Leads; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."crm_Leads" (id, date_created, date_modify, last_activity_by, "firstName", "lastName", company, "jobTitle", email, phone, description, lead_source, refered_by, campaign, assigned_to, status, type, "accountsIDs", "createdAt", "createdBy", "documentsIDs", "updatedAt", "updatedBy") FROM stdin;
+COPY public."crm_Leads" (id, "firstName", "lastName", company, "jobTitle", email, phone, description, lead_source, refered_by, campaign, assigned_to, status, type, "accountsIDs", "createdAt", "createdBy", "documentsIDs", "updatedAt", "updatedBy") FROM stdin;
 \.
 
 
@@ -1133,7 +1090,7 @@ COPY public."crm_Leads" (id, date_created, date_modify, last_activity_by, "first
 -- Data for Name: crm_Opportunities; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."crm_Opportunities" (id, account, assigned_to, budget, campaign, close_date, contact, created_by, created_on, last_activity, last_activity_by, currency, description, expected_revenue, name, next_step, sales_stage, type, status, connected_contacts, connected_documents, "createdAt", "createdBy", "updatedAt", "updatedBy") FROM stdin;
+COPY public."crm_Opportunities" (id, account, assigned_to, campaign, close_date, contact, created_by, created_on, last_activity, last_activity_by, currency, description, name, next_step, sales_stage, type, status, connected_contacts, connected_documents, "createdAt", "createdBy", "updatedAt", "updatedBy", budget, expected_revenue) FROM stdin;
 \.
 
 
@@ -1167,12 +1124,10 @@ cf835196-db24-4847-aeca-a3f0f1feadd0	Upsale	3
 
 
 --
--- Data for Name: crm_campains; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: crm_campaigns; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.crm_campains (id, name, description, status) FROM stdin;
-562486b9-8cba-40ac-b721-b5b244801b6b	Social networks	Instagram, Facebook, Twitter	ACTIVE
-a778ff93-6550-4aca-bbf7-5dd7309fbe96	Cold calls	Our call center	\N
+COPY public.crm_campaigns (id, name, description, status) FROM stdin;
 \.
 
 
@@ -1315,14 +1270,6 @@ ALTER TABLE ONLY public."TodoList"
 
 
 --
--- Name: Translation Translation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Translation"
-    ADD CONSTRAINT "Translation_pkey" PRIMARY KEY (id);
-
-
---
 -- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1395,11 +1342,11 @@ ALTER TABLE ONLY public."crm_Opportunities"
 
 
 --
--- Name: crm_campains crm_campains_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: crm_campaigns crm_campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.crm_campains
-    ADD CONSTRAINT crm_campains_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.crm_campaigns
+    ADD CONSTRAINT crm_campaigns_pkey PRIMARY KEY (id);
 
 
 --
@@ -1900,7 +1847,7 @@ ALTER TABLE ONLY public."crm_Opportunities"
 --
 
 ALTER TABLE ONLY public."crm_Opportunities"
-    ADD CONSTRAINT "crm_Opportunities_campaign_fkey" FOREIGN KEY (campaign) REFERENCES public.crm_campains(id) ON UPDATE CASCADE ON DELETE SET NULL;
+    ADD CONSTRAINT "crm_Opportunities_campaign_fkey" FOREIGN KEY (campaign) REFERENCES public.crm_campaigns(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
