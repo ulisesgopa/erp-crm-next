@@ -9,9 +9,7 @@ const SignInPage = async () => {
           Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
         </h1>
       </div>
-      <div>
-        <LoginComponent />
-      </div>
+      <LoginComponent />
     </div>
   );
 };
