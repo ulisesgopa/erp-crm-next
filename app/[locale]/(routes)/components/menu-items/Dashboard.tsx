@@ -1,6 +1,4 @@
-"use client";
-
-import { Bot } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,20 +8,20 @@ type Props = {
   open: boolean;
 };
 
-const ChatGPTModuleMenu = ({ open }: Props) => {
+const DashboardMenu = ({ open }: Props) => {
   const pathname = usePathname();
-  const isPath = pathname.includes("openAi");
+  const isPath = pathname.includes("nevermind");
   return (
     <div className="flex flex-row items-center mx-auto p-2">
       <Link
-        href={"/openAi"}
+        href={"/"}
         className={`flex gap-2 p-2 ${isPath ? "text-muted-foreground" : null}`}
       >
-        <Bot className="w-6" />
-        <span className={open ? "" : "hidden"}>ChatGPT</span>
+        <Home className="w-6" />
+        <span className={open ? "" : "hidden"}>Dashboard</span>
       </Link>
     </div>
   );
 };
 
-export default ChatGPTModuleMenu;
+export default DashboardMenu;

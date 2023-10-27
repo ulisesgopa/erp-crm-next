@@ -6,11 +6,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Coins, UserIcon } from "lucide-react";
+import { Coins } from "lucide-react";
 
 import { useRouter } from "next/navigation";
+import React, { startTransition } from "react";
 
-import { useTranslations } from "next-intl";
+import { usePathname } from "next-intl/client";
+import { useLocale, useTranslations } from "next-intl";
+import { NavigateOptions } from "next/dist/shared/lib/app-router-context";
 
 type Props = {
   open: boolean;
@@ -21,9 +24,24 @@ const CrmModuleMenu = ({ open }: Props) => {
 
   //Localizations
   const t = useTranslations("CrmModuleMenuComponent");
+  const locale = useLocale();
+  const pathname = usePathname();
+
+  function onValueChange(value: string) {
+    const nextLocale = value;
+    startTransition(() => {
+      router.replace(pathname, { locale: nextLocale } as NavigateOptions);
+    });
+  }
+
+  const isPath = pathname.includes("crm");
 
   return (
-    <div className="flex flex-row items-center mx-auto p-2">
+    <div
+      className={`flex flex-row items-center mx-auto p-2 ${
+        isPath ? "text-muted-foreground" : null
+      }`}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger
           className={
@@ -43,7 +61,7 @@ const CrmModuleMenu = ({ open }: Props) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/crm/dashboard/user")}>
             My Dashboard
-          </DropdownMenuItem>          
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/crm")}>
             Overview
           </DropdownMenuItem>

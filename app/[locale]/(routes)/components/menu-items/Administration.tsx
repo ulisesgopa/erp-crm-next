@@ -1,29 +1,25 @@
-"use client";
-
-import { Bot } from "lucide-react";
+import { Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import React from "react";
 
 type Props = {
   open: boolean;
 };
 
-const ChatGPTModuleMenu = ({ open }: Props) => {
+const AdministrationMenu = ({ open }: Props) => {
   const pathname = usePathname();
-  const isPath = pathname.includes("openAi");
+  const isPath = pathname.includes("admin");
   return (
     <div className="flex flex-row items-center mx-auto p-2">
       <Link
-        href={"/openAi"}
+        href={"/admin"}
         className={`flex gap-2 p-2 ${isPath ? "text-muted-foreground" : null}`}
       >
-        <Bot className="w-6" />
-        <span className={open ? "" : "hidden"}>ChatGPT</span>
+        <Wrench className="w-6" />
+        <span className={open ? "" : "hidden"}>Administration</span>
       </Link>
     </div>
   );
 };
 
-export default ChatGPTModuleMenu;
+export default AdministrationMenu;
