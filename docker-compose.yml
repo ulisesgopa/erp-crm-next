@@ -1,42 +1,10 @@
-version: '3.8'
+version: "3"
 services:
-    postgres:
-        image: postgres:15
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=password
-        volumes:
-            - postgres-db-volume:/var/lib/postgresql/data
-        ports:
-            - 5432:5432
-        networks:
-            - postgres-db-network
-    pgadmin:
-        image: dpage/pgadmin4
-        environment:
-            PGADMIN_DEFAULT_EMAIL: 'teste@teste.com'
-            PGADMIN_DEFAULT_PASSWORD: 'teste'
-        ports:
-            - 16543:80
-        volumes:
-            - ./servers.json:/pgadmin4/servers.json
-        networks:
-            - postgres-db-network
-
-    saashq-app:
-        build: .
-        ports:
-            - "3000:3000"
-        depends_on:
-            - postgres
-
-volumes:
-    postgres-db-volume:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ./data
-networks:
-    postgres-db-network:
-        driver: bridge
+  my-nextjs-app:
+    image: saashqdev/saashq:0.0.3-beta
+    container_name: saashq
+    ports:
+      - "3001:3000"
+    volumes:
+      - .env:/app/.env
+      - .env.local:/app/.env.local
