@@ -14,7 +14,6 @@ export const getOpportunities = async () => {
   return data;
 };
 
-
 //Get opportunities by month for chart
 export const getOpportunitiesByMonth = async () => {
   const opportunities = await prismadb.crm_Opportunities.findMany({
@@ -38,7 +37,7 @@ export const getOpportunitiesByMonth = async () => {
     {}
   );
 
-  const chartData = Object.keys(opportunitiesByMonth).map((month) => {
+  const chartData = Object.keys(opportunitiesByMonth).map((month: any) => {
     return {
       name: month,
       Number: opportunitiesByMonth[month],
@@ -74,7 +73,7 @@ export const getOpportunitiesByStage = async () => {
     {}
   );
 
-  const chartData = Object.keys(opportunitiesByStage).map((stage) => {
+  const chartData = Object.keys(opportunitiesByStage).map((stage: any) => {
     return {
       name: stage,
       Number: opportunitiesByStage[stage],
