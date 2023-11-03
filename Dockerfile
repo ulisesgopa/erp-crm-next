@@ -3,7 +3,7 @@ FROM node:20.9.0-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-# Copy .env and .env.local before the build stage
+
 COPY .env .env.local ./ 
 
 FROM node:20.9.0-alpine AS BUILD_IMAGE
