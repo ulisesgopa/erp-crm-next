@@ -3,6 +3,9 @@ services:
   my-nextjs-app:
     image: saashqdev/saashq:0.0.3-beta
     container_name: saashq
+    env-file:
+      - .env
+      - .env.local
     ports:
       - "3001:3000"
     volumes:
