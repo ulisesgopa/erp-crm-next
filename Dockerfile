@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY .env .env.local ./ 
+COPY .env ./
+COPY .env.local ./ 
 
 FROM node:20.9.0-alpine AS BUILD_IMAGE
 
