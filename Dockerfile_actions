@@ -13,10 +13,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 COPY .env /app/.env
-RUN echo GOOGLE_ID: "Just_for_build" >> /app/.env.local
-RUN echo GOOGLE_SECRET: "Just_for_build" >> /app/.env.local
-RUN echo GITHUB_ID: "Just_for_build" >> /app/.env.local
-RUN echo GITHUB_SECRET: "Just_for_build" >> /app/.env.local
+RUN echo GOOGLE_ID: "171146354208-32fdcetgcqug3rva8tv0e3ttul7nk0mt.apps.googleusercontent.com" >> /app/.env.local
+RUN echo GOOGLE_SECRET: "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" >> /app/.env.local
+RUN echo GITHUB_ID: "e9b6b494605ce44efd4d" >> /app/.env.local
+RUN echo GITHUB_SECRET: "02ccd4fc29f990b4a22a123a65c24aab2ec0d7a1" >> /app/.env.local
 RUN  npx prisma generate && npm run build
 
 RUN rm -fr /app/.env
