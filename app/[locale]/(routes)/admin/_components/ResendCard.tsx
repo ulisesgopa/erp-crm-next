@@ -46,8 +46,8 @@ const ResendCard = async () => {
           serviceKey: parsed.serviceKey,
         },
       });
+      revalidatePath("/admin");
     }
-    revalidatePath("/admin");
   };
 
   const resend_key = await prismadb.systemServices.findFirst({
