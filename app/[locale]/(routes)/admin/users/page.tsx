@@ -1,7 +1,7 @@
 import { getUsers } from "@/actions/get-users";
 import React from "react";
 import Container from "../../components/ui/Container";
-import { InviteForm } from "./components/IviteForm";
+import { InviteForm } from "./components/InviteForm";
 import { Separator } from "@/components/ui/separator";
 
 import { getServerSession } from "next-auth";
