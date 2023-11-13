@@ -43,7 +43,7 @@ import {
         <Preview>{previewText}</Preview>
         <Tailwind>
           <Body className="bg-white my-auto mx-auto font-sans">
-            <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
+            <Container className="border border-solid border-slate-300 rounded-md my-[40px] mx-auto p-[20px] w-[465px]">
               <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
                 {userLanguage === "en"
                   ? "You have been invited to cooperate on something special"
@@ -84,7 +84,7 @@ import {
   
               <Section className="text-center mt-[32px] mb-[32px]">
                 <Button
-                  className="bg-[#000000] rounded text-white text-[12px] font-semibold no-underline text-center"
+                  className="bg-slate-800 rounded-md text-white  py-3 px-4 text-[12px] font-semibold no-underline text-center"
                   href={process.env.NEXT_PUBLIC_APP_URL}
                 >
                   {userLanguage === "en" ? "Join the team" : "Verbinden"}
@@ -103,14 +103,13 @@ import {
                 </Link>
               </Text>
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
-              <Text className="text-[#666666] text-[12px] leading-[24px]">
+              <Text className="text-slate-500 text-muted-foreground text-[12px] leading-[24px]">
                 {userLanguage === "en"
-                  ? `This invitation was intended for`
-                  : `Diese Einladung richtete sich an`}
-                <span className="text-black">{username} </span>.
-                <span className="text-black"></span>.
+                ? `This invitation was intended for `
+                : `Diese Einladung richtete sich an `}
+              <span className="text-black">{username}. </span>
                 {userLanguage === "en"
-                  ? "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account&apos;s safety, please reply to this email to get in touch with us."
+                  ? "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us."
                   : "Wenn Sie diese Einladung nicht erwartet haben, können Sie diese E-Mail ignorieren. Wenn Sie Bedenken hinsichtlich der Sicherheit Ihres Kontos haben, antworten Sie bitte auf diese E-Mail, um mit uns in Kontakt zu treten."}
               </Text>
             </Container>
