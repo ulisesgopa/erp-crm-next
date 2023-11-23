@@ -1,7 +1,7 @@
 {
   "RootLayout": {
     "title": "SaasHQ",
-    "description": "Vítejte v SaasHQ CRM/ERP s Prisma a Next.js 13"
+    "description": "SaasHQ je open source CRM vytvořené na frameworku NextJS."
   },
   "RegisterComponent": {
     "cardTitle": "Vytvořit nový účet",

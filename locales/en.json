@@ -1,7 +1,7 @@
 {
   "RootLayout": {
     "title": "SaasHQ",
-    "description": "Welcome to SaasHQ CRM/ERP with Prisma and Next.js 13"
+    "description": "SaasHQ is an open source CRM build on top of NextJS."
   },
   "RegisterComponent": {
     "cardTitle": "Create new account",
