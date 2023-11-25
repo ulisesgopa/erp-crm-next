@@ -4,7 +4,7 @@
     "description": "SaasHQ ist ein Open-Source-CRM, das auf NextJS aufbaut."
   },
   "ModuleMenu": {
-    "dashboard": "Přehled",
+    "dashboard": "Armaturenbrett",
     "crm": {
       "title": "Handel",
       "accounts": "Firmen",
@@ -21,7 +21,7 @@
     "settings": "Einstellungen"
   },
   "DashboardPage": {
-    "containerTitle": "Dashboard",
+    "containerTitle": "Armaturenbrett",
     "totalRevenue": "Gesamtumsatz",
     "containerDescription": "Willkommen bei SaasHQ, hier können Sie alle wichtigen Informationen über Ihr Unternehmen sehen.",
     "expectedRevenue": "Erwarteter Umsatz",

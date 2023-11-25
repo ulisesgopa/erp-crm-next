@@ -550,6 +550,7 @@ model Users {
 }
 
 enum Language {
+  cz
   de
   en
 }
