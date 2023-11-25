@@ -31,7 +31,7 @@ export default async function RootLayout({
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <SideBar foo={0} />
+      <SideBar />
       <div className="flex flex-col h-full w-full overflow-hidden">
         <Header
           id={session.user.id as string}
