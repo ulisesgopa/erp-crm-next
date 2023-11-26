@@ -44,6 +44,7 @@ export async function POST(
       data: {
         comment: comment,
         task: taskId,
+        employeeID: session.user.id,
         user: session.user.id,
       },
     });

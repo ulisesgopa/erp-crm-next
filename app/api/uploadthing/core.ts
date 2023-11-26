@@ -42,6 +42,8 @@ export const ourFileRouter = {
           document_file_mimeType: `image/${file.name.split(".").pop()}`,
           createdBy: metadata.userId,
           assigned_user: metadata.userId,
+          localFile: file.url,
+          employeeID: metadata.userId,
         },
       });
 
@@ -93,6 +95,8 @@ export const ourFileRouter = {
           document_file_mimeType: "application/pdf",
           createdBy: metadata.userId,
           assigned_user: metadata.userId,
+          localFile: file.url,
+          employeeID: metadata.userId,          
         },
       });
     }),
@@ -125,6 +129,8 @@ export const ourFileRouter = {
           document_file_mimeType: "application/docs",
           createdBy: metadata.userId,
           assigned_user: metadata.userId,
+          localFile: file.url,
+          employeeID: metadata.userId,          
         },
       });
     }),

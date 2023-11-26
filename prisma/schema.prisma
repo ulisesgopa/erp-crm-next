@@ -380,14 +380,17 @@ model Documents {
   tasksIDs               String[]
   crm_accounts_tasksIDs  String?  
   leadsIDs               String[]
-  accountsIDs            String[]                                 
+  accountsIDs            String[]
+  localFile              String
+  employeeID             String                                 
   invoices               Invoices[]          
   opportunities          crm_Opportunities[]
   contacts               crm_Contacts[]        
   tasks                  Tasks[]
   crm_accounts_tasks     crm_Accounts_Tasks? @relation(fields: [crm_accounts_tasksIDs], references: [id])  
   leads                  crm_Leads[]
-  accounts               crm_Accounts[]                 
+  accounts               crm_Accounts[]  
+  employee               Employee            @relation(fields: [employeeID], references: [id])
   created_by             Users?              @relation(name: "created_by_user", fields: [created_by_user], references: [id])
   assigned_to_user       Users?              @relation(name: "assigned_to_user", fields: [assigned_user], references: [id])
   documents_type         Documents_Types?    @relation(fields: [document_type], references: [id])
@@ -486,9 +489,12 @@ model tasksComments {
   id                             String              @id @default(cuid())
   comment                        String
   createdAt                      DateTime            @default(now()) @db.Date
-  task                           String              
-  user                           String              
-  assigned_crm_account_task      String?             
+  task                           String
+  user                           String
+  employee                       Employee            @relation(fields: [employeeID], references: [id])
+  teamTasks                      TeamTask[]
+  employeeID                     String                
+  assigned_crm_account_task      String?
   assigned_crm_account_task_task crm_Accounts_Tasks? @relation(fields: [assigned_crm_account_task], references: [id])
   assigned_task                  Tasks?              @relation(fields: [task], references: [id], onDelete: Cascade)
   assigned_user                  Users?              @relation(fields: [user], references: [id])
@@ -546,7 +552,9 @@ model Users {
   watching_boardsIDs   String[]              
   watching_boards      Boards[]
   watching_accountsIDs String[]              
-  watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts") 
+  watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts")
+  role                 Role                  @default(guest)
+  employee             Employee?
 }
 
 enum Language {
@@ -596,4 +604,191 @@ model gpt_models {
 enum gptStatus {
   ACTIVE
   INACTIVE
+}
+
+// Employee section
+
+enum Role {
+  admin
+  user
+  guest
+}
+
+enum CompanyRole {
+  Admin
+  Employee
+  Manager
+}
+
+model Employee {
+  id          String        @id @default(uuid())
+  user        Users         @relation(fields: [userID], references: [id])
+  userID      String        @unique
+  firstName   String
+  lastName    String
+  email       String        @unique
+  phone       String        @unique
+  role        CompanyRole   @default(Employee)
+  position    String?
+  salary      Float
+  onBoarding  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  IBAN        String
+  photo       String?
+  taxid       String?
+  address     String?
+  insurance   String?
+  timekeeping timekeeping[]
+
+  Schedule    Schedule[]
+  Documents   Documents[]
+  Training    Training[]
+  PaySlip     PaySlip[]
+  PaySlipData PaySlipData[]
+  Request     Request[]
+  Teams       Teams?          @relation(fields: [teamsId], references: [id])
+  teamsId     String?
+
+  sent         Message[]      @relation("sender")
+  from         Message[]      @relation("receiver")
+  TeamMessage  TeamMessage[]  @relation("sender")
+  Comments     tasksComments[]
+}
+
+model Teams {
+  id          String        @id @default(uuid())
+  name        String
+  tasks       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  members     Employee[]
+  TeamMessage TeamMessage[] @relation("receiver")
+  TeamTask    TeamTask[]
+}
+
+model timekeeping {
+  id         String    @id @default(uuid())
+  employee   Employee  @relation(fields: [employeeID], references: [id])
+  employeeID String
+  timeIn     DateTime
+  timeOut    DateTime?
+  verified   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model TeamTask {
+  id           String         @id @default(uuid())
+  team         Teams          @relation(fields: [teamID], references: [id], onDelete: Cascade)
+  teamID       String
+  task         String
+  description  String?
+  done         Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deadline     DateTime
+  TaskComments tasksComments[]
+}
+
+model Schedule {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeID], references: [id])
+  employeeID String
+  date       DateTime
+  timeIn     DateTime
+  timeOut    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum Document {
+  ID
+  Passport
+  Visa
+  Insurance
+  Health
+  Contract
+  Certificate
+  Other
+}
+
+model Training {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeID], references: [id])
+  employeeID String
+  type       String
+  date       DateTime
+  time       DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  localFile  String
+}
+
+model PaySlip {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeID], references: [id])
+  employeeID String
+  month      DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  localFile  String
+}
+
+model PaySlipData {
+  id         String   @id @default(uuid())
+  employee   Employee @relation(fields: [employeeID], references: [id])
+  employeeID String
+  hours      Float
+  rate       Float
+  deduction  Float
+  IBAN       String
+  month      DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Request {
+  id         String      @id @default(uuid())
+  employee   Employee    @relation(fields: [employeeID], references: [id])
+  employeeID String
+  type       RequestType
+  approved   Boolean     @default(false)
+  message    String
+  date       DateTime
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+enum RequestType {
+  Documents
+  Vacation
+  Leave
+  Training
+  Raise
+  Department
+  Other
+  Sick
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  from      Employee @relation("sender", fields: [fromID], references: [id])
+  fromID    String
+  to        Employee @relation("receiver", fields: [toID], references: [id])
+  toID      String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TeamMessage {
+  id        String   @id @default(uuid())
+  from      Employee @relation("sender", fields: [fromID], references: [id])
+  fromID    String
+  to        Teams    @relation("receiver", fields: [toID], references: [id])
+  toID      String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
