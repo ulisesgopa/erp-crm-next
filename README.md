@@ -22,7 +22,7 @@ Resend.com - together with react.email </br>
 
 1. More AI powered - daily summary of tasks and project (OpenAI integration ) - in test
 2. Email campaigns management - integration to MailChimp and Listmonk - in planning
-3. Docker version - in planning (There will be complete bundle to run NextCRM on-premise)
+3. Docker version - in planning (There will be complete bundle to run SaasHQ on-premise)
 4. Testing - Jest + Cypress - integrated
 5. Fix all Types issues ( no more "any" types ) - in progress
 6. i18n - localization - integrated
