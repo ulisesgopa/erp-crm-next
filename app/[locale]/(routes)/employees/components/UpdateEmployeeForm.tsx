@@ -28,57 +28,67 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { Switch } from "@/components/ui/switch";
-import useDebounce from "@/hooks/useDebounce";
+import fetcher from "@/lib/fetcher";
+import useSWR from "swr";
+import SuspenseLoading from "@/components/loadings/suspense";
 
 //TODO: fix all the types
 type NewTaskFormProps = {
-  users: any[];
-  accounts: any[];
+  initialData: any;
+  setOpen: (value: boolean) => void;  
 };
 
-export function NewContactForm({ users, accounts }: NewTaskFormProps) {
+export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const debounceSearchTerm = useDebounce(searchTerm, 1000);
-
-  const filteredData = users.filter((item) =>
-    item.name.toLowerCase().includes(debounceSearchTerm.toLowerCase())
-  );
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { data: accounts, isLoading: isLoadingAccounts } = useSWR(
+    "/api/crm/account",
+    fetcher
+  );
+
+  const { data: users, isLoading: isLoadingUsers } = useSWR(
+    "/api/user",
+    fetcher
+  );
+
+  const [searchTerm, setSearchTerm] = useState("");
+
   const formSchema = z.object({
+    id: z.string().min(5).max(30),
     birthday_year: z.string().optional().nullable(),
     birthday_month: z.string().optional().nullable(),
     birthday_day: z.string().optional().nullable(),
-    first_name: z.string().optional(),
+    first_name: z.string().nullable().optional(),
     last_name: z.string(),
-    description: z.string().optional(),
+    description: z.string().nullable().optional(),
     email: z.string(),
-    personal_email: z.string().optional(),
-    office_phone: z.string().optional(),
-    mobile_phone: z.string().optional(),
-    website: z.string().optional(),
-    position: z.string().optional(),
+    personal_email: z.string().nullable().optional(),
+    office_phone: z.string().nullable().optional(),
+    mobile_phone: z.string().nullable().optional(),
+    website: z.string().nullable().optional(),
+    position: z.string().nullable().optional(),
     status: z.boolean(),
     type: z.string(),
     assigned_to: z.string(),
-    assigned_account: z.string().optional(),
-    social_twitter: z.string().optional(),
-    social_facebook: z.string().optional(),
-    social_linkedin: z.string().optional(),
-    social_skype: z.string().optional(),
-    social_youtube: z.string().optional(),
-    social_tiktok: z.string().optional(),
+    accountsIDs: z.string().nullable().optional(),
+    assigned_account: z.string().nullable().optional(),
+    social_twitter: z.string().nullable().optional(),
+    social_facebook: z.string().nullable().optional(),
+    social_linkedin: z.string().nullable().optional(),
+    social_skype: z.string().nullable().optional(),
+    social_youtube: z.string().nullable().optional(),
+    social_tiktok: z.string().nullable().optional(),
   });
 
   type NewAccountFormValues = z.infer<typeof formSchema>;
 
-  const form = useForm<NewAccountFormValues>({
+  //TODO: fix this any
+  const form = useForm<any>({
     resolver: zodResolver(formSchema),
+    defaultValues: initialData,
   });
 
   const contactType = [
@@ -87,21 +97,13 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
     { name: "Vendor", id: "Vendor" },
   ];
 
-  const yearArray = Array.from(
-    //start in 1923 and count to +100 years
-    { length: 100 },
-    (_, i) => i + 1923
-  );
-
   const onSubmit = async (data: NewAccountFormValues) => {
-    console.log(data);
-    alert(data);
     setIsLoading(true);
     try {
-      await axios.post("/api/crm/contacts", data);
+      await axios.put("/api/crm/contacts", data);
       toast({
         title: "Success",
-        description: "Contact created successfully",
+        description: "Contact updated successfully",
       });
     } catch (error: any) {
       toast({
@@ -111,44 +113,46 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
       });
     } finally {
       setIsLoading(false);
-      form.reset({
-        first_name: "",
-        last_name: "",
-        description: "",
-        email: "",
-        personal_email: "",
-        office_phone: "",
-        mobile_phone: "",
-        website: "",
-        position: "",
-        status: false,
-        type: "",
-        assigned_to: "",
-        assigned_account: "",
-        social_twitter: "",
-        social_facebook: "",
-        social_linkedin: "",
-        social_skype: "",
-        social_youtube: "",
-        social_tiktok: "",
-        birthday_year: "",
-        birthday_month: "",
-        birthday_day: "",
-      });      
       router.refresh();
+      setOpen(false);
     }
   };
 
-  //console.log(filteredData, "filteredData");
+  if (isLoadingUsers || isLoadingAccounts)
+    return (
+      <div>
+        <SuspenseLoading />
+      </div>
+    );
 
+  const yearArray = Array.from(
+    //start in 1923 and count to +100 years
+    { length: 100 },
+    (_, i) => i + 1923
+  );
+
+  const filteredData = users.filter((item: any) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (!users || !accounts || !initialData)
+    return <div>Something went wrong, there is no data for form</div>;
+
+  //console.log(accounts, "accounts");
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full px-10">
-        {/*        <div>
+        {/*    <div>
           <pre>
-            <code>{JSON.stringify(form.formState, null, 2)}</code>
-            <code>{JSON.stringify(form.watch(), null, 2)}</code>
             <code>{JSON.stringify(form.formState.errors, null, 2)}</code>
+          </pre>
+        </div> */}
+        {/*     <pre>
+          <code>{JSON.stringify(initialData, null, 2)}</code>
+        </pre> */}
+        {/*   <div>
+          <pre>
+            <code>{JSON.stringify(form.watch(), null, 2)}</code>
           </pre>
         </div> */}
         <div className=" w-[800px] text-sm">
@@ -275,7 +279,7 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                     <div className="flex space-x-2 w-32">
                       <Select onValueChange={field.onChange}>
                         <SelectTrigger>Year</SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="flex overflow-y-auto h-56">
                           {yearArray.map((yearOption) => (
                             <SelectItem
                               key={yearOption}
@@ -346,7 +350,6 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 )}
               />
             </div>
-
             <FormField
               control={form.control}
               name="description"
@@ -382,13 +385,21 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="h-96 overflow-y-auto">
+                          {/*                {
+                            //TODO: fix this
+                            users.map((user: any) => (
+                              <SelectItem key={user.id} value={user.id}>
+                                {user.name}
+                              </SelectItem>
+                            ))
+                          } */}
                           <Input
                             type="text"
                             placeholder="Search in users ..."
                             onChange={(e) => setSearchTerm(e.target.value)}
                           />
-                          {filteredData.map((item, index) => (
-                            <SelectItem key={index} value={item.id}>
+                          {filteredData.map((item: any) => (
+                            <SelectItem key={item.id} value={item.id}>
                               {item.name}
                             </SelectItem>
                           ))}
@@ -414,11 +425,14 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="flex overflow-y-auto h-56">
-                          {accounts.map((account) => (
-                            <SelectItem key={account.id} value={account.id}>
-                              {account.name}
-                            </SelectItem>
-                          ))}
+                          {
+                            //TODO: fix this
+                            accounts.map((account: any) => (
+                              <SelectItem key={account.id} value={account.id}>
+                                {account.name}
+                              </SelectItem>
+                            ))
+                          }
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -603,7 +617,7 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 Saving data ...
               </span>
             ) : (
-              "Create contact"
+              "Update contact"
             )}
           </Button>
         </div>

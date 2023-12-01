@@ -16,9 +16,7 @@ type Props = {};
 const ProjectsView = async (props: Props) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user.id;
-
   const users = await getActiveUsers();
-
   const boards: any = await getBoards(userId!);
 
   return (
