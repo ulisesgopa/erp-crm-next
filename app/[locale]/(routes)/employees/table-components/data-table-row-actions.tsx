@@ -35,7 +35,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter();
-  const contact = opportunitySchema.parse(row.original);
+  const employee = opportunitySchema.parse(row.original);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export function DataTableRowActions<TData>({
   const onDelete = async () => {
     setLoading(true);
     try {
-      await axios.delete(`/api/crm/contacts/${contact?.id}`);
+       await axios.delete(`/api/employee/${employee?.id}`);
       toast({
         title: "Success",
         description: "Opportunity has been deleted",
@@ -75,13 +75,13 @@ export function DataTableRowActions<TData>({
       />
       <RightViewModalNoTrigger
         title={
-          "Update Contact" +
+          "Update Employee" +
           " - " +
-          contact?.first_name +
+          employee?.firstName +
           " " +
-          contact?.last_name
+          employee?.lastName 
         }
-        description="Update contact details"
+        description="Update employee details"
         open={updateOpen}
         setOpen={setUpdateOpen}
       >
@@ -99,7 +99,7 @@ export function DataTableRowActions<TData>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem
-            onClick={() => router.push(`/crm/contacts/${contact?.id}`)}
+            onClick={() => router.push(`/employee/${employee?.id}`)}
           >
             View
           </DropdownMenuItem>

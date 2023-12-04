@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
   const body = await req.json();
-  console.log("🚀 ~ file: route.ts:10 ~ POST ~ body:", body)
+  //console.log("🚀 ~ file: route.ts:10 ~ POST ~ body:", body)
 
   const { firstName, lastName, email, phone, salary, onBoarding, IBAN , address , assigned_to } = body;
 
@@ -43,4 +43,50 @@ export async function POST(req: Request) {
   }
 
  // return new NextResponse("Initial error");
+}
+
+
+//Update route
+export async function PUT(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return new NextResponse("Unauthenticated", { status: 401 });
+  }
+  try {
+    const body = await req.json();
+    const userId = session.user.id;
+
+    if (!body) {
+      return new NextResponse("No form data", { status: 400 });
+    }
+
+    const {
+      id,
+      assigned_account,
+      firstName,
+      lastName,
+   
+    } = body;
+
+    console.log(assigned_account, "assigned_account");
+
+    const newContact = await prismadb.employee.update({
+      where: {
+        id,
+      },
+      data: {
+           
+        firstName,
+        lastName,
+       
+      },
+    });
+
+   
+
+    return NextResponse.json({ newContact }, { status: 200 });
+  } catch (error) {
+    console.log("UPDATE_EMPLOYEE_PUT]", error);
+    return new NextResponse("Initial error", { status: 500 });
+  }
 }

@@ -99,12 +99,8 @@ export const columns: ColumnDef<Opportunity>[] = [
     enableHiding: true,
   },
  
-
-  
-
- 
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
+  {
+    id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+  },
 ];

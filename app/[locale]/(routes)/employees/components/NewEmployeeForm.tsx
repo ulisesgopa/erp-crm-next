@@ -67,19 +67,7 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     address: z.string().min(3).max(250).optional(),
     insurance: z.string().min(3).max(50).optional(),
     assigned_to: z.string(),
-    // timekeeping: z.string().min(3).max(250),
-    // Schedule: z.string(),
-    // Documents: z.string(),
-    // Training: z.string(),
-    // PaySlip: z.string(),
-    // PaySlipData: z.string(),
-    // Request: z.string(),
-    // Teams: z.string(),
-    // teamsId: z.string(),
-    // sent: z.string(),
-    // from: z.string(),
-    // TeamMessage: z.string(),
-    // Comments: z.string(),
+  
   });
 
   type NewAccountFormValues = z.infer<typeof formSchema>;
