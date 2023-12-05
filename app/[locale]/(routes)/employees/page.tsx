@@ -10,7 +10,7 @@ import { getEmployee } from "@/actions/get-empoloyee";
 const CrmPage = async (props: any) => {
   const crmData = await getAllCrmData();
   const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
+ // const userId = session?.user.id;
   const employee = await getEmployee();
 
   return (

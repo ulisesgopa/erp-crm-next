@@ -44,15 +44,11 @@ type NewTaskFormProps = {
 };
 
 export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
+  console.log("🚀  file: UpdateEmployeeForm.tsx:47  UpdateEmployeeForm ~ initialData:", initialData)
   const router = useRouter();
   const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // const { data: accounts, isLoading: isLoadingAccounts } = useSWR(
-  //   "/api/crm/account",
-  //   fetcher
-  // );
 
   const { data: users, isLoading: isLoadingUsers } = useSWR(
     "/api/user",
@@ -67,16 +63,12 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     lastName: z.string().min(3).max(50),
     email: z.string().email(),
     phone: z.string().optional(),
-    position: z.string().optional(),  
+    position: z.string().optional(),
     IBAN: z.string().min(3).max(50),
-    photo: z.string().min(3).optional(),
     taxid: z.string().min(2).max(30).optional(),
     address: z.string().min(3).max(250).optional(),
     insurance: z.string().min(3).max(50).optional(),
-    assigned_to: z.string(),
-
-
-
+    salary: z.number().optional(),
 
   });
 
@@ -88,35 +80,25 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     defaultValues: initialData,
   });
 
-  const contactType = [
-    { name: "Customer", id: "Customer" },
-    { name: "Partner", id: "Partner" },
-    { name: "Vendor", id: "Vendor" },
-  ];
-
   const onSubmit = async (data: NewAccountFormValues) => {
-    console.log("🚀 ~ file: UpdateEmployeeForm.tsx:98 ~ onSubmit ~ data:", data);
-    
     setIsLoading(true);
-
- 
-    // try {
-    //   await axios.put("/api/employee", data);
-    //   toast({
-    //     title: "Success",
-    //     description: "Employee updated successfully",
-    //   });
-    // } catch (error: any) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Error",
-    //     description: error?.response?.data,
-    //   });
-    // } finally {
-    //   setIsLoading(false);
-    //   router.refresh();
-    //   setOpen(false);
-    //}
+    try {
+      await axios.put("/api/employee", data);
+      toast({
+        title: "Success",
+        description: "Employee updated successfully",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data,
+      });
+    } finally {
+      setIsLoading(false);
+      router.refresh();
+      setOpen(false);
+    }
   };
 
   if (isLoadingUsers)
@@ -156,6 +138,23 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
             <code>{JSON.stringify(form.watch(), null, 2)}</code>
           </pre>
         </div> */}
+        <FormField
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  disabled={isLoading}
+                  placeholder="Matt"
+                  type="hidden"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className=" w-[800px] text-sm">
           <div className="pb-5 space-y-2">
             <div className="flex gap-5 pb-5">
@@ -206,7 +205,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Office phone</FormLabel>
+                      <FormLabel>Phone</FormLabel>
                       <FormControl>
                         <Input
                           disabled={isLoading}
@@ -260,10 +259,29 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                   )}
                 />
               </div>
-             
+              <div className="w-1/2 space-y-2">
+                <FormField
+                  control={form.control}
+                  name="salary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salary</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="3500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
             </div>
 
-            
+
           </div>
 
           <div className="flex gap-5 pb-5">
@@ -286,8 +304,8 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                 )}
               />
             </div>
-            
-            <div className="w-1/2 space-y-2">
+
+            {/* <div className="w-1/2 space-y-2">
             <FormField
                   control={form.control}
                   name="assigned_to"
@@ -320,7 +338,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                     </FormItem>
                   )}
                 />
-            </div>
+            </div> */}
           </div>
 
           <div className="flex gap-5 pb-5">
@@ -344,7 +362,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
               />
             </div>
             <div className="w-1/2 space-y-2">
-            <FormField
+              <FormField
                 control={form.control}
                 name="insurance"
                 render={({ field }) => (
@@ -388,13 +406,13 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
 
         </div>
         <div className="grid gap-2 py-5">
-          <Button  type="submit">
+          <Button type="submit">
             {isLoading ? (
               <span className="flex items-center animate-pulse">
                 Saving data ...
               </span>
             ) : (
-              "Update employee 1"
+              "Update Employee"
             )}
           </Button>
         </div>

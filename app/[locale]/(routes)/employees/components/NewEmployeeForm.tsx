@@ -1,6 +1,6 @@
 "use client";
 
-import { z } from "zod";
+import { number, z } from "zod";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -59,7 +59,7 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     email: z.string().email(),
     phone: z.string().optional(),
     position: z.string().optional(),
-    salary: z.string().optional(),
+    salary: z.number().multipleOf(0.01),
     onBoarding: z.date().default(new Date()).optional(),
     IBAN: z.string().min(3).max(50),
     photo: z.string().min(3).optional(),

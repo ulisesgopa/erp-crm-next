@@ -16,7 +16,7 @@ export async function DELETE(
   }
 
   if (!params.employeeId) {
-    return new NextResponse("contact ID is required", { status: 400 });
+    return new NextResponse("Employee ID is required", { status: 400 });
   }
 
   try {
@@ -26,7 +26,7 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json({ message: "employee deleted" }, { status: 200 });
+    return NextResponse.json({ message: "Employee Deleted" }, { status: 200 });
   } catch (error) {
     console.log("[CONTACT_DELETE]", error);
     return new NextResponse("Initial error", { status: 500 });
