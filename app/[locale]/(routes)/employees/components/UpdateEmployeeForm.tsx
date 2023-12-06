@@ -44,7 +44,6 @@ type NewTaskFormProps = {
 };
 
 export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
-  console.log("🚀  file: UpdateEmployeeForm.tsx:47  UpdateEmployeeForm ~ initialData:", initialData)
   const router = useRouter();
   const { toast } = useToast();
 
@@ -68,7 +67,9 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     taxid: z.string().min(2).max(30).optional(),
     address: z.string().min(3).max(250).optional(),
     insurance: z.string().min(3).max(50).optional(),
-    salary: z.number().optional(),
+    salary: z.string().transform((val) => {     
+      return Number(val)
+    }),
 
   });
 

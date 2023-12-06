@@ -5,16 +5,8 @@ import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import RightViewModal from "@/components/modals/right-view-modal";
-
-
 import { useRouter } from "next/navigation";
-import { NewEmployeeForm } from "./NewEmployeeForm";
 import { EmployeeDataTable } from "../table-components/data-table";
 import EmployeeHeader from "./empHeader";
 import { columns } from "../table-components/columns";

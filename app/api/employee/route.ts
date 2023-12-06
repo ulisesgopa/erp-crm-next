@@ -10,8 +10,7 @@ export async function POST(req: Request) {
   //console.log("🚀 ~ file: route.ts:10 ~ POST ~ body:", body)
 
   const { firstName, lastName, email, phone, salary, onBoarding, IBAN, address, assigned_to } = body;
-
-  const salarynew = +salary
+ 
 
   if (!session) {
     return new NextResponse("Unauthenticated", { status: 401 });
@@ -31,7 +30,7 @@ export async function POST(req: Request) {
     const newBoard = await prismadb.employee.create({
       data: {
         userID: assigned_to,
-        firstName: firstName, lastName, email, phone, salary: salarynew, onBoarding, IBAN, address
+        firstName: firstName, lastName, email, phone, salary, onBoarding, IBAN, address
       },
     });
 

@@ -59,7 +59,9 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     email: z.string().email(),
     phone: z.string().optional(),
     position: z.string().optional(),
-    salary: z.number().multipleOf(0.01),
+    salary: z.string().transform((val) => {     
+      return Number(val)
+    }),
     onBoarding: z.date().default(new Date()).optional(),
     IBAN: z.string().min(3).max(50),
     photo: z.string().min(3).optional(),
@@ -222,8 +224,7 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                         <Input
                           disabled={isLoading}
                           placeholder="3500"
-                          {...field}
-                       
+                          {...field}                       
                         />
                       </FormControl>
                       <FormMessage />
