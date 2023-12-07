@@ -33,7 +33,7 @@ import useSWR from "swr";
 import SuspenseLoading from "@/components/loadings/suspense";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "util";
+import { format } from "date-fns";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -66,6 +66,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     IBAN: z.string().min(3).max(50),
     taxid: z.string().min(2).max(30).optional(),
     address: z.string().min(3).max(250).optional(),
+    onBoarding: z.date().default(new Date()).optional(),
     insurance: z.string().min(3).max(50).optional(),
     salary: z.string().transform((val) => {     
       return Number(val)
@@ -306,40 +307,50 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
               />
             </div>
 
-            {/* <div className="w-1/2 space-y-2">
+            <div className="w-1/2 space-y-2">
             <FormField
-                  control={form.control}
-                  name="assigned_to"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Assigned user</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Choose an user " />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="h-96 overflow-y-auto">
-                          <Input
-                            type="text"
-                            placeholder="Search in users ..."
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                          />
-                          {filteredData?.map((item:any, index:any) => (
-                            <SelectItem key={index} value={item.id}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-            </div> */}
+              control={form.control}
+              name="onBoarding"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>onBoarding</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field?.value, "PPP")
+                          ) : (
+                            <span>Pick a expected close date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        //@ts-ignore
+                        //TODO: fix this
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date("1900-01-01")}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+           
+            </div>
           </div>
 
           <div className="flex gap-5 pb-5">
@@ -384,7 +395,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
           </div>
 
           <div className="flex gap-5 pb-5">
-            <div className="w-1/2 space-y-2">
+            <div className="w-full space-y-2">
               <FormField
                 control={form.control}
                 name="address"

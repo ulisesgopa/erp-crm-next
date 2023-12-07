@@ -62,12 +62,13 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     salary: z.string().transform((val) => {     
       return Number(val)
     }),
-    onBoarding: z.date().default(new Date()).optional(),
+    
     IBAN: z.string().min(3).max(50),
     photo: z.string().min(3).optional(),
     taxid: z.string().min(2).max(30).optional(),
     address: z.string().min(3).max(250).optional(),
     insurance: z.string().min(3).max(50).optional(),
+    onBoarding: z.date().default(new Date()).optional(),
     assigned_to: z.string(),
   
   });

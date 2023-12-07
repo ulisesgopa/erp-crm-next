@@ -13,6 +13,7 @@ import {
 
 import Link from "next/link";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
+import moment from "moment";
 interface OppsViewProps {
   data: any;
 }
@@ -24,7 +25,7 @@ export async function BasicView({ data }: OppsViewProps) {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle>
-            {data.firstName} {data.lastName}
+            {data.firstName} {data.lastName} 
           </CardTitle>
           <CardDescription>ID:{data.id}</CardDescription>
         </CardHeader>
@@ -55,8 +56,8 @@ export async function BasicView({ data }: OppsViewProps) {
                   <p className="text-sm font-medium leading-none">
                     onBoarding
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    {/* {data.onBoarding ? data.onBoarding : "N/A"} */}
+                  <p className="text-sm text-muted-foreground">                  
+                    {moment(data.onBoarding).format("MMM DD YYYY")}
                   </p>
                 </div>
               </div>
@@ -78,7 +79,7 @@ export async function BasicView({ data }: OppsViewProps) {
                 <div className="space-y-1">
                   <p className="text-sm font-medium leading-none">Created</p>
                   <p className="text-sm text-muted-foreground">
-                    {/* {moment(data.createdAt).format("MMM DD YYYY")} */}
+                    {moment(data.createdAt).format("MMM DD YYYY")}
                   </p>
                 </div>
 
