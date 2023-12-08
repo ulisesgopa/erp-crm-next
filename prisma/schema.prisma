@@ -223,15 +223,6 @@ model Boards {
   watchers_users    Users[]   
 }
 
-model Employees {
-  id     String  @id @default(cuid())
-  avatar String
-  email  String?
-  name   String
-  salary Int
-  status String
-}
-
 model ImageUpload {
   id String @id @default(cuid())
 }

@@ -58,12 +58,15 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        //clear white space from password
+        const trimmedPassword = credentials.password.trim();        
+
         if (!user || !user?.password) {
           throw new Error("Email or password is missing");
         }
 
         const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
+          trimmedPassword,
           user.password
         );
 
