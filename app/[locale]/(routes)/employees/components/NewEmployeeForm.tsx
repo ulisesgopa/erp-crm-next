@@ -86,7 +86,7 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
       await axios.post("/api/employee", data);
       toast({
         title: "Success",
-        description: "Account created successfully",
+        description: "Employee created successfully",
       });
     } catch (error) {
       toast({

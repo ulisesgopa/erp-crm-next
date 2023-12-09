@@ -7,11 +7,7 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
   const body = await req.json();
-  //console.log("🚀 ~ file: route.ts:10 ~ POST ~ body:", body)
-
   const { firstName, lastName, email, phone, salary, onBoarding, IBAN, address, assigned_to } = body;
- 
-
   if (!session) {
     return new NextResponse("Unauthenticated", { status: 401 });
   }
@@ -37,7 +33,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ newBoard }, { status: 200 });
   } catch (error) {
-    console.log("[NEW_BOARD_POST]", error);
+    console.log("[NEW_EMPLYEE_POST]", error);
     return new NextResponse("Initial error", { status: 500 });
   }
 

@@ -28,7 +28,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Employee Deleted" }, { status: 200 });
   } catch (error) {
-    console.log("[CONTACT_DELETE]", error);
+    console.log("[EMPLOYEE_DELETE]", error);
     return new NextResponse("Initial error", { status: 500 });
   }
 }
