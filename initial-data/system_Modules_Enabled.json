@@ -1,0 +1,83 @@
+[
+    {
+      "name": "crm",
+      "enabled": true,
+      "icon": "userGroup",
+      "open": "open",
+      "route": "/crm",
+      "menuItem": "CRM",
+      "position": 1
+    },
+    {
+      "name": "projects",
+      "enabled": true,
+      "icon": "server",
+      "open": "open",
+      "route": "/projects",
+      "menuItem": "Projects",
+      "position": 2
+    },
+    {
+      "name": "secondBrain",
+      "enabled": true,
+      "icon": "lightBulb",
+      "open": "open",
+      "route": "/secondBrain",
+      "menuItem": "SecondBrain",
+      "position": 3
+    },
+    {
+      "name": "employee",
+      "enabled": false,
+      "icon": "user",
+      "open": "open",
+      "route": "/employees",
+      "menuItem": "Employees",
+      "position": 4
+    },
+    {
+      "name": "invoice",
+      "enabled": true,
+      "icon": "documentCheck",
+      "open": "open",
+      "route": "/invoice",
+      "menuItem": "Invoices",
+      "position": 5
+    },
+    {
+      "name": "reports",
+      "enabled": true,
+      "icon": "documentChart",
+      "open": "open",
+      "route": "/reports",
+      "menuItem": "Reports",
+      "position": 6
+    },
+    {
+      "name": "documents",
+      "enabled": true,
+      "icon": "document",
+      "open": "open",
+      "route": "/documents",
+      "menuItem": "Documents",
+      "position": 7
+    },
+    {
+      "name": "databox",
+      "enabled": false,
+      "icon": "clipBoardDocument",
+      "open": "open",
+      "route": "/databox",
+      "menuItem": "Databoxes",
+      "position": 8
+    },
+    {
+      "name": "openai",
+      "enabled": true,
+      "icon": "academicCap",
+      "open": "open",
+      "route": "/openAi",
+      "menuItem": "ChatGPT",
+      "position": 10
+    }
+  ]
