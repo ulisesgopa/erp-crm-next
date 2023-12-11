@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { opportunitySchema } from "../table-data/schema";
+import { employeeSchema } from "../table-data/schema";
 import { useRouter } from "next/navigation";
 import AlertModal from "@/components/modals/alert-modal";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter();
-  const employee = opportunitySchema.parse(row.original);
+  const employee = employeeSchema.parse(row.original);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,14 +49,14 @@ export function DataTableRowActions<TData>({
        await axios.delete(`/api/employee/${employee?.id}`);
       toast({
         title: "Success",
-        description: "Opportunity has been deleted",
+        description: "Employee has been deleted",
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
         description:
-          "Something went wrong while deleting opportunity. Please try again.",
+          "Something went wrong while deleting employee. Please try again.",
       });
     } finally {
       setLoading(false);

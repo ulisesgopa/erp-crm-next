@@ -160,7 +160,7 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 <FormItem>
                   <FormLabel>First name</FormLabel>
                   <FormControl>
-                    <Input disabled={isLoading} placeholder="John" {...field} />
+                    <Input disabled={isLoading} placeholder="Ian" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -173,7 +173,7 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 <FormItem>
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
-                    <Input disabled={isLoading} placeholder="Doe" {...field} />
+                    <Input disabled={isLoading} placeholder="Curtis" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,7 +196,6 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="office_phone"

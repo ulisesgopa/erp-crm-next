@@ -68,10 +68,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     address: z.string().min(3).max(250).optional(),
     onBoarding: z.date().default(new Date()).optional(),
     insurance: z.string().min(3).max(50).optional(),
-    salary: z.string().transform((val) => {     
-      return Number(val)
-    }),
-
+    salary: z.coerce.number().positive(),
   });
 
   type NewAccountFormValues = z.infer<typeof formSchema>;
@@ -199,7 +196,6 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                 />
               </div>
             </div>
-
             <div className="flex gap-5 pb-5">
               <div className="w-1/2 space-y-2">
                 <FormField
@@ -240,7 +236,6 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                 />
               </div>
             </div>
-
             <div className="flex gap-5 pb-5">
               <div className="w-1/2 space-y-2">
                 <FormField
@@ -280,12 +275,8 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                   )}
                 />
               </div>
-
             </div>
-
-
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-1/2 space-y-2">
               <FormField
@@ -306,7 +297,6 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                 )}
               />
             </div>
-
             <div className="w-1/2 space-y-2">
             <FormField
               control={form.control}
@@ -349,10 +339,8 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
                 </FormItem>
               )}
             />
-           
             </div>
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-1/2 space-y-2">
               <FormField
@@ -393,7 +381,6 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
               />
             </div>
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-full space-y-2">
               <FormField
@@ -415,7 +402,6 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
               />
             </div>
           </div>
-
         </div>
         <div className="grid gap-2 py-5">
           <Button type="submit">

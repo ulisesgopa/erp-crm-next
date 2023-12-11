@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
-export const opportunitySchema = z.object({
+export const employeeSchema = z.object({
   //TODO: fix all the types and nullable
   id: z.string(),
   firstName: z.string().nullable(),
@@ -13,4 +13,4 @@ export const opportunitySchema = z.object({
 
 });
 
-export type Opportunity = z.infer<typeof opportunitySchema>;
+export type Employee = z.infer<typeof employeeSchema>;

@@ -14,12 +14,13 @@ import {
 import Link from "next/link";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import moment from "moment";
+
 interface OppsViewProps {
   data: any;
 }
 
 export async function BasicView({ data }: OppsViewProps) {
-  if (!data) return <div>Opportunity not found</div>;
+  if (!data) return <div>Employee not found</div>;
   return (
     <div className="pb-3 space-y-5">
       <Card>
@@ -82,7 +83,6 @@ export async function BasicView({ data }: OppsViewProps) {
                     {moment(data.createdAt).format("MMM DD YYYY")}
                   </p>
                 </div>
-
               </div>
               <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
                 <CalendarDays className="mt-px h-5 w-5" />
@@ -96,7 +96,6 @@ export async function BasicView({ data }: OppsViewProps) {
                 </div>
               </div>
             </div>
-
             <div className="">
               <CardContent className="gap-1">
                 <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
@@ -113,7 +112,6 @@ export async function BasicView({ data }: OppsViewProps) {
                     ) : null}
                   </div>
                 </div>
-
                 <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">Phone</p>
@@ -122,7 +120,6 @@ export async function BasicView({ data }: OppsViewProps) {
                     </p>
                   </div>
                 </div>
-
                 <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">Address</p>

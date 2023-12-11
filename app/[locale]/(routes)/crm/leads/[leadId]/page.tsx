@@ -2,7 +2,6 @@ import { getLead } from "@/actions/crm/get-lead";
 import Container from "@/app/[locale]/(routes)/components/ui/Container";
 import React from "react";
 import { BasicView } from "./components/BasicView";
-import DocumentsView from "../../components/DocumentsView";
 
 interface LeadDetailPageProps {
   params: {

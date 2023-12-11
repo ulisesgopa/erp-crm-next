@@ -56,7 +56,6 @@ model crm_Accounts {
 
 model crm_Leads {
   id                 String        @id @default(cuid())
-
   createdAt          DateTime?     @default(now()) @db.Date
   createdBy          String?       
   updatedAt          DateTime?     @updatedAt @db.Date
@@ -536,7 +535,7 @@ model Users {
   created_by_user      crm_Opportunities[]   @relation(name: "created_by_user_relation")
   assigned_opportunity crm_Opportunities[]   @relation(name: "assigned_to_user_relation")
   assigned_contacts    crm_Contacts[]        @relation(name: "assigned_contacts")
-  crated_contacts      crm_Contacts[]        @relation(name: "created_contacts")
+  created_contacts     crm_Contacts[]        @relation(name: "created_contacts")
   notion_account       secondBrain_notions[]
   assigned_invoices    Invoices[]
   boards               Boards[]              @relation(name: "assigned_user")
@@ -545,7 +544,7 @@ model Users {
   watching_accountsIDs String[]              
   watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts")
   role                 Role                  @default(guest)
-  employee             Employee?
+  employee             Employee[]
 }
 
 enum Language {
@@ -612,25 +611,27 @@ enum CompanyRole {
 }
 
 model Employee {
-  id          String        @id @default(uuid())
-  user        Users         @relation(fields: [userID], references: [id])
-  userID      String        @unique
-  firstName   String
-  lastName    String
-  email       String        @unique
-  phone       String        @unique
-  role        CompanyRole   @default(Employee)
-  position    String?
-  salary      Float
-  onBoarding  DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  IBAN        String
-  photo       String?
-  taxid       String?
-  address     String?
-  insurance   String?
-  timekeeping timekeeping[]
+  id                 String        @id @default(uuid())
+  createdBy          String?       
+  updatedBy          String?   
+  firstName          String
+  lastName           String
+  email              String        @unique
+  phone              String        @unique
+  role               CompanyRole   @default(Employee)
+  position           String?
+  salary             Float         @default(0.00)
+  onBoarding         DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  IBAN               String
+  photo              String?
+  taxid              String?
+  address            String?
+  insurance          String?
+  assigned_to        String?       
+  assigned_to_user   Users?        @relation(fields: [assigned_to], references: [id])  
+  timekeeping        timekeeping[]
 
   Schedule    Schedule[]
   Documents   Documents[]

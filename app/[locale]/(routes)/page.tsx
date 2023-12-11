@@ -23,7 +23,7 @@ import {
   getUsersTasksCount,
 } from "@/actions/dashboard/get-tasks-count";
 import { getModules } from "@/actions/get-modules";
-import { getEmployees } from "@/actions/get-empoloyees";
+import { getEmployee } from "@/actions/get-employee";
 
 import { getLeadsCount } from "@/actions/dashboard/get-leads-count";
 import { getBoardsCount } from "@/actions/dashboard/get-boards-count";
@@ -53,7 +53,7 @@ const DashboardPage = async () => {
   const modules = await getModules();
   const leads = await getLeadsCount();
   const tasks = await getTasksCount();
-  const employees = await getEmployees();
+  const employees = await getEmployee();
   const storage = await getStorageSize();
   const projects = await getBoardsCount();
   const contacts = await getContactCount();
