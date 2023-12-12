@@ -7,7 +7,22 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
   const body = await req.json();
-  const { firstName, lastName, email, phone, salary, onBoarding, IBAN, address, assigned_to } = body;
+  const userId = session?.user.id;
+
+  const { 
+    firstName, 
+    lastName, 
+    email, 
+    position, 
+    phone, 
+    salary, 
+    onBoarding, 
+    IBAN,
+    taxid,
+    address,
+    insurance 
+  } = body;
+  
   if (!session) {
     return new NextResponse("Unauthenticated", { status: 401 });
   }
@@ -22,24 +37,31 @@ export async function POST(req: Request) {
 
   try {
 
-
-    const newBoard = await prismadb.employee.create({
+    const newEmployee = await prismadb.employee.create({
       data: {
-        userID: assigned_to,
-        firstName: firstName, lastName, email, phone, salary, onBoarding, IBAN, address
+        createdBy: userId,
+        updatedBy: userId,
+        firstName: firstName, 
+        lastName, 
+        email,
+        position,
+        phone, 
+        salary, 
+        onBoarding, 
+        IBAN,
+        taxid,
+        address,
+        insurance
       },
     });
 
-
-    return NextResponse.json({ newBoard }, { status: 200 });
+    return NextResponse.json({ newEmployee }, { status: 200 });
   } catch (error) {
-    console.log("[NEW_EMPLYEE_POST]", error);
+    console.log("[NEW_EMPLOYEE_POST]", error);
     return new NextResponse("Initial error", { status: 500 });
   }
 
-  // return new NextResponse("Initial error");
 }
-
 
 //Update route
 export async function PUT(req: Request) {
@@ -57,7 +79,6 @@ export async function PUT(req: Request) {
 
     const {
       id,
-      assigned_account,
       firstName,
       lastName,
       email,
@@ -69,16 +90,14 @@ export async function PUT(req: Request) {
       taxid,
       address,
       insurance
-
     } = body;
 
-    //console.log(assigned_account, "assigned_account");
-
-    const newContact = await prismadb.employee.update({
+    const updateEmployee = await prismadb.employee.update({
       where: {
         id,
       },
       data: {
+        updatedBy: userId,        
         firstName,
         lastName,
         email,
@@ -93,9 +112,7 @@ export async function PUT(req: Request) {
       },
     });
 
-
-
-    return NextResponse.json({ newContact }, { status: 200 });
+    return NextResponse.json({ updateEmployee }, { status: 200 });
   } catch (error) {
     console.log("UPDATE_EMPLOYEE_PUT]", error);
     return new NextResponse("Initial error", { status: 500 });

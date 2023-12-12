@@ -1,13 +1,15 @@
 "use client";
 
-import { number, z } from "zod";
-import axios from "axios";
 import { useState } from "react";
+import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -23,35 +25,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+
 import { Textarea } from "@/components/ui/textarea";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+
 import useDebounce from "@/hooks/useDebounce";
 
-
-type Props = {
-  industries?: any[];
-  users?: any[];
-  accounts?:any[];
-  onFinish: () => void;
+//TODO: fix all the types
+type NewTaskFormProps = {
+  users: any[];
 };
 
-export async function NewEmployeeForm({ industries , users , accounts }: Props) {
+export function NewEmployeeForm({ users }: NewTaskFormProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+
   const debounceSearchTerm = useDebounce(searchTerm, 1000);
 
-  const filteredData = users?.filter((item) =>
-  item?.name?.toLowerCase().includes(debounceSearchTerm.toLowerCase())
-);
+  const filteredData = users.filter((item) =>
+    item.name.toLowerCase().includes(debounceSearchTerm.toLowerCase())
+  );
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const formSchema = z.object({
     firstName: z.string().min(3).max(50),
@@ -59,10 +61,7 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     email: z.string().email(),
     phone: z.string().optional(),
     position: z.string().optional(),
-    salary: z.string().transform((val) => {     
-      return Number(val)
-    }),
-    
+    salary: z.coerce.number().positive(),
     IBAN: z.string().min(3).max(50),
     photo: z.string().min(3).optional(),
     taxid: z.string().min(2).max(30).optional(),
@@ -70,7 +69,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     insurance: z.string().min(3).max(50).optional(),
     onBoarding: z.date().default(new Date()).optional(),
     assigned_to: z.string(),
-  
   });
 
   type NewAccountFormValues = z.infer<typeof formSchema>;
@@ -80,7 +78,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
   });
 
   const onSubmit = async (data: NewAccountFormValues) => {
-   
     setIsLoading(true);
     try {
       await axios.post("/api/employee", data);
@@ -88,26 +85,43 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
         title: "Success",
         description: "Employee created successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: error?.response?.data,
       });
     } finally {
-     form.reset();
-     router.refresh();
-      onFinish();
       setIsLoading(false);
+      form.reset({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        position: "",
+        salary: 0,
+        IBAN: "",
+        photo: "",
+        taxid: "",
+        address: "",
+        insurance: "",
+        onBoarding: undefined,
+        assigned_to: "",
+      });      
+      router.refresh();
     }
   };
+
+  //console.log(filteredData, "filteredData");
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full px-10">
-        {/* <div>
+        {/*        <div>
           <pre>
+            <code>{JSON.stringify(form.formState, null, 2)}</code>
             <code>{JSON.stringify(form.watch(), null, 2)}</code>
+            <code>{JSON.stringify(form.formState.errors, null, 2)}</code>
           </pre>
         </div> */}
         <div className=" w-[800px] text-sm">
@@ -152,7 +166,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                 />
               </div>
             </div>
-
             <div className="flex gap-5 pb-5">
               <div className="w-1/2 space-y-2">
                 <FormField
@@ -193,7 +206,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                 />
               </div>
             </div>
-
             <div className="flex gap-5 pb-5">
               <div className="w-1/2 space-y-2">
                 <FormField
@@ -234,7 +246,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                 />
               </div>
             </div>
-
             <FormField
               control={form.control}
               name="onBoarding"
@@ -277,7 +288,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
               )}
             />
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-1/2 space-y-2">
               <FormField
@@ -298,7 +308,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                 )}
               />
             </div>
-            
             <div className="w-1/2 space-y-2">
             <FormField
                   control={form.control}
@@ -334,7 +343,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
                 />
             </div>
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-1/2 space-y-2">
               <FormField
@@ -375,7 +383,6 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
               />
             </div>
           </div>
-
           <div className="flex gap-5 pb-5">
             <div className="w-1/2 space-y-2">
               <FormField
@@ -397,17 +404,15 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
               />
             </div>
           </div>
-
         </div>
         <div className="grid gap-2 py-5">
-        
           <Button disabled={isLoading} type="submit">
             {isLoading ? (
               <span className="flex items-center animate-pulse">
                 Saving data ...
               </span>
             ) : (
-              "  Create Employee"
+              "Create employeee"
             )}
           </Button>
         </div>
@@ -415,7 +420,3 @@ export async function NewEmployeeForm({ industries , users , accounts }: Props) 
     </Form>
   );
 }
-function onFinish() {
-  throw new Error("Function not implemented.");
-}
-

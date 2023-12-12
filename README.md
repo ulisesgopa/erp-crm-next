@@ -1,6 +1,6 @@
 # SaasHQ
 
-SaasHQ is a CRM build on top of the Next.JS 13.4 using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Uploadthings as a S3 blob for document storage.
+SaasHQ is a CRM build on top of Next.JS using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Uploadthings as a S3 blob for document storage.
 
 Based off the awesome NextCRM only using Postgresql as the backend and added German translation.
 
@@ -26,6 +26,7 @@ Resend.com - together with react.email </br>
 4. Testing - Jest + Cypress - integrated
 5. Fix all Types issues ( no more "any" types ) - in progress
 6. i18n - localization - integrated
+7. Teams
 
 ## Emails
 
@@ -48,7 +49,6 @@ Will be soon at domain: http://docs.saashq.org
 <details><summary><b>Show instructions</b></summary>
 
 1. Install the preset:
-
    ```sh
    npm install
    ```
@@ -57,7 +57,7 @@ Will be soon at domain: http://docs.saashq.org
 
 **.env**
 
-> > - You will need mongodb URI string for Prisma ORM
+> > - You will need Postgres URI string for Prisma ORM
 
 **.env.local**
 
@@ -72,6 +72,7 @@ Will be soon at domain: http://docs.saashq.org
    ```sh
     npx prisma generate
     npx prisma db push
+    npx prisma seed
    ```
 
 4. Run app on local
@@ -80,7 +81,13 @@ Will be soon at domain: http://docs.saashq.org
    npm run dev
    ```
 
-5. Import initial data from initial-data folder
+5. Import initial data
+
+   ```sh
+   npx prisma db seed
+   ```
+
+6. http://localhost:3000
 
 </details>
 
