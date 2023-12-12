@@ -19,7 +19,7 @@ interface OppsViewProps {
 }
 
 export async function BasicView({ data }: OppsViewProps) {
-  if (!data) return <div>Opportunity not found</div>;
+  if (!data) return <div>Employee not found</div>;
   return (
     <div className="pb-3 space-y-5">
       <Card>
