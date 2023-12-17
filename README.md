@@ -26,7 +26,7 @@ Resend.com - together with react.email </br>
 4. Testing - Jest + Cypress - integrated
 5. Fix all Types issues ( no more "any" types ) - in progress
 6. i18n - localization - integrated
-7. Teams - RAG - GenerativeAI
+7. Teams - RAG - GenerativeAI Testing: [Translocal](https://translocal.saashq.org)
 
 ## Emails
 
