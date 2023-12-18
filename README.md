@@ -1,38 +1,29 @@
 # SaasHQ
 
-SaasHQ is a CRM build on top of Next.JS using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Uploadthings as a S3 blob for document storage.
+SaasHQ is a CRM build on top of the Next.JS 13.4 using TypeScript, great UI library shadcn, Prisma and MongoDB as a database. Upload things as a S3 blob for document storage.
 
-Based off the awesome NextCRM only using Postgresql as the backend and added German translation.
+## Online Demo
 
-## What we use to build it
+You can try it here [demo.saashq.org](https://demo.saashq.org), login via Google account or create new user and password.
 
-Next.js - React framework</br>
-shadcn - UI</br>
-Prisma ORM - together with Postgresql</br>
-useSWR - for client side data fetching</br>
-NextAUTH - for user authentication</br>
-Rossum - for invoice data parsing with AI</br>
-OpenAI API - for automated email notifications</br>
-Tremor - for creating charts</br>
-Resend.com - together with react.email </br>
+## What we used to build it
+
+[Next.js](https://nextjs.org/) - React framework </br> [shadcn](https://ui.shadcn.com/) - UI </br> [Prisma](https://prisma.io/) ORM - together with [Postgresql](https://www.postgresql.org/) </br> [useSWR](https://swr.vercel.app/) - for client side data fetching </br> [NextAUTH](https://next-auth.js.org/) - for user authentication </br> [Rossum](https://rossum.ai/) - for invoice data parsing with AI </br> [OpenAI API](https://openai.com/blog/openai-api) - for automated email notifications </br> [Tremor](https://www.tremor.so/) - for creating charts </br> [resend.com](https://resend.com) - together with [react.email](https://react.email) </br>
 
 ![hero](/public/og.png)
 
 ## What we plan to build next
 
-1. More AI powered - daily summary of tasks and project (OpenAI integration ) - in test
-2. Email campaigns management - integration to MailChimp and Listmonk - in planning
-3. Docker version - in planning (There will be complete bundle to run SaasHQ on-premise)
-4. Testing - Jest + Cypress - integrated
-5. Fix all Types issues ( no more "any" types ) - in progress
-6. i18n - localization - integrated
-7. Teams - RAG - GenerativeAI Testing: [Translocal](https://translocal.saashq.org)
+1. More AI powered - daily summary of tasks and project (OpenAI integration) - in test
+2. Email campaigns management - integration with MailChimp and Listmonk - in planning
+3. ~~Docker version - in planning (There will be complete bundle to run SaasHQ on-premise)~~
+4. Testing - Jest + Cypress (if anyone want to help I will be very happy) - in planning
+5. Fix all Types issue (no more "any") - in progress
+6. i18n - localization - in planning (if anyone want to help I will be very happy)
 
 ## Emails
 
-We use Resend.com + React.email as primary email sender and email templates
-
-[resend.com](https://resend.com) + [react.email](https://react.email)
+We use [resend.com](https://resend.com) + [react.email](https://react.email) as primary email sender and email templates.
 
 ## Reports
 
@@ -42,32 +33,47 @@ We use Tremor charts as a tool for creating charts in SaasHQ
 
 ## Documentation
 
-Will be soon at domain: http://docs.saashq.org
+Available soon at: http://docs.saashq.org
 
 ## Installation
 
 <details><summary><b>Show instructions</b></summary>
 
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/saashqdev/saashq.git
+   cd saashq
+   ```
+
 1. Install the preset:
+
    ```sh
    npm install
    ```
 
-2. .env + .env.local - Change .env.example to .env and .env.local.example to .env.local
+1. Copy the environment variables to .env
 
-**.env**
+   ```sh
+   cp .env.example .env
+   ```
+   ```sh
+   cp .env.local.example .env.local
+   ```
 
-> > - You will need Postgres URI string for Prisma ORM
+   **.env**
 
-**.env.local**
+   > > - You will need Postgres URI string for Prisma ORM
 
-> > - NextAUTH - for auth
-> > - uploadthings - for storing files
-> > - rossum - for invoice data exporting
-> > - openAI - for automatic Project management assistant
-> > - SMPT and IMAP for emails
+   **.env.local**
 
-3. Init Prisma
+   > > - NextAUTH - for auth
+   > > - uploadthing - for storing files
+   > > - rossum - for invoice data exporting
+   > > - openAI - for automatic Project management assistant
+   > > - SMPT and IMAP for emails
+
+1. Init Prisma
 
    ```sh
     npx prisma generate
@@ -75,25 +81,61 @@ Will be soon at domain: http://docs.saashq.org
     npx prisma seed
    ```
 
-4. Run app on local
+1. Run app on local
 
    ```sh
    npm run dev
    ```
 
-5. Import initial data
+1. Import initial data from initial-data folder
+
+   ```sh
+   npx prisma db seed
+   ```
+   
+1. http://localhost:3000
+
+</details>
+
+## Docker installation
+
+[Link to Docker HUB](https://hub.docker.com/repository/docker/saashqdev/saashq/general)
+
+<details><summary><b>Show instructions</b></summary>
+
+1. Postgres URI string for Prisma ORM:
+
+2. Install the preset:
+
+   ```create
+   .env (for Prisma URI string) and .env.local (all others ENVs) file inside docker folder
+   ```
+
+3. run docker-compose
+
+   ```sh
+   docker-compose up -d
+   ```
+
+4. Init Prisma
+
+   ```sh
+    docker-compose exec saashq npx prisma generate
+    docker-compose exec saashq npx prisma db push
+   ```
+
+5. Import initial data from initial-data folder
 
    ```sh
    npx prisma db seed
    ```
 
 6. http://localhost:3000
-
 </details>
 
-## Contact Us
+## Contact
 
-[SaasHQ](mailto:saashqdev@gmail.com)
+[SaasHQ](https://saashqdev@gmail.com)
 
 ## License
 
