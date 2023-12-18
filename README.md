@@ -1,6 +1,6 @@
 # SaasHQ
 
-SaasHQ is a CRM build on top of the Next.JS 13.4 using TypeScript, great UI library shadcn, Prisma and MongoDB as a database. Upload things as a S3 blob for document storage.
+SaasHQ is a CRM build on top of the Next.JS 13.4 using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Upload things as a S3 blob for document storage.
 
 ## Online Demo
 
