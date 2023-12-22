@@ -14,10 +14,13 @@ import { getBoards } from "@/actions/projects/get-boards";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Users } from "@prisma/client";
+import AiAssistantProject from "./components/AiAssistantProject";
 
 interface BoardDetailProps {
   params: { boardId: string };
 }
+
+export const maxDuration = 300;
 
 const BoardPage = async ({ params }: BoardDetailProps) => {
   const session = await getServerSession(authOptions);
@@ -42,6 +45,7 @@ const BoardPage = async ({ params }: BoardDetailProps) => {
             users={users}
             sections={sections}
           />
+          <AiAssistantProject session={session} boardId={boardId} />
         </div>
         <div>
           <DeleteProjectDialog
