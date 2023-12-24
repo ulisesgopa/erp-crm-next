@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/auth";
 import { s3Client } from "@/lib/digital-ocean-s3";
 import { getRossumToken } from "@/lib/get-rossum-token";
 import { prismadb } from "@/lib/prisma";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -345,7 +345,7 @@ export async function GET(
     ACL: "public-read",
   };
 
-  await s3Client.send(new PutObjectCommand(bucketParamsJSON));
+  await s3Client.send(new PutObjectCommand(bucketParamsJSON as PutObjectCommandInput));
 
   /*   const bucketParamsXML = {
     Bucket: process.env.DO_BUCKET,

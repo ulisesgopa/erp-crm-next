@@ -558,10 +558,6 @@ model system_Modules_Enabled {
   id       String  @id @default(cuid())
   name     String
   enabled  Boolean
-  icon     String
-  open     String
-  route    String
-  menuItem String
   position Int
 }
 

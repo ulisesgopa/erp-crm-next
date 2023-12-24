@@ -2,16 +2,14 @@
 
 import { z } from "zod";
 import axios from "axios";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next-intl/client";
 import React, { startTransition } from "react";
 import { FingerprintIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { usePathname } from "next-intl/client";
 import { useLocale, useTranslations } from "next-intl";
+import { createSharedPathnamesNavigation } from 'next-intl/navigation';
 
 import {
   Card,
@@ -40,6 +38,9 @@ import { Icons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+
+const locales = [ 'en', 'de' , 'cz'] as const;
+const { Link, useRouter, usePathname } = createSharedPathnamesNavigation({ locales });
 
 export function RegisterComponent() {
   const router = useRouter();

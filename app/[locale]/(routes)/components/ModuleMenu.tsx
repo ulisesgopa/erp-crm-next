@@ -14,6 +14,7 @@ import CrmModuleMenu from "./menu-items/Crm";
 
 import AdministrationMenu from "./menu-items/Administration";
 import DashboardMenu from "./menu-items/Dashboard";
+import EmailsModuleMenu from "./menu-items/Emails";
 
 type Props = {
   modules: any;
@@ -69,6 +70,11 @@ const ModuleMenu = ({ modules, dict }: Props) => {
           ) ? (
             <ProjectModuleMenu open={open} title={dict.ModuleMenu.projects} />
           ) : null}
+          {modules.find(
+            (menuItem: any) => menuItem.name === "emails" && menuItem.enabled
+          ) ? (
+            <EmailsModuleMenu open={open} title={dict.ModuleMenu.emails} />
+          ) : null}          
           {modules.find(
             (menuItem: any) =>
               menuItem.name === "secondBrain" && menuItem.enabled

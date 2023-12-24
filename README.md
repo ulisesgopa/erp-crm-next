@@ -14,12 +14,15 @@ You can try it here [demo.saashq.org](https://demo.saashq.org), login via Google
 
 ## What we plan to build next
 
-1. More AI powered - daily summary of tasks and project (OpenAI integration) - in test
+1. More AI powered - daily summary of tasks and project (OpenAI integration) - in progress
 2. Email campaigns management - integration with MailChimp and Listmonk - in planning
 3. ~~Docker version - in planning (There will be complete bundle to run SaasHQ on-premise)~~
 4. Testing - Jest + Cypress (if anyone want to help I will be very happy) - in planning
 5. Fix all Types issue (no more "any") - in progress
-6. i18n - localization - in planning (if anyone want to help I will be very happy)
+6. i18n - localization - in progress (if anyone want to help I will be very happy)
+7. Turborepo - in planning
+8. Upgrade to Next.js 14 - in planning
+9. Email client - in planning
 
 ## Emails
 
@@ -46,17 +49,18 @@ Available soon at: http://docs.saashq.org
    cd saashq
    ```
 
-1. Install the preset:
+2. Install the preset:
 
    ```sh
    npm install
    ```
 
-1. Copy the environment variables to .env
+3. Copy the environment variables to .env
 
    ```sh
    cp .env.example .env
    ```
+
    ```sh
    cp .env.local.example .env.local
    ```
@@ -73,27 +77,26 @@ Available soon at: http://docs.saashq.org
    > > - openAI - for automatic Project management assistant
    > > - SMPT and IMAP for emails
 
-1. Init Prisma
+4. Init Prisma
 
    ```sh
     npx prisma generate
     npx prisma db push
-    npx prisma seed
    ```
 
-1. Run app on local
-
-   ```sh
-   npm run dev
-   ```
-
-1. Import initial data from initial-data folder
+5. Import initial data from initial-data folder
 
    ```sh
    npx prisma db seed
    ```
+
+6. Run app on local
+
+   ```sh
+   npm run dev
+   ```
    
-1. http://localhost:3000
+7. http://localhost:3000
 
 </details>
 
