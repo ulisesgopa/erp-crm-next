@@ -27,7 +27,7 @@ const EmailRoute = async () => {
     <Container
       title={dict.ModuleMenu.emails}
       description={
-        "This module is in development. Now it is only frontend demo."
+        "This module is in development. This is only a frontend demo."
       }
     >
       <Suspense fallback={<SuspenseLoading />}>
