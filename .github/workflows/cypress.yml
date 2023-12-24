@@ -47,6 +47,7 @@ jobs:
         run: |
           npx prisma generate
           npx prisma db push
+          npx prisma db seed
         env: 
           DATABASE_URL: ${{ secrets.DATABASE_URL }}          
  
@@ -58,7 +59,7 @@ jobs:
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           build: npm run build
           start: npm start
-          wait-on: 'http://localhost:3000' # Waits for above
+          wait-on: "http://localhost:3000" # Waits for above
           # Records to Cypress Cloud 
           # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
           record: false
