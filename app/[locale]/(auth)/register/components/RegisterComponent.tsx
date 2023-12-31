@@ -1,15 +1,15 @@
 "use client";
-
 import { z } from "zod";
 import axios from "axios";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import React, { startTransition } from "react";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { FingerprintIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useLocale, useTranslations } from "next-intl";
-import { createSharedPathnamesNavigation } from 'next-intl/navigation';
+import { useTranslations } from "next-intl";
 
 import {
   Card,
@@ -38,9 +38,6 @@ import { Icons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-
-const locales = [ 'en', 'de' , 'cz'] as const;
-const { Link, useRouter, usePathname } = createSharedPathnamesNavigation({ locales });
 
 export function RegisterComponent() {
   const router = useRouter();
@@ -125,15 +122,6 @@ export function RegisterComponent() {
 
   //Localizations
   const t = useTranslations("RegisterComponent");
-  const locale = useLocale();
-  const pathname = usePathname();
-
-  function onValueChange(value: string) {
-    const nextLocale = value;
-    startTransition(() => {
-      router.replace(pathname, { locale: nextLocale });
-    });
-  }
 
   return (
     <Card className="shadow-lg ">
