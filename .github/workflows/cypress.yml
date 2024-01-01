@@ -88,4 +88,4 @@ jobs:
           NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
           NEXT_PUBLIC_APP_V: ${{ secrets.NEXT_PUBLIC_APP_V }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
-          UPLOAD_THING_SECRET: ${{ secrets.UPLOAD_THING_SECRET }}
+          UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
