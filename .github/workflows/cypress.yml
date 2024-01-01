@@ -20,7 +20,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
     # Also see warning here https://github.com/cypress-io/github-action#parallel
@@ -34,13 +34,13 @@ jobs:
 
       - name: Create additional database
         run: psql postgres://postgres:postgres@localhost:5432/postgres -c 'create database saashq;'
-      
+
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Prisma Schema Validate
         uses: elijaholmos/prisma-schema-validate@v1.0.0
-        env: 
+        env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Prisma Generate and Push
@@ -48,9 +48,9 @@ jobs:
           npx prisma generate
           npx prisma db push
           npx prisma db seed
-        env: 
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}          
- 
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
@@ -87,4 +87,5 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXT_PUBLIC_APP_NAME: ${{ secrets.NEXT_PUBLIC_APP_NAME }}
           NEXT_PUBLIC_APP_V: ${{ secrets.NEXT_PUBLIC_APP_V }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}          
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          UPLOAD_THING_SECRET: ${{ secrets.UPLOAD_THING_SECRET }}
