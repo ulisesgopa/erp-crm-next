@@ -103,7 +103,7 @@
     "@types/mailparser": "^3.4.4",
     "@types/node": "^20.10.4",
     "@types/nodemailer": "^6.4.8",
-    "@types/react": "^18.2.45", 
+    "@types/react": "^18.2.45",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-dom": "^18.2.18",
     "cypress": "^13.1.0",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createTranslator } from "next-intl";
 import { GithubIcon, Star } from "lucide-react";
+import "primeicons/primeicons.css";
 
 import "@/app/[locale]/globals.css";
 import { ThemeToggle } from "@/components/ThemeToggle";
