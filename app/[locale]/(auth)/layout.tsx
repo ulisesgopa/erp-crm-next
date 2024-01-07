@@ -39,7 +39,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
     <div className="flex flex-col justify-center items-center h-screen w-full">
       <div className="flex justify-end items-center space-x-5 w-full p-5">
         <Link
-          href={"https://discord.gg/vnDt3dCf"}
+          href={"https://discord.gg/kBhAUKBMgf"}
           className=" border rounded-md p-2"
         >
           <i className="pi pi-discord w-5 h-5" />
