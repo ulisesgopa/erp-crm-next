@@ -20,7 +20,6 @@ const ContactViewPage = async ({ params }: any) => {
   const accounts = await getAccountsByContactId(contactId);
   const crmData = await getAllCrmData();  
 
-  //  console.log(accounts, "accounts");
 
   if (!contact) return <div>Contact not found</div>;
 

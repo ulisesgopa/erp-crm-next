@@ -5,20 +5,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDictionary } from "@/dictionaries";
 
-const SideBar = async () => {
+const SideBar = async ({ build }: { build: number }) => {
   const modules = await getModules();
   const session = await getServerSession(authOptions);  
 
+//console.log(modules, "modules");
+
   if (!session) return null;
 
-  const userId = session?.user?.id;
-
   //Get user language
-  const lang = session?.user?.userLanguage;
+  const lang = session.user.userLanguage;
 
   //Fetch translations from dictionary
   const dict = await getDictionary(lang as "en" | "cz" | "de");
 
-  return <ModuleMenu modules={modules} dict={dict} />;
+  return <ModuleMenu modules={modules} dict={dict} build={build} />;
 };
 export default SideBar;

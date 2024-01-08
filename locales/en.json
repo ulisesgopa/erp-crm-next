@@ -8,11 +8,12 @@
     "crm": {
       "title": "Sales",
       "accounts": "Companies",
-      "opportunities": "Deals",
+      "opportunities": "Opportunities",
       "contacts": "Contacts",
       "leads": "Leads"
     },
     "projects": "Projects",
+    "emails": "E-mails",    
     "tasks": "Tasks",
     "invoices": "Invoices",
     "reports": "Reports",

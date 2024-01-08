@@ -56,7 +56,6 @@ model crm_Accounts {
 
 model crm_Leads {
   id                 String        @id @default(cuid())
-
   createdAt          DateTime?     @default(now()) @db.Date
   createdBy          String?       
   updatedAt          DateTime?     @updatedAt @db.Date
@@ -221,15 +220,6 @@ model Boards {
   watchers          String[]  
   assigned_user     Users?    @relation(name: "assigned_user", fields: [user], references: [id])
   watchers_users    Users[]   
-}
-
-model Employees {
-  id     String  @id @default(cuid())
-  avatar String
-  email  String?
-  name   String
-  salary Int
-  status String
 }
 
 model ImageUpload {
@@ -545,8 +535,9 @@ model Users {
   created_by_user      crm_Opportunities[]   @relation(name: "created_by_user_relation")
   assigned_opportunity crm_Opportunities[]   @relation(name: "assigned_to_user_relation")
   assigned_contacts    crm_Contacts[]        @relation(name: "assigned_contacts")
-  crated_contacts      crm_Contacts[]        @relation(name: "created_contacts")
+  created_contacts     crm_Contacts[]        @relation(name: "created_contacts")
   notion_account       secondBrain_notions[]
+  openAi_key           openAi_keys[]
   assigned_invoices    Invoices[]
   boards               Boards[]              @relation(name: "assigned_user")
   watching_boardsIDs   String[]              
@@ -554,7 +545,7 @@ model Users {
   watching_accountsIDs String[]              
   watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts")
   role                 Role                  @default(guest)
-  employee             Employee?
+  employee             Employee[]
 }
 
 enum Language {
@@ -567,10 +558,6 @@ model system_Modules_Enabled {
   id       String  @id @default(cuid())
   name     String
   enabled  Boolean
-  icon     String
-  open     String
-  route    String
-  menuItem String
   position Int
 }
 
@@ -580,6 +567,14 @@ model secondBrain_notions {
   notion_api_key String
   notion_db_id   String
   assigned_user  Users? @relation(fields: [user], references: [id])
+}
+
+model openAi_keys {
+  id              String @id @default(cuid())
+  user            String 
+  organization_id String
+  api_key         String
+  assigned_user   Users? @relation(fields: [user], references: [id])
 }
 
 model systemServices {
@@ -621,25 +616,27 @@ enum CompanyRole {
 }
 
 model Employee {
-  id          String        @id @default(uuid())
-  user        Users         @relation(fields: [userID], references: [id])
-  userID      String        @unique
-  firstName   String
-  lastName    String
-  email       String        @unique
-  phone       String        @unique
-  role        CompanyRole   @default(Employee)
-  position    String?
-  salary      Float
-  onBoarding  DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  IBAN        String
-  photo       String?
-  taxid       String?
-  address     String?
-  insurance   String?
-  timekeeping timekeeping[]
+  id                 String        @id @default(uuid())
+  createdBy          String?       
+  updatedBy          String?   
+  firstName          String
+  lastName           String
+  email              String        @unique
+  phone              String        @unique
+  role               CompanyRole   @default(Employee)
+  position           String?
+  salary             Float         @default(0.00)
+  onBoarding         DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  IBAN               String
+  photo              String?
+  taxid              String?
+  address            String?
+  insurance          String?
+  assigned_to        String?       
+  assigned_to_user   Users?        @relation(fields: [assigned_to], references: [id])  
+  timekeeping        timekeeping[]
 
   Schedule    Schedule[]
   Documents   Documents[]

@@ -1,10 +1,18 @@
+"use server";
+
 import dayjs from "dayjs";
 import axios from "axios";
 
-import sendEmail from "@/lib/sendmail";
 import { prismadb } from "@/lib/prisma";
+import resendHelper from "@/lib/resend";
+import AiTasksReportEmail from "@/emails/AiTasksReport";
 
-export async function getUserAiTasks(userId: string) {
+export async function getUserAiTasks(session: any) {
+  /*
+  Resend.com function init - this is a helper function that will be used to send emails
+  */
+  const resend = await resendHelper();
+
   const today = dayjs().startOf("day");
   const nextWeek = dayjs().add(7, "day").startOf("day");
 
@@ -12,7 +20,7 @@ export async function getUserAiTasks(userId: string) {
 
   const user = await prismadb.users.findUnique({
     where: {
-      id: userId,
+      id: session.user.id,
     },
   });
 
@@ -22,7 +30,7 @@ export async function getUserAiTasks(userId: string) {
     where: {
       AND: [
         {
-          user: userId,
+          id: session.user.id,
           taskStatus: "ACTIVE",
           dueDateAt: {
             lte: new Date(),
@@ -36,7 +44,7 @@ export async function getUserAiTasks(userId: string) {
     where: {
       AND: [
         {
-          user: userId,
+          user: session.user.is,
           taskStatus: "ACTIVE",
           dueDateAt: {
             //lte: dayjs().add(7, "day").toDate(),
@@ -68,10 +76,9 @@ export async function getUserAiTasks(userId: string) {
         2
       )}
       \n\n
-      As a personal assistant, write a message to ${
-        user.name
-      }  to remind them of their tasks. And also do not forget to send them a some positive vibes.
+      As a personal assistant, write a message  to remind tasks and write detail summary. And also do not forget to send them a some positive vibes.
       \n\n
+      Final result must be in MDX format.
       `;
       break;
     case "de":
@@ -100,12 +107,11 @@ export async function getUserAiTasks(userId: string) {
       )}
     
       \n\n
-      Schreiben Sie am Ende eine Managementzusammenfassung, einschließlich einer netten Begrüßung, schreiben Sie für den Benutzer: ${
-        user.name
-      } und einen Link hinzufügen ${
+      Schreiben Sie am Ende eine Managementzusammenfassung und fügen Sie einen Link hinzu ${
         process.env.NEXT_PUBLIC_APP_URL + "/projects/dashboard"
       } als Link zum Aufgabendetail. Am Ende der Zusammenfassung hinzufügen. 1 Management-Skill-Tipp im Bereich Projektmanagement und Zeitmanagement, 2-3 Sätze mit positiver Einstellung und Unterstützung, abschließend einen schönen Arbeitstag wünschen und mitteilen, dass diese Nachricht durch die künstliche Intelligenz von OpenAi generiert wurde.
       \n\n
+      Das Endergebnis muss im MDX-Format vorliegen.
       `;
       break;
   }
@@ -117,6 +123,7 @@ export async function getUserAiTasks(userId: string) {
       `${process.env.NEXT_PUBLIC_APP_URL}/api/openai/create-chat-completion`,
       {
         prompt: prompt,
+        userId: session.user.id,        
       },
       {
         headers: {
@@ -127,17 +134,29 @@ export async function getUserAiTasks(userId: string) {
     .then((res) => res.data);
 
   //console.log(getAiResponse, "getAiResponse");
+  //console.log(getAiResponse.response.message.content, "getAiResponse");  
 
   //skip if api response is error
   if (getAiResponse.error) {
     console.log("Error from OpenAI API");
   } else {
-    await sendEmail({
-      from: process.env.EMAIL_FROM,
-      to: user.email!,
-      subject: `${process.env.NEXT_PUBLIC_APP_NAME} OpenAI Project manager assistant from: ${process.env.NEXT_PUBLIC_APP_URL}`,
-      text: getAiResponse.response.message.content,
-    });
+    try {
+      const data = await resend.emails.send({
+        from: process.env.EMAIL_FROM!,
+        to: user.email!,
+        subject: `${process.env.NEXT_PUBLIC_APP_NAME} OpenAI Project manager assistant from: ${process.env.NEXT_PUBLIC_APP_URL}`,
+        text: getAiResponse.response.message.content,
+        react: AiTasksReportEmail({
+          username: session.user.name,
+          avatar: session.user.avatar,
+          userLanguage: session.user.userLanguage,
+          data: getAiResponse.response.message.content,
+        }),
+      });
+      //console.log(data, "Email sent");
+    } catch (error) {
+      console.log(error, "Error from get-user-ai-tasks");
+    }
   }
 
   return { user: user.email };

@@ -1,12 +1,14 @@
 "use client";
 
+import moment from "moment";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+
 import { ColumnDef } from "@tanstack/react-table";
 
 import { statuses } from "../table-data/data";
 import { AdminUser } from "../table-data/schema";
-import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import moment from "moment";
+import { DataTableColumnHeader } from "./data-table-column-header";
 
 export const columns: ColumnDef<AdminUser>[] = [
   /*   {
@@ -37,8 +39,11 @@ export const columns: ColumnDef<AdminUser>[] = [
       <DataTableColumnHeader column={column} title="Last login" />
     ),
     cell: ({ row }) => (
-      <div className="w-[130px]">
-        {moment(row.getValue("lastLoginAt")).format("YYYY/MM/DD-HH:mm")}
+      <div className="min-w-[150px]">
+        {/*   {moment(row.getValue("lastLoginAt")).format("YYYY/MM/DD-HH:mm")} */}
+        {formatDistanceToNow(new Date(row.getValue("lastLoginAt")), {
+          addSuffix: true,
+        })}
       </div>
     ),
     enableSorting: false,
