@@ -25,9 +25,11 @@ const bodySchema = z.object({
         previous: z.array(z.string()),
         exec: z.string().optional(),
         execTs: z.string().optional(),
-      })
+      }),
     ),
+    userWfDefinitionId: z.string(),
   }),
+
 });
 
 export const POST = async (req: Request) => {
@@ -70,7 +72,9 @@ export const POST = async (req: Request) => {
           uiObject: {
             [requestBodyResult.data.key]: requestBodyResult.data.ui,
           },
+          
         }),
+        userWfDefinitionId: requestBodyResult.data.workflowData.userWfDefinitionId, 
       },
     })
   );
