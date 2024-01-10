@@ -1,5 +1,4 @@
 const withNextIntl = require("next-intl/plugin")(
-  // This is the default (also the `src` folder is supported out of the box)
   './i18n.ts'
 );
 
@@ -14,6 +13,12 @@ const nextConfig = {
       "avatars.githubusercontent.com",
       "utfs.io",
     ],
+  },
+  webpack: (
+    config
+  ) => {
+    config.module.noParse = [require.resolve("typescript/lib/typescript.js")]
+    return config
   },
 };
 
