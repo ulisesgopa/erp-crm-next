@@ -83,7 +83,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
           .map((node) => node?.data?.label)
           .includes(labelValue)
       ) {
-        setLabelUniqueError(() => 'Task name already exist');
+        setLabelUniqueError(() => 'Task name already exists');
       } else {
         setLabelUniqueError(() => null);
       }

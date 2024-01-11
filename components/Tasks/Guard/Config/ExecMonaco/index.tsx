@@ -5,6 +5,7 @@ import { Editor } from '@monaco-editor/react';
 import { useTheme } from '@mui/material';
 import type { ElementRef, FC } from 'react';
 import { useRef } from 'react';
+//@ts-ignore-next-line
 import { transpile, ScriptTarget, ModuleKind } from 'typescript';
 import JsonToTS from 'json-to-ts';
 import { useWorkflowDefinitionContext } from '@/contexts/WorkflowDefinitionContext';
