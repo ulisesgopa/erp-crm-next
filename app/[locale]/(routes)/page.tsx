@@ -34,6 +34,7 @@ import { getDocumentsCount } from "@/actions/dashboard/get-documents-count";
 import { getActiveUsersCount } from "@/actions/dashboard/get-active-users-count";
 import { getOpportunitiesCount } from "@/actions/dashboard/get-opportunities-count";
 import { getEmployeeCount } from "@/actions/dashboard/get-employee-count";
+import { getWorkflowCount } from "@/actions/dashboard/get-workflow-count";
 import { getExpectedRevenue } from "@/actions/crm/opportunity/get-expected-revenue";
 import { getDictionary } from "@/dictionaries";
 
@@ -54,6 +55,7 @@ const DashboardPage = async () => {
   const leads = await getLeadsCount();
   const tasks = await getTasksCount();
   const employees = await getEmployeeCount();
+  const workflows = await getWorkflowCount();;
   const storage = await getStorageSize();
   const projects = await getBoardsCount();
   const contacts = await getContactCount();
@@ -70,7 +72,6 @@ const DashboardPage = async () => {
   const invoiceModule = modules.find((module) => module.name === "invoice");
   const projectsModule = modules.find((module) => module.name === "projects");
   const documentsModule = modules.find((module) => module.name === "documents");
-  const employeesModule = modules.find((module) => module.name === "employees");
   const secondBrainModule = modules.find(
     (module) => module.name === "secondBrain"
   );
@@ -137,6 +138,17 @@ const DashboardPage = async () => {
             </CardContent>
           </Card>
         </Link>
+        <Link href="/workflows">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Workflows</CardTitle>
+              <Users2Icon className="w-4 h-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-medium">{workflows}</div>
+            </CardContent>
+          </Card>
+        </Link>        
         {
           //show crm module only if enabled is true
           crmModule?.enabled && (

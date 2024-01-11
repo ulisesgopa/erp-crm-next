@@ -546,6 +546,7 @@ model Users {
   watching_accounts    crm_Accounts[]        @relation(name: "watching_accounts")
   role                 Role                  @default(guest)
   employee             Employee[]
+  userWorkflowDef      Definitions[]
 }
 
 enum Language {
@@ -636,7 +637,7 @@ model Employee {
   insurance          String?
   assigned_to        String?       
   assigned_to_user   Users?        @relation(fields: [assigned_to], references: [id])  
-  timekeeping        timekeeping[]
+  timekeeping        Timekeeping[]
 
   Schedule    Schedule[]
   Documents   Documents[]
@@ -664,7 +665,7 @@ model Teams {
   TeamTask    TeamTask[]
 }
 
-model timekeeping {
+model Timekeeping {
   id         String    @id @default(uuid())
   employee   Employee  @relation(fields: [employeeID], references: [id])
   employeeID String
@@ -788,4 +789,44 @@ model TeamMessage {
   message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Workflow section
+
+enum DefinitionStatus {
+  active
+  inactive
+}
+
+model Definitions {
+  id                  String           @id @default(cuid())
+  name                String
+  tasks               Json[]
+  global              Json?
+  status              DefinitionStatus @default(active)
+  uiObject            Json?
+  date_created        DateTime?        @default(now()) @db.Date
+  last_edited         DateTime?        @db.Date
+  userWfDefinitionId  String
+  Runtimes            Runtimes[]
+  userWfDefinition    Users            @relation(fields: [userWfDefinitionId], references: [id])
+}
+
+enum RuntimeStatus {
+  pending
+  completed
+  failed
+}
+
+model Runtimes {
+  id                   String        @id @default(cuid())
+  workflowResults      Json?
+  global               Json?
+  workflowStatus       RuntimeStatus @default(pending)
+  tasks                Json[]
+  logs                 Json[]
+  workflowDefinitionId String
+  workflowDefinition   Definitions   @relation(fields: [workflowDefinitionId], references: [id])
+  date_created         DateTime?     @default(now()) @db.Date
+  last_edited          DateTime?     @db.Date
 }

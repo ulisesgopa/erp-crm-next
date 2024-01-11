@@ -6,10 +6,11 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -21,7 +22,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "react": [ "./node_modules/@types/react" ]
+      "react": [ "./node_modules/@types/react" ],
+      "@/ui/*": ["./components/ui/*"]      
     },
     "baseUrl": ".",
   },
