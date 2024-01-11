@@ -9,6 +9,7 @@ import ReportsModuleMenu from "./menu-items/Reports";
 import DocumentsModuleMenu from "./menu-items/Documents";
 import ChatGPTModuleMenu from "./menu-items/ChatGPT";
 import EmployeesModuleMenu from "./menu-items/Employees";
+import WorkflowsModuleMenu from "./menu-items/Workflows";
 import DataboxModuleMenu from "./menu-items/Databoxes";
 import CrmModuleMenu from "./menu-items/Crm";
 
@@ -16,6 +17,7 @@ import AdministrationMenu from "./menu-items/Administration";
 import DashboardMenu from "./menu-items/Dashboard";
 import EmailsModuleMenu from "./menu-items/Emails";
 import { cn } from "@/lib/utils";
+import { any } from "cypress/types/bluebird";
 
 type Props = {
   modules: any;
@@ -93,6 +95,11 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
           ) ? (
             <InvoicesModuleMenu open={open} title={dict.ModuleMenu.invoices} />
           ) : null}
+          {modules.find(
+            (menuItem: any) => menuItem.name === "workflows" && menuItem.enabled
+          ) ? (
+            <WorkflowsModuleMenu open={open} title={dict.ModuleMenu.workflows} />
+          ) : null}          
           {modules.find(
             (menuItem: any) => menuItem.name === "reports" && menuItem.enabled
           ) ? (

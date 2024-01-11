@@ -1,4 +1,4 @@
-import { Users } from "lucide-react";
+import { GitFork } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -6,9 +6,10 @@ import React from "react";
 
 type Props = {
   open: boolean;
+  title: string;
 };
 
-const WorkflowsModuleMenu = ({ open }: Props) => {
+const WorkflowsModuleMenu = ({ open, title }: Props) => {
   const pathname = usePathname();
   const isPath = pathname.includes("workflows");
   return (
@@ -17,7 +18,7 @@ const WorkflowsModuleMenu = ({ open }: Props) => {
         href={"/workflows"}
         className={`flex gap-2 p-2 ${isPath ? "text-muted-foreground" : null}`}
       >
-        <Users className="w-6" />
+        <GitFork className="w-6" />
         <span className={open ? "" : "hidden"}>Workflows</span>
       </Link>
     </div>
