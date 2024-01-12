@@ -15,11 +15,11 @@ import Link from "next/link";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import moment from "moment";
 
-interface OppsViewProps {
+interface EmpViewProps {
   data: any;
 }
 
-export async function BasicView({ data }: OppsViewProps) {
+export async function BasicView({ data }: EmpViewProps) {
   if (!data) return <div>Employee not found</div>;
   return (
     <div className="pb-3 space-y-5">

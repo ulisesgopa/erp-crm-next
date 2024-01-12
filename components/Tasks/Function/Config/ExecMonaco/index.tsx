@@ -8,7 +8,7 @@ import { useRef } from 'react';
 //@ts-ignore-next-line
 import { transpile, ScriptTarget, ModuleKind } from 'typescript';
 import JsonToTS from 'json-to-ts';
-import { useWorkflowDefinitionContext } from '@/contexts/WorkflowDefinitionContext';
+import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useReactFlow } from 'reactflow';
 
 interface Props {

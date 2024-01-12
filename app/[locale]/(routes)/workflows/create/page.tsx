@@ -6,7 +6,7 @@ import { type FC } from 'react';
 import { ReactFlowProvider } from 'reactflow';
 
 import WorkflowCreate from './components/WorkflowCreate';
-import WorkflowDefinitionContextProvider from '@/contexts/WorkflowDefinitionContext';
+import WorkflowDefinitionContextProvider from '@/app/contexts/WorkflowDefinitionContext';
 
 interface Props {}
 

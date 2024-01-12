@@ -1,22 +1,26 @@
 "use client";
 
-import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionList/api';
+import React, { useEffect, useState } from "react";
+
 import { Box, Button, Card, CardContent, Chip, Skeleton, Stack, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { type FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, BrowserRouter as Router } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import { format } from 'date-fns';
 
-interface Props {}
+const WorkflowListView = ({ data }: any) => {
+  const [isLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-const WorkflowListPage: FC<Props> = () => {
-  const { data, isLoading } = useQuery({
-    queryFn: async () => API(),
-    queryKey: [API_NAME],
-  });
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
+    <Router>
     <Box
       sx={{
         height: '100%',
@@ -34,7 +38,7 @@ const WorkflowListPage: FC<Props> = () => {
         </Stack>
         {!isLoading && data && (
           <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={2}>
-            {data.map((item) => (
+            {data.map((item: any) => (
               <Link
                 style={{
                   width: '100%',
@@ -98,7 +102,7 @@ const WorkflowListPage: FC<Props> = () => {
                   width: '100%',
                 }}
               >
-                No definitions found!
+                No workflow definitions found!
               </Typography>
             ) : null}
           </Stack>
@@ -214,7 +218,8 @@ const WorkflowListPage: FC<Props> = () => {
         )}
       </Stack>
     </Box>
+    </Router>
   );
 };
 
-export default WorkflowListPage;
+export default WorkflowListView;

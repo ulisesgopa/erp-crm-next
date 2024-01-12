@@ -24,7 +24,7 @@ import type { TransitionProps } from '@mui/material/transitions';
 import type { FC, MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import type { Connection, Edge, Node } from 'reactflow';
+import type { Connection, Edge } from 'reactflow';
 import ReactFlow, {
   Background,
   Controls,
@@ -36,7 +36,7 @@ import ReactFlow, {
 } from 'reactflow';
 import CloseIcon from '@mui/icons-material/Close';
 import { z } from 'zod';
-import WorkflowGlobalMonaco from '../WorkflowGlobalMonaco';
+import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Error } from '@mui/icons-material';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -44,8 +44,9 @@ import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { LoadingButton } from '@mui/lab';
 import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
-import { useWorkflowDefinitionContext } from '@/contexts/WorkflowDefinitionContext';
+import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useNavigate } from 'react-router-dom';
+import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/api';
 import ShieldIcon from '@mui/icons-material/Shield';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
@@ -77,105 +78,11 @@ const workflowMetadataFormSchema = z.object({
 
 type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
 
-const initialNodes: Node[] = [
-  {
-    id: 'a8c86331-880f-43d1-8bdb-906f5b2715b0',
-    data: {
-      label: 'Test Task',
-      params: {
-        token: 'abc',
-      },
-      inputBoundId: '23c1b944-0d73-4e32-b901-37ac2c21c05d',
-      outputBoundId: '6e61e128-1d27-4cad-b597-653990a9ca67',
-      execTs: `
-      /**
-       * @see {@link https://workflow-engine-docs.pages.dev/docs/tasks/function_task}
-      */
-      async function handler() {
-        return {"hello":"world"};
-      }
-            `,
-      exec: `
-            /**
-             * @see {@link https://workflow-engine-docs.pages.dev/docs/tasks/function_task}
-             */
-            async function handler() {
-              return {"hello":"world"};
-            }
-            `,
-    },
-    position: {
-      x: 638.7184283607929,
-      y: 271.17332897421414,
-    },
-    type: 'function',
-    selected: false,
-    positionAbsolute: {
-      x: 638.7184283607929,
-      y: 271.17332897421414,
-    },
-    dragging: false,
-  },
-  {
-    id: '24a7188e-d17b-4a5f-94a0-89286edc8b9f',
-    data: {
-      label: 'End Task',
-      inputBoundId: '4b05ea04-ecbc-4f4f-80ef-9f0d4ae21d53',
-    },
-    position: {
-      x: 640.7336773039084,
-      y: 510.40481776943034,
-    },
-    type: 'end',
-    selected: true,
-    positionAbsolute: {
-      x: 640.7336773039084,
-      y: 510.40481776943034,
-    },
-    dragging: false,
-  },
-  {
-    id: '2f8f2520-46be-4199-b85e-e889a29c2f01',
-    data: {
-      label: 'Start Task',
-      outputBoundId: '6fcf0614-e0d1-4fb8-9446-0026bad0b481',
-    },
-    position: {
-      x: 635.7063180445617,
-      y: 29.03410258347799,
-    },
-    type: 'start',
-    selected: false,
-    positionAbsolute: {
-      x: 635.7063180445617,
-      y: 29.03410258347799,
-    },
-    dragging: false,
-  },
-];
+interface Props {
+  definition: ResponseSchemaType;
+}
 
-const initialEdges: Edge[] = [
-  {
-    source: '2f8f2520-46be-4199-b85e-e889a29c2f01',
-    sourceHandle: '6fcf0614-e0d1-4fb8-9446-0026bad0b481',
-    target: 'a8c86331-880f-43d1-8bdb-906f5b2715b0',
-    targetHandle: '23c1b944-0d73-4e32-b901-37ac2c21c05d',
-    animated: true,
-    id: 'reactflow__edge-2f8f2520-46be-4199-b85e-e889a29c2f016fcf0614-e0d1-4fb8-9446-0026bad0b481-a8c86331-880f-43d1-8bdb-906f5b2715b023c1b944-0d73-4e32-b901-37ac2c21c05d',
-  },
-  {
-    source: 'a8c86331-880f-43d1-8bdb-906f5b2715b0',
-    sourceHandle: '6e61e128-1d27-4cad-b597-653990a9ca67',
-    target: '24a7188e-d17b-4a5f-94a0-89286edc8b9f',
-    targetHandle: '4b05ea04-ecbc-4f4f-80ef-9f0d4ae21d53',
-    animated: true,
-    id: 'reactflow__edge-a8c86331-880f-43d1-8bdb-906f5b2715b06e61e128-1d27-4cad-b597-653990a9ca67-24a7188e-d17b-4a5f-94a0-89286edc8b9f4b05ea04-ecbc-4f4f-80ef-9f0d4ae21d53',
-  },
-];
-
-interface Props {}
-
-const WorkflowCreate: FC<Props> = () => {
+const WorkflowEdit: FC<Props> = ({ definition }) => {
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
   const open = Boolean(menuEl);
@@ -183,8 +90,8 @@ const WorkflowCreate: FC<Props> = () => {
   const navigate = useNavigate();
   const [formLoading, setFormLoading] = useState<boolean>(false);
 
-  const [nodes, _, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, _, onNodesChange] = useNodesState(definition.uiObject.react.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(definition.uiObject.react.edges);
   const { addNodes } = useReactFlow();
 
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
@@ -195,10 +102,10 @@ const WorkflowCreate: FC<Props> = () => {
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
-      name: '',
-      description: '',
-      global: {},
-      status: 'active',
+      name: definition.name,
+      description: definition.description,
+      global: definition?.global ?? {},
+      status: definition.status,
     },
   });
 
@@ -278,8 +185,8 @@ const WorkflowCreate: FC<Props> = () => {
     };
 
     await httpClient
-      .post(
-        '/definition/create',
+      .put(
+        `/definition/edit/${definition._id}`,
         {
           workflowData,
           key: 'react',
@@ -295,15 +202,15 @@ const WorkflowCreate: FC<Props> = () => {
         }
       )
       .then(() => {
-        enqueueSnackbar('Workflow added successfully', {
+        enqueueSnackbar('Workflow updated successfully', {
           variant: 'success',
           autoHideDuration: 2 * 1000,
         });
-        navigate('/workflows');
+        navigate(`/workflows/${definition._id}`);
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar('Workflow addition failed', {
+        enqueueSnackbar('Workflow updated failed', {
           variant: 'error',
           autoHideDuration: 2 * 1000,
         });
@@ -500,4 +407,4 @@ const WorkflowCreate: FC<Props> = () => {
   );
 };
 
-export default WorkflowCreate;
+export default WorkflowEdit;

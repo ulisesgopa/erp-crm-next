@@ -177,7 +177,7 @@ export const POST = async (req: Request) => {
 
   return NextResponse.json(
     {
-      message: "Processed completed",
+      message: "Processing complete",
       data: {
         success: listenTaskProcessResult.success,
       },
