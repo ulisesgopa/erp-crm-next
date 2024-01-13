@@ -22,6 +22,7 @@ SaasHQ is a CRM / ERP starter built on top of Next.JS 14 using TypeScript, great
   <a href="#installation"><strong>Installation</strong></a> ·
   <a href="#repo-activity"><strong>Repo activity</strong></a> ·
   <a href="#license"><strong>License</strong></a>
+  <a href="https://discord.gg/kBhAUKBMgf"><strong>Discord</strong>  
 </p>
 <br/>
 
