@@ -1,5 +1,7 @@
 "use client";
 
+import React from 'react';
+
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -45,7 +47,7 @@ import { LoadingButton } from '@mui/lab';
 import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import ShieldIcon from '@mui/icons-material/Shield';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
@@ -173,14 +175,15 @@ const initialEdges: Edge[] = [
   },
 ];
 
-interface Props {}
+type Props = {}
 
-const WorkflowCreate: FC<Props> = () => {
+const WorkflowCreate: React.FC<Props> = () => {
+
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
   const open = Boolean(menuEl);
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const [formLoading, setFormLoading] = useState<boolean>(false);
 
   const [nodes, _, onNodesChange] = useNodesState(initialNodes);
@@ -190,7 +193,7 @@ const WorkflowCreate: FC<Props> = () => {
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
 
   const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
-
+  
   const { control, setValue, watch, handleSubmit, formState } = useForm<WorkflowMetadataFormSchema>({
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
@@ -299,7 +302,7 @@ const WorkflowCreate: FC<Props> = () => {
           variant: 'success',
           autoHideDuration: 2 * 1000,
         });
-        navigate('/workflows');
+        router.push('/workflows');
       })
       .catch((error) => {
         console.error(error);
@@ -311,8 +314,8 @@ const WorkflowCreate: FC<Props> = () => {
       .finally(() => {
         setFormLoading(() => false);
       });
-  });
-
+  });  
+  
   return (
     <Box>
       <Stack
