@@ -49,8 +49,6 @@ const EmailRoute = async () => {
         />
       </Suspense>
     </Container>
-    /*     <div className="h-full">
-    </div> */
   );
 };
 
