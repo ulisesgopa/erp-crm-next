@@ -75,7 +75,7 @@ You can try it here [demo.saashq.org](https://demo.saashq.org), login via Google
 5. Fix all Types issue (no more "any") - in progress
 6. i18n - localization - in progress (if anyone want to help I will be very happy)
 7. Turborepo - in planning
-8. Upgrade to Next.js 14 - comlpete
+8. Upgrade to Next.js 14 - complete
 9. Email client - in planning
 10. More Marketing Automation Tools - in planning
 
