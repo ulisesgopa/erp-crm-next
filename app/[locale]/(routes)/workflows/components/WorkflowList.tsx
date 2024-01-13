@@ -2,37 +2,25 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Box, Button, Card, CardContent, Chip, Skeleton, Stack, Typography } from '@mui/material';
-import { Link, BrowserRouter as Router } from 'react-router-dom';
-import AddIcon from '@mui/icons-material/Add';
+import { Stack } from '@mui/material';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Box } from '@radix-ui/themes';
+import Link from 'next/link';
 import { format } from 'date-fns';
 
 const WorkflowListView = ({ data }: any) => {
   const [isLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
-    <Router>
-    <Box
-      sx={{
-        height: '100%',
-        width: '100%',
-        padding: 3,
-      }}
-    >
+    <Box className="height: 100%, width: 100%, padding: 3px">
       <Stack rowGap={4}>
         <Stack direction={'row'} justifyContent={'flex-end'} alignItems={'center'}>
-          <Link to="/create">
-            <Button variant="outlined" endIcon={<AddIcon />}>
-              Create
+          <Link href={`/workflows/create`}>
+            <Button className="mb-5">
+              Create +
             </Button>
           </Link>
         </Stack>
@@ -43,18 +31,10 @@ const WorkflowListView = ({ data }: any) => {
                 style={{
                   width: '100%',
                 }}
-                key={item._id}
-                to={`/workflows/${item._id}`}
+                key={item.id}
+                href={`/workflows/${item.id}`}
               >
-                <Card
-                  elevation={1}
-                  sx={{
-                    width: '100%',
-                    ':hover': {
-                      backgroundColor: (theme) => theme.palette.grey['100'],
-                    },
-                  }}
-                >
+                <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
                   <CardContent>
                     <Stack
                       sx={{
@@ -64,18 +44,12 @@ const WorkflowListView = ({ data }: any) => {
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Typography variant="h5">{item.name}</Typography>
-                      <Chip label={item.status.toUpperCase()} color={item.status === 'active' ? 'primary' : 'error'} />
+                      <span>{item.name}</span>
+                      <Badge color={item.status === 'active' ? 'primary' : 'error'}>{item.status.toUpperCase()}</Badge>
                     </Stack>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        paddingY: 2,
-                        width: '100%',
-                      }}
-                    >
+                    <span style={{paddingTop:2, width:'100%'}}>
                       {item.description}
-                    </Typography>
+                    </span>
                     <Stack
                       sx={{
                         width: '100%',
@@ -84,40 +58,27 @@ const WorkflowListView = ({ data }: any) => {
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Typography component={'time'} dateTime={item.createdAt}>
+                      <span>
                         Created at: {format(new Date(item.createdAt), 'dd MMM, yyyy')}
-                      </Typography>
-                      <Typography component={'time'} dateTime={item.updatedAt}>
+                      </span>
+                      <span>
                         Updated at: {format(new Date(item.updatedAt), 'dd MMM, yyyy')}
-                      </Typography>
+                      </span>
                     </Stack>
                   </CardContent>
                 </Card>
               </Link>
             ))}
             {data?.length < 1 ? (
-              <Typography
-                sx={{
-                  textAlign: 'center',
-                  width: '100%',
-                }}
-              >
+              <span style={{textAlign: "center", width: "100%"}}>
                 No workflow definitions found!
-              </Typography>
+              </span>
             ) : null}
           </Stack>
         )}
         {isLoading && (
           <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={2}>
-            <Card
-              elevation={1}
-              sx={{
-                width: '100%',
-                ':hover': {
-                  backgroundColor: (theme) => theme.palette.grey['100'],
-                },
-              }}
-            >
+            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
                 <Stack
                   sx={{
@@ -127,10 +88,10 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="rounded" height={'30px'} width={'75px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="height=30px width=75px" />
                 </Stack>
-                <Skeleton animation="wave" variant="text" />
+                <Skeleton />
                 <Stack
                   sx={{
                     width: '100%',
@@ -139,20 +100,12 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="width=100px" />
                 </Stack>
               </CardContent>
             </Card>
-            <Card
-              elevation={1}
-              sx={{
-                width: '100%',
-                ':hover': {
-                  backgroundColor: (theme) => theme.palette.grey['100'],
-                },
-              }}
-            >
+            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
                 <Stack
                   sx={{
@@ -162,10 +115,10 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="rounded" height={'30px'} width={'75px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="height=30px width=75px" />
                 </Stack>
-                <Skeleton animation="wave" variant="text" />
+                <Skeleton />
                 <Stack
                   sx={{
                     width: '100%',
@@ -174,20 +127,12 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="width=100px" />
                 </Stack>
               </CardContent>
             </Card>
-            <Card
-              elevation={1}
-              sx={{
-                width: '100%',
-                ':hover': {
-                  backgroundColor: (theme) => theme.palette.grey['100'],
-                },
-              }}
-            >
+            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
                 <Stack
                   sx={{
@@ -197,10 +142,10 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="rounded" height={'30px'} width={'75px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="height=30px width=75px" />
                 </Stack>
-                <Skeleton animation="wave" variant="text" />
+                <Skeleton />
                 <Stack
                   sx={{
                     width: '100%',
@@ -209,8 +154,8 @@ const WorkflowListView = ({ data }: any) => {
                   justifyContent={'space-between'}
                   alignItems={'center'}
                 >
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
-                  <Skeleton animation="wave" variant="text" width={'100px'} />
+                  <Skeleton className="width=100px" />
+                  <Skeleton className="width=100px" />
                 </Stack>
               </CardContent>
             </Card>
@@ -218,7 +163,6 @@ const WorkflowListView = ({ data }: any) => {
         )}
       </Stack>
     </Box>
-    </Router>
   );
 };
 
