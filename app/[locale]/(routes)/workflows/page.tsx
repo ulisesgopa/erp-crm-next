@@ -1,20 +1,34 @@
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import Container from "../components/ui/Container";
+
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { Session } from "next-auth";
+
+import WorkflowListPage from "./components/WorkflowList";
 import SuspenseLoading from "@/components/loadings/suspense";
 
-const WorkflowPage = async () => {
+import { getWorkflows } from "@/actions/workflows/get-workflows";
+
+export const maxDuration = 300;
+
+const WorkflowsPage = async () => {
+  const workflows = await getWorkflows();
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session) return redirect("/sign-in");
+
   return (
     <Container
       title="Workflows"
-      description={"Manage all your workflows here"}
+      description={"Everything you need to know about workflows"}
     >
-      {/*
-      TODO: Think about how to handle the loading of the data to make better UX with suspense
-      */}
       <Suspense fallback={<SuspenseLoading />}>
+        <WorkflowListPage data={workflows} />
       </Suspense>
     </Container>
   );
 };
 
-export default WorkflowPage;
+export default WorkflowsPage;

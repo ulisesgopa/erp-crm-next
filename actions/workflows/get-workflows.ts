@@ -1,10 +1,6 @@
 import { prismadb } from "@/lib/prisma";
 
-export const getWorkflowsData = async (definitionId: string) => {
-  const data = await prismadb.definitions.findFirst({
-    where: {
-      id: definitionId,
-    },     
-  });
+export const getWorkflows = async () => {
+  const data = await prismadb.definitions.findMany({});
   return data;
 };
