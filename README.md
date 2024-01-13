@@ -3,14 +3,28 @@
 </a>
 
 <p align="center">
-SaasHQ is a CRM / ERP starter built on top of the Next.JS using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Upload things as an S3 blob for document storage.
+SaasHQ is a CRM / ERP starter built on top of Next.JS 14 using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Upload things as an S3 blob for document storage.
 </p>
 
 <p align="center">
+  <a href="https://twitter.com/saashqdev">
+    <img alt="X URL" src="https://img.shields.io/twitter/url?url=https%3A%2F%2Ftwitter.com%2Fsaashqdev">
+  </a>
   <a href="https://github.com/saashqdev/saashq/blob/main/LICENSE">
     <img alt="GitHub License" src="https://img.shields.io/github/license/saashqdev/saashq">
   </a>
 </p>
+
+<p align="center">
+  <a href="#online-demo"><strong>Introduction</strong></a> ·
+  <a href="#tech-stack--features"><strong>Tech Stack + Features</strong></a> ·
+  <a href="#roadmap"><strong>Roadmap</strong></a> ·
+  <a href="#installation"><strong>Installation</strong></a> ·
+  <a href="#repo-activity"><strong>Repo activity</strong></a> ·
+  <a href="#license"><strong>License</strong></a>
+</p>
+<br/>
+
 
 ## Online Demo
 
@@ -181,7 +195,7 @@ Available soon at: https://docs.saashq.org
 
 [saashq.org](https://saashq.org)
 
-## Repo Activity (by Axiom)
+## Repo Activity
 
 ![Alt](https://repobeats.axiom.co/api/embed/2e232d8085eb660d127f4d8885e560dd08450630.svg "Repobeats analytics image")
 
