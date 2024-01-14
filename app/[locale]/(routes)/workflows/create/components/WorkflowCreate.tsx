@@ -10,7 +10,6 @@ import {
   IconButton,
   ListItemIcon,
   ListItemText,
-  Menu,
   MenuItem,
   Slide,
   Stack,
@@ -18,11 +17,21 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { 
+  ChevronDown,
+  Sigma
+} from "lucide-react";
 import type { TransitionProps } from '@mui/material/transitions';
-import type { FC, MouseEvent, ReactElement, Ref } from 'react';
+import type { MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { Connection, Edge, Node } from 'reactflow';
@@ -39,7 +48,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { z } from 'zod';
 import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Error } from '@mui/icons-material';
-import FunctionsIcon from '@mui/icons-material/Functions';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { httpClient } from '@/lib/http/httpClient';
@@ -338,58 +346,53 @@ const WorkflowCreate: React.FC<Props> = () => {
             <Badge variant="destructive">
               {Object.keys(formState?.errors).length}
             </Badge>
-            <Button onClick={openDefinitionDialog}>
+            <Button variant="secondary" onClick={openDefinitionDialog}>
               Configure Definition
             </Button>
-            <Button onClick={handleMenuOpen}>
-              Add Task
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={menuEl}
-              open={open}
-              onClose={handleMenuClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={() => addNewTask('function')}>
-                <ListItemIcon>
-                  <FunctionsIcon />
-                </ListItemIcon>
-                <ListItemText>Function</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('start')}>
-                <ListItemIcon>
-                  <PlayCircleOutlineIcon />
-                </ListItemIcon>
-                <ListItemText>Start</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('end')}>
-                <ListItemIcon>
-                  <StopCircleIcon />
-                </ListItemIcon>
-                <ListItemText>End</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('guard')}>
-                <ListItemIcon>
-                  <ShieldIcon />
-                </ListItemIcon>
-                <ListItemText>Guard</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('wait')}>
-                <ListItemIcon>
-                  <PanToolIcon />
-                </ListItemIcon>
-                <ListItemText>Wait</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('listen')}>
-                <ListItemIcon>
-                  <WebhookIcon />
-                </ListItemIcon>
-                <ListItemText>Listen</ListItemText>
-              </MenuItem>
-            </Menu>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="secondary" onClick={handleMenuOpen}>
+                  New Task&nbsp;
+                  <ChevronDown width="16" height="16" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">              
+                <DropdownMenuItem onClick={() => addNewTask('function')}>
+                  <Sigma width="16" height="16"  />
+                  Function
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('start')}>
+                  <ListItemIcon>
+                    <PlayCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText>Start</ListItemText>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('end')}>
+                  <ListItemIcon>
+                    <StopCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText>End</ListItemText>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('guard')}>
+                  <ListItemIcon>
+                    <ShieldIcon />
+                  </ListItemIcon>
+                  <ListItemText>Guard</ListItemText>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('wait')}>
+                  <ListItemIcon>
+                    <PanToolIcon />
+                  </ListItemIcon>
+                  <ListItemText>Wait</ListItemText>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('listen')}>
+                  <ListItemIcon>
+                    <WebhookIcon />
+                  </ListItemIcon>
+                  <ListItemText>Listen</ListItemText>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Stack>
           <LoadingButton loading={formLoading} onClick={submitHandle}>
             Submit
