@@ -28,7 +28,12 @@ import { Badge } from "@/components/ui/badge";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { 
   ChevronDown,
-  Sigma
+  Sigma,
+  PlayCircle,
+  CircleOff,
+  ShieldCheck, 
+  Hand,
+  Webhook
 } from "lucide-react";
 import type { TransitionProps } from '@mui/material/transitions';
 import type { MouseEvent, ReactElement, Ref } from 'react';
@@ -48,16 +53,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { z } from 'zod';
 import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Error } from '@mui/icons-material';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useRouter } from 'next/navigation';
-import ShieldIcon from '@mui/icons-material/Shield';
-import PanToolIcon from '@mui/icons-material/PanTool';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
-import WebhookIcon from '@mui/icons-material/Webhook';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -356,40 +356,30 @@ const WorkflowCreate: React.FC<Props> = () => {
                   <ChevronDown width="16" height="16" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">              
+              <DropdownMenuContent align="center">              
                 <DropdownMenuItem onClick={() => addNewTask('function')}>
-                  <Sigma width="16" height="16"  />
-                  Function
+                  <Sigma width="20" height="20" />
+                  <span className="pl-4"> Function </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('start')}>
-                  <ListItemIcon>
-                    <PlayCircleOutlineIcon />
-                  </ListItemIcon>
-                  <ListItemText>Start</ListItemText>
+                  <PlayCircle width="20" height="20" />
+                  <span className="pl-4"> Start </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('end')}>
-                  <ListItemIcon>
-                    <StopCircleIcon />
-                  </ListItemIcon>
-                  <ListItemText>End</ListItemText>
+                  <CircleOff width="20" height="20" />
+                  <span className="pl-4"> End </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('guard')}>
-                  <ListItemIcon>
-                    <ShieldIcon />
-                  </ListItemIcon>
-                  <ListItemText>Guard</ListItemText>
+                  <ShieldCheck width="20" height="20" />
+                  <span className="pl-4"> Guard </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('wait')}>
-                  <ListItemIcon>
-                    <PanToolIcon />
-                  </ListItemIcon>
-                  <ListItemText>Wait</ListItemText>
+                  <Hand width="20" height="20" />
+                  <span className="pl-4"> Wait </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('listen')}>
-                  <ListItemIcon>
-                    <WebhookIcon />
-                  </ListItemIcon>
-                  <ListItemText>Listen</ListItemText>
+                  <Webhook width="20" height="20" />
+                  <span className="pl-4"> Listen </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
