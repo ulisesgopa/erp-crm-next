@@ -1,14 +1,10 @@
 "use client";
 
-import React from 'react';
-
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AppBar,
-  Badge,
   Box,
-  Button,
   Container,
   Dialog,
   IconButton,
@@ -22,6 +18,9 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { LoadingButton } from "@/components/ui/loading-button";
 import type { TransitionProps } from '@mui/material/transitions';
 import type { FC, MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -43,7 +42,6 @@ import { Error } from '@mui/icons-material';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { LoadingButton } from '@mui/lab';
 import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
@@ -337,15 +335,15 @@ const WorkflowCreate: React.FC<Props> = () => {
           columnGap={2}
         >
           <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-            <Badge color="error" badgeContent={Object.keys(formState?.errors).length}>
-              <Button variant="outlined" onClick={openDefinitionDialog}>
-                Configure Definition
-              </Button>
+            <Badge variant="destructive">
+              {Object.keys(formState?.errors).length}
             </Badge>
-            <Button variant="contained" onClick={handleMenuOpen}>
+            <Button onClick={openDefinitionDialog}>
+              Configure Definition
+            </Button>
+            <Button onClick={handleMenuOpen}>
               Add Task
             </Button>
-
             <Menu
               id="basic-menu"
               anchorEl={menuEl}
@@ -393,7 +391,7 @@ const WorkflowCreate: React.FC<Props> = () => {
               </MenuItem>
             </Menu>
           </Stack>
-          <LoadingButton variant="contained" loading={formLoading} onClick={submitHandle}>
+          <LoadingButton loading={formLoading} onClick={submitHandle}>
             Submit
           </LoadingButton>
         </Stack>
