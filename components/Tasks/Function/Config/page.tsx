@@ -7,9 +7,7 @@ import type { FC, ReactElement, Ref } from 'react';
 import { forwardRef, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import CloseIcon from '@mui/icons-material/Close';
 import {
-  Button,
   Dialog,
   AppBar,
   Toolbar,
@@ -24,9 +22,11 @@ import {
   Step,
   StepLabel,
 } from '@mui/material';
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { Error } from '@mui/icons-material';
-import ParamsMonaco from './ParamsMonaco';
-import ExecMonaco from './ExecMonaco';
+import ParamsMonaco from './ParamsMonaco/ParamsMonaco';
+import ExecMonaco from './ExecMonaco/ExecMonaco';
 import { useReactFlow } from 'reactflow';
 
 const Transition = forwardRef(function Transition(
@@ -157,7 +157,7 @@ async function handler(){
           (paramsEditorError ? 1 : 0)
         }
       >
-        <Button variant="outlined" onClick={handleConfigPanelOpen}>
+        <Button variant="outline" onClick={handleConfigPanelOpen}>
           Configure
         </Button>
       </Badge>
@@ -165,7 +165,7 @@ async function handler(){
         <AppBar position="sticky">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleConfigPanelClose} aria-label="close">
-              <CloseIcon />
+              <X />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               {[initialValue?.label, 'Configuration'].join(' ')}
@@ -235,7 +235,7 @@ async function handler(){
                   />
                   <Button
                     type="button"
-                    variant="outlined"
+                    variant="outline"
                     onClick={() => {
                       setActiveStep(() => 1);
                     }}
@@ -271,14 +271,14 @@ async function handler(){
                   <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
                     <Button
                       type="button"
-                      variant="outlined"
+                      variant="outline"
                       onClick={() => {
                         setActiveStep(() => 0);
                       }}
                     >
                       Prev
                     </Button>
-                    <Button variant="contained" type="submit">
+                    <Button type="submit">
                       Submit
                     </Button>
                   </Stack>
@@ -286,7 +286,6 @@ async function handler(){
               )}
             </form>
             <Button
-              variant="contained"
               color="error"
               type="button"
               onClick={() => {

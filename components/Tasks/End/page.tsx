@@ -1,12 +1,13 @@
-import { Card, CardHeader, Tooltip, CardActions } from '@mui/material';
-import type { FC } from 'react';
-import { useCallback } from 'react';
-import type { NodeProps } from 'reactflow';
-import { Handle, Position, useReactFlow } from 'reactflow';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
+import { Card, CardHeader, CardActions } from "@mui/material";
+import type { FC } from "react";
+import { useCallback } from "react";
+import type { NodeProps } from "reactflow";
+import { Handle, Position, useReactFlow } from "reactflow";
+import { CircleOff } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent} from "@/components/ui/tooltip";
 
-import type { EndConfigSchema } from './Config';
-import EndConfigPanel from './Config';
+import type { EndConfigSchema } from "./Config/EndConfigPanel";
+import EndConfigPanel from "./Config/EndConfigPanel";
 
 interface DataProps {
   label: string;
@@ -50,9 +51,16 @@ const EndTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
         title={data.label}
         subheader={'End'}
         action={
-          <Tooltip title={['ID', id].join(' : ')}>
-            <StopCircleIcon color="primary" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <CircleOff width="15" height="15" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                  {['ID', id].join(' : ')}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         }
       />
       <CardActions>

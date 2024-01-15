@@ -1,14 +1,15 @@
 "use client";
 
-import { Card, CardActions, CardHeader, Tooltip } from '@mui/material';
+import { Card, CardActions, CardHeader } from '@mui/material';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { NodeProps } from 'reactflow';
 import { Handle, Position, useReactFlow } from 'reactflow';
 
-import FunctionsIcon from '@mui/icons-material/Functions';
-import type { FunctionConfigSchema } from './Config';
-import FunctionConfigPanel from './Config';
+import { Sigma } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import type { FunctionConfigSchema } from './Config/page';
+import FunctionConfigPanel from './Config/page';
 
 interface DataProp {
   label: string;
@@ -52,14 +53,20 @@ const FunctionTask: FC<NodeProps<DataProp>> = ({ data, id }) => {
   return (
     <Card>
       <Handle type="target" position={Position.Top} id={data?.inputBoundId} />
-
       <CardHeader
         title={data?.label ?? ''}
         subheader={'Function'}
         action={
-          <Tooltip title={['ID', id].join(' : ')}>
-            <FunctionsIcon color="primary" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Sigma width="15" height="15" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                  {['ID', id].join(' : ')}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         }
       />
       <CardActions>

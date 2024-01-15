@@ -1,20 +1,26 @@
-import { Card, CardHeader, Tooltip, CardActions } from '@mui/material';
+"use client";
+
+import { Card, CardActions, CardHeader } from '@mui/material';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { NodeProps } from 'reactflow';
 import { Handle, Position, useReactFlow } from 'reactflow';
-import type { WaitConfigSchema } from './Config';
-import WaitConfigPanel from './Config';
-import PanToolIcon from '@mui/icons-material/PanTool';
 
-interface DataProps {
+import { ShieldCheck } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import type { GuardConfigSchema } from './Config/page';
+import GuardConfigPanel from './Config/page';
+
+interface DataProp {
   label: string;
-  params: { taskNames: string[] };
   inputBoundId: string;
   outputBoundId: string;
+  params: Record<string, any>;
+  exec: string;
+  execTs: string;
 }
 
-const WaitTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
+const GuardTask: FC<NodeProps<DataProp>> = ({ data, id }) => {
   const { setNodes, getNode } = useReactFlow();
 
   const deleteNode = useCallback(() => {
@@ -22,7 +28,7 @@ const WaitTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
   }, [id, setNodes]);
 
   const changeValues = useCallback(
-    (value: WaitConfigSchema) => {
+    (value: GuardConfigSchema) => {
       const currentNode = getNode(id);
       if (currentNode) {
         const newData = {
@@ -49,15 +55,22 @@ const WaitTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
       <Handle type="target" position={Position.Top} id={data?.inputBoundId} />
       <CardHeader
         title={data?.label ?? ''}
-        subheader={'Wait'}
+        subheader={'Guard'}
         action={
-          <Tooltip title={['ID', id].join(' : ')}>
-            <PanToolIcon color="primary" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ShieldCheck width="15" height="15" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                  {['ID', id].join(' : ')}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         }
       />
       <CardActions>
-        <WaitConfigPanel id={id} initialValue={data} deleteNode={deleteNode} onSubmit={changeValues} />
+        <GuardConfigPanel id={id} initialValue={data} deleteNode={deleteNode} onSubmit={changeValues} />
       </CardActions>
 
       <Handle type="source" position={Position.Bottom} id={data?.outputBoundId} />
@@ -65,4 +78,4 @@ const WaitTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
   );
 };
 
-export default WaitTask;
+export default GuardTask;

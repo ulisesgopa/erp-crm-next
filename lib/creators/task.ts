@@ -1,11 +1,11 @@
 "use client";
 
-import EndTask from "@/components/Tasks/End";
-import FunctionTask from '@/components/Tasks/Function';
-import GuardTask from '@/components/Tasks/Guard';
-import ListenTask from '@/components/Tasks/Listen';
-import StartTask from '@/components/Tasks/Start';
-import WaitTask from '@/components/Tasks/Wait';
+import EndTask from "@/components/Tasks/End/page";
+import FunctionTask from '@/components/Tasks/Function/page';
+import GuardTask from '@/components/Tasks/Guard/page';
+import ListenTask from '@/components/Tasks/Listen/page';
+import StartTask from '@/components/Tasks/Start/page';
+import WaitTask from '@/components/Tasks/Wait/page';
 import type { NodeTypes, Node } from 'reactflow';
 
 export const nodeTypes: NodeTypes = {
