@@ -46,7 +46,7 @@ const StartTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
   );
 
   return (
-    <Card>
+    <Card className="shadow-md">
       <CardHeader>
         <CardTitle className="flex gap-2">
           {data.label}
