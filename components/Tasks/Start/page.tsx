@@ -1,11 +1,12 @@
-import { Card, CardHeader, Tooltip, CardActions } from '@mui/material';
+import { Card, CardHeader, CardActions } from '@mui/material';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { NodeProps } from 'reactflow';
 import { Handle, Position, useReactFlow } from 'reactflow';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import type { StartConfigSchema } from './Config';
-import StartConfigPanel from './Config';
+import type { StartConfigSchema } from './Config/StartConfigPanel';
+import StartConfigPanel from './Config/StartConfigPanel';
+import { PlayCircle } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface DataProps {
   label: string;
@@ -48,9 +49,16 @@ const StartTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
         title={data?.label ?? ''}
         subheader={'Start'}
         action={
-          <Tooltip title={['ID', id].join(' : ')}>
-            <PlayCircleOutlineIcon color="primary" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PlayCircle width="15" height="15" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                  {['ID', id].join(' : ')}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         }
       />
       <CardActions>

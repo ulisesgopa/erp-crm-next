@@ -5,9 +5,8 @@ import type { FC, ReactElement, Ref } from 'react';
 import { forwardRef, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import CloseIcon from '@mui/icons-material/Close';
+import { X } from "lucide-react";
 import {
-  Button,
   Dialog,
   AppBar,
   Toolbar,
@@ -18,8 +17,8 @@ import {
   TextField,
   Slide,
   Badge,
-  Autocomplete,
 } from '@mui/material';
+import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
 
 const Transition = forwardRef(function Transition(
@@ -31,43 +30,35 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const waitConfigSchema = z.object({
+const endConfigSchema = z.object({
   label: z
     .string({
       required_error: 'Label is required',
     })
     .min(1, 'Label is required'),
-  params: z.object({
-    taskNames: z.array(z.string()),
-  }),
 });
 
-export type WaitConfigSchema = z.infer<typeof waitConfigSchema>;
+export type EndConfigSchema = z.infer<typeof endConfigSchema>;
 
 interface Props {
-  onSubmit: (value: WaitConfigSchema) => void;
-  initialValue: WaitConfigSchema;
+  onSubmit: (value: EndConfigSchema) => void;
+  initialValue: EndConfigSchema;
   deleteNode: Function;
   id: string;
 }
 
-const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
+const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
   const { getNodes } = useReactFlow();
   const [openConfigPanel, setOpenConfigPanel] = useState<boolean>(false);
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
-  const [taskNamesUnknownError, setTaskNamesUnknownError] = useState<string | null>(null);
 
-  const { control, handleSubmit, formState, watch } = useForm<WaitConfigSchema>({
-    resolver: zodResolver(waitConfigSchema),
+  const { control, handleSubmit, formState, watch } = useForm<EndConfigSchema>({
+    resolver: zodResolver(endConfigSchema),
     values: {
       label: initialValue?.label ?? '',
-      params: initialValue?.params ?? {
-        taskNames: [],
-      },
     },
   });
 
-  const taskNamesValue = watch('params.taskNames');
   const labelValue = watch('label');
 
   const { enqueueSnackbar } = useSnackbar();
@@ -82,7 +73,7 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
           .map((node) => node?.data?.label)
           .includes(labelValue)
       ) {
-        setLabelUniqueError(() => 'Task name already exist');
+        setLabelUniqueError(() => 'Task name already exists');
       } else {
         setLabelUniqueError(() => null);
       }
@@ -92,18 +83,6 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
       clearTimeout(timeout);
     };
   }, [getNodes, id, labelValue]);
-
-  useEffect(() => {
-    const nodes = getNodes().map((node) => node.data?.label);
-
-    const unknownNodes = taskNamesValue.filter((item) => !nodes.includes(item));
-
-    if (unknownNodes && unknownNodes.length > 0) {
-      setTaskNamesUnknownError(() => `${unknownNodes.join(', ')} is/are unknown Tasks`);
-    } else {
-      setTaskNamesUnknownError(() => null);
-    }
-  }, [getNodes, taskNamesValue]);
 
   const submitHandler = handleSubmit(async (value) => {
     onSubmit(value);
@@ -124,13 +103,8 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
 
   return (
     <>
-      <Badge
-        color="error"
-        badgeContent={
-          Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0) + (taskNamesUnknownError ? 1 : 0)
-        }
-      >
-        <Button variant="outlined" onClick={handleConfigPanelOpen}>
+      <Badge color="error" badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}>
+        <Button variant="outline" onClick={handleConfigPanelOpen}>
           Configure
         </Button>
       </Badge>
@@ -138,7 +112,7 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
         <AppBar position="sticky">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleConfigPanelClose} aria-label="close">
-              <CloseIcon />
+              <X />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               {[initialValue?.label, 'Configuration'].join(' ')}
@@ -177,47 +151,12 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
                   )}
                 />
 
-                <Controller
-                  control={control}
-                  name="params.taskNames"
-                  render={({ field, fieldState }) => (
-                    <Autocomplete
-                      onChange={(_, value) => {
-                        field.onChange(value);
-                      }}
-                      multiple
-                      options={
-                        getNodes()
-                          ?.filter((node) => node.id !== id)
-                          ?.map((node) => node.data.label) ?? []
-                      }
-                      getOptionLabel={(option) => option}
-                      disablePortal
-                      value={taskNamesValue}
-                      isOptionEqualToValue={(option, val) => option === val}
-                      renderInput={(params) => (
-                        <TextField
-                          {...field}
-                          {...params}
-                          error={!!fieldState.error?.message || !!taskNamesUnknownError}
-                          helperText={taskNamesUnknownError ?? fieldState.error?.message}
-                          variant="outlined"
-                          label="Tasks"
-                          placeholder="Which task to wait"
-                          fullWidth
-                        />
-                      )}
-                    />
-                  )}
-                />
-
-                <Button variant="contained" type="submit">
+                <Button type="submit">
                   Submit
                 </Button>
               </Stack>
             </form>
             <Button
-              variant="contained"
               color="error"
               type="button"
               onClick={() => {
@@ -233,4 +172,4 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
   );
 };
 
-export default WaitConfigPanel;
+export default EndConfigPanel;

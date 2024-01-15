@@ -1,11 +1,12 @@
-import { Card, CardHeader, Tooltip, CardActions } from '@mui/material';
+import { Card, CardHeader, CardActions } from '@mui/material';
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { NodeProps } from 'reactflow';
 import { Handle, Position, useReactFlow } from 'reactflow';
-import type { ListenConfigSchema } from './Config';
-import ListenConfigPanel from './Config';
-import WebhookIcon from '@mui/icons-material/Webhook';
+import type { ListenConfigSchema } from './Config/ListenConfigPanel';
+import ListenConfigPanel from './Config/ListenConfigPanel';
+import { Webhook } from 'lucide-react';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent} from "@/components/ui/tooltip";
 
 interface DataProps {
   label: string;
@@ -51,9 +52,16 @@ const ListenTask: FC<NodeProps<DataProps>> = ({ data, id }) => {
         title={data?.label ?? ''}
         subheader={'Listen'}
         action={
-          <Tooltip title={['ID', id].join(' : ')}>
-            <WebhookIcon color="primary" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Webhook width="15" height="15" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                  {['ID', id].join(' : ')}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         }
       />
       <CardActions>

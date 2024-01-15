@@ -8,8 +8,6 @@ import {
   Container,
   Dialog,
   IconButton,
-  ListItemIcon,
-  ListItemText,
   MenuItem,
   Slide,
   Stack,
@@ -356,29 +354,29 @@ const WorkflowCreate: React.FC<Props> = () => {
                   <ChevronDown width="16" height="16" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">              
+              <DropdownMenuContent align="start" className="w-[125px]">              
                 <DropdownMenuItem onClick={() => addNewTask('function')}>
-                  <Sigma width="20" height="20" />
+                  <Sigma width="18" height="18" />
                   <span className="pl-4"> Function </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('start')}>
-                  <PlayCircle width="20" height="20" />
+                  <PlayCircle width="18" height="18" />
                   <span className="pl-4"> Start </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('end')}>
-                  <CircleOff width="20" height="20" />
+                  <CircleOff width="18" height="18" />
                   <span className="pl-4"> End </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('guard')}>
-                  <ShieldCheck width="20" height="20" />
+                  <ShieldCheck width="18" height="18" />
                   <span className="pl-4"> Guard </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('wait')}>
-                  <Hand width="20" height="20" />
+                  <Hand width="18" height="18" />
                   <span className="pl-4"> Wait </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => addNewTask('listen')}>
-                  <Webhook width="20" height="20" />
+                  <Webhook width="18" height="18" />
                   <span className="pl-4"> Listen </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

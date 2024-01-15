@@ -5,9 +5,8 @@ import type { FC, ReactElement, Ref } from 'react';
 import { forwardRef, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import CloseIcon from '@mui/icons-material/Close';
+import { X } from 'lucide-react';
 import {
-  Button,
   Dialog,
   AppBar,
   Toolbar,
@@ -19,6 +18,7 @@ import {
   Slide,
   Badge,
 } from '@mui/material';
+import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
 
 const Transition = forwardRef(function Transition(
@@ -114,7 +114,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
   return (
     <>
       <Badge color="error" badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}>
-        <Button variant="outlined" onClick={handleConfigPanelOpen}>
+        <Button variant="outline" onClick={handleConfigPanelOpen}>
           Configure
         </Button>
       </Badge>
@@ -122,7 +122,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
         <AppBar position="sticky">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleConfigPanelClose} aria-label="close">
-              <CloseIcon />
+              <X />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               {[initialValue?.label, 'Configuration'].join(' ')}
@@ -176,13 +176,12 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
                   )}
                 />
 
-                <Button variant="contained" type="submit">
+                <Button type="submit">
                   Submit
                 </Button>
               </Stack>
             </form>
             <Button
-              variant="contained"
               color="error"
               type="button"
               onClick={() => {
