@@ -51,7 +51,7 @@ const FunctionTask: FC<NodeProps<DataProp>> = ({ data, id }) => {
   );
 
   return (
-    <Card>
+    <Card className="shadow-md">
       <Handle type="target" position={Position.Top} id={data?.inputBoundId} />
       <CardHeader>
         <CardTitle className="flex gap-2">
