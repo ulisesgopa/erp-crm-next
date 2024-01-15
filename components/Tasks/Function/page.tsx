@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardActions, CardHeader } from '@mui/material';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { NodeProps } from 'reactflow';
@@ -53,10 +53,9 @@ const FunctionTask: FC<NodeProps<DataProp>> = ({ data, id }) => {
   return (
     <Card>
       <Handle type="target" position={Position.Top} id={data?.inputBoundId} />
-      <CardHeader
-        title={data?.label ?? ''}
-        subheader={'Function'}
-        action={
+      <CardHeader>
+        <CardTitle className="flex gap-2">
+          {data.label}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -66,12 +65,15 @@ const FunctionTask: FC<NodeProps<DataProp>> = ({ data, id }) => {
                   {['ID', id].join(' : ')}
               </TooltipContent>
             </Tooltip>
-          </TooltipProvider>
-        }
-      />
-      <CardActions>
+          </TooltipProvider>          
+        </CardTitle>
+        <CardDescription className="text-md text-muted-foreground">
+          {'Function'}
+        </CardDescription>  
+      </CardHeader>
+      <CardFooter>
         <FunctionConfigPanel id={id} initialValue={data} deleteNode={deleteNode} onSubmit={changeValues} />
-      </CardActions>
+      </CardFooter>
 
       <Handle type="source" position={Position.Bottom} id={data?.outputBoundId} />
     </Card>
