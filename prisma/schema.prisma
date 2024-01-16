@@ -801,6 +801,7 @@ enum DefinitionStatus {
 model Definitions {
   id                  String           @id @default(cuid())
   name                String
+  description         String
   tasks               Json[]
   global              Json?
   status              DefinitionStatus @default(active)

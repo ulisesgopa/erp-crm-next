@@ -3,16 +3,12 @@
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AppBar,
   Box,
   Container,
-  Dialog,
-  IconButton,
   MenuItem,
   Slide,
   Stack,
   TextField,
-  Toolbar,
   Typography,
 } from '@mui/material';
 import {
@@ -21,6 +17,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingButton } from "@/components/ui/loading-button";
@@ -33,6 +30,7 @@ import {
   Hand,
   Webhook
 } from "lucide-react";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import type { TransitionProps } from '@mui/material/transitions';
 import type { MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -47,7 +45,7 @@ import ReactFlow, {
   useNodesState,
   useReactFlow,
 } from 'reactflow';
-import CloseIcon from '@mui/icons-material/Close';
+import { X } from "lucide-react";
 import { z } from 'zod';
 import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Error } from '@mui/icons-material';
@@ -344,9 +342,114 @@ const WorkflowCreate: React.FC<Props> = () => {
             <Badge variant="destructive">
               {Object.keys(formState?.errors).length}
             </Badge>
-            <Button variant="secondary" onClick={openDefinitionDialog}>
-              Configure Definition
-            </Button>
+            <Dialog.Root open={definitionDialog}>
+              <Dialog.Trigger asChild>
+                <Button variant="secondary" onClick={openDefinitionDialog}>Configure Definition</Button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="data-[state=open]:animate-[dialog-overlay-show_1000ms] data-[state=closed]:animate-[dialog-overlay-hide_1000ms] fixed inset-0 bg-black/50" />
+                <Dialog.Content
+                  className={
+                    "data-[state=open]:animate-[dialog-content-show_1000ms] data-[state=closed]:animate-[dialog-content-hide_1000ms] fixed top-0 right-0 rounded-md border h-full bg-white dark:bg-slate-900 shadow-md overflow-hidden"
+                  }
+                >
+                  <div className="flex flex-col h-full w-[300]">
+                    <div className="flex justify-between w-full">
+                      <Dialog.Title className="font-semibold p-3 w-full">
+                        <span className="scroll-m-20 text-xl font-semibold tracking-tight">
+                          Configure Definition
+                        </span>
+                      </Dialog.Title>
+                      <Dialog.Close className="flex justify-end text-right w-full pr-5 pt-5">
+                        <Cross1Icon className="w-5 h-5 opacity-50 hover:opacity-100" />
+                      </Dialog.Close>
+                    </div>
+                    <Dialog.Description className="text-slate-400 p-3 overflow-auto opacity-75">
+                      Workflow Setup
+                    </Dialog.Description>                                
+                    <Container>
+                      <Stack
+                        sx={{
+                          padding: 2,
+                        }}
+                        justifyContent={'flex-start'}
+                        alignItems={'flex-start'}
+                        rowGap={4}
+                      >
+                        <Controller
+                          control={control}
+                          name="name"
+                          render={({ field, fieldState }) => (
+                            <TextField
+                              {...field}
+                              label="Name"
+                              placeholder="Name of the definition"
+                              error={!!fieldState?.error?.message}
+                              helperText={fieldState?.error?.message}
+                              fullWidth
+                            />
+                          )}
+                        />
+                        <Controller
+                          control={control}
+                          name="description"
+                          render={({ field, fieldState }) => (
+                            <TextField
+                              {...field}
+                              label="Description"
+                              placeholder="Description of the definition"
+                              error={!!fieldState?.error?.message}
+                              helperText={fieldState?.error?.message}
+                              multiline
+                              fullWidth
+                              minRows={4}
+                            />
+                          )}
+                        />
+                        <Controller
+                          control={control}
+                          name="status"
+                          render={({ field, fieldState }) => (
+                            <TextField
+                              {...field}
+                              label="Status"
+                              placeholder="Status of the definition"
+                              error={!!fieldState?.error?.message}
+                              helperText={fieldState?.error?.message}
+                              select
+                              fullWidth
+                            >
+                              <MenuItem value={'active'}>Active</MenuItem>
+                              <MenuItem value={'inactive'}>Inactive</MenuItem>
+                            </TextField>
+                          )}
+                        />
+                        <Typography>Global:</Typography>
+                        {globalEditorError && (
+                          <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
+                            <Error color="error" />
+                            <Typography>{globalEditorError}</Typography>
+                          </Stack>
+                        )}
+                        <WorkflowGlobalMonaco
+                          initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
+                          setValue={setValue}
+                          setError={handleGlobalEditorError}
+                        />
+                      </Stack>
+                    </Container>
+                    <div className="flex justify-end w-full p-3">
+                      {" "}
+                      <Dialog.Close asChild>
+                        <Button variant={"destructive"} onClick={() => setDefinitionDialog(false)}>
+                          Close
+                        </Button>
+                      </Dialog.Close>
+                    </div>      
+                  </div>
+                </Dialog.Content>
+              </Dialog.Portal>                
+            </Dialog.Root>
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="secondary" onClick={handleMenuOpen}>
@@ -403,90 +506,6 @@ const WorkflowCreate: React.FC<Props> = () => {
           <Controls />
           <Background />
         </ReactFlow>
-        <Dialog fullScreen open={definitionDialog} onClose={closeDefinitionDialog} TransitionComponent={Transition}>
-          <AppBar position="sticky">
-            <Toolbar>
-              <IconButton edge="start" color="inherit" onClick={closeDefinitionDialog} aria-label="close">
-                <CloseIcon />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                Configure Definition
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Container maxWidth="lg">
-            <Stack
-              sx={{
-                padding: 2,
-              }}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-              rowGap={4}
-            >
-              <Controller
-                control={control}
-                name="name"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Name"
-                    placeholder="Name of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    fullWidth
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="description"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Description"
-                    placeholder="Description about the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    multiline
-                    fullWidth
-                    minRows={4}
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="status"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Status"
-                    placeholder="Status of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    select
-                    fullWidth
-                  >
-                    <MenuItem value={'active'}>Active</MenuItem>
-                    <MenuItem value={'inactive'}>Inactive</MenuItem>
-                  </TextField>
-                )}
-              />
-              <Typography>Global:</Typography>
-              {globalEditorError && (
-                <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                  <Error color="error" />
-                  <Typography>{globalEditorError}</Typography>
-                </Stack>
-              )}
-
-              <WorkflowGlobalMonaco
-                initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
-                setValue={setValue}
-                setError={handleGlobalEditorError}
-              />
-            </Stack>
-          </Container>
-        </Dialog>
       </Stack>
     </Box>
   );
