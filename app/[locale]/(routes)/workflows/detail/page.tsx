@@ -1,6 +1,6 @@
 "use client";
 
-import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionDetail/api';
+import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionDetail/route';
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';

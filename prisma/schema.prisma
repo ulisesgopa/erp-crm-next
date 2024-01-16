@@ -827,7 +827,7 @@ model Runtimes {
   tasks                Json[]
   logs                 Json[]
   workflowDefinitionId String
-  workflowDefinition   Definitions   @relation(fields: [workflowDefinitionId], references: [id])
+  Definitions          Definitions   @relation(fields: [workflowDefinitionId], references: [id])
   createdAt            DateTime?     @default(now()) @db.Date
   updatedAt            DateTime?     @db.Date
 }
