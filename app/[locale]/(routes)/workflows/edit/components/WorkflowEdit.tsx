@@ -46,7 +46,7 @@ import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useNavigate } from 'react-router-dom';
-import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/api';
+import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
 import ShieldIcon from '@mui/icons-material/Shield';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';

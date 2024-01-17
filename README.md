@@ -196,6 +196,10 @@ Available soon at: https://docs.saashq.org
 
 [saashq.org](https://saashq.org)
 
+## Contributions
+
+<a href="https://www.buymeacoffee.com/saashqdev" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a> 
+
 ## Repo Activity
 
 ![Alt](https://repobeats.axiom.co/api/embed/2e232d8085eb660d127f4d8885e560dd08450630.svg "Repobeats analytics image")

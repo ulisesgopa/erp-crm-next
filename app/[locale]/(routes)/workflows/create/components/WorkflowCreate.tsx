@@ -3,17 +3,9 @@
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AppBar,
   Box,
-  Container,
-  Dialog,
-  IconButton,
-  MenuItem,
   Slide,
   Stack,
-  TextField,
-  Toolbar,
-  Typography,
 } from '@mui/material';
 import {
   DropdownMenu,
@@ -31,12 +23,13 @@ import {
   CircleOff,
   ShieldCheck, 
   Hand,
-  Webhook
+  Webhook,
+  Code2
 } from "lucide-react";
 import type { TransitionProps } from '@mui/material/transitions';
 import type { MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import type { Connection, Edge, Node } from 'reactflow';
 import ReactFlow, {
   Background,
@@ -47,10 +40,7 @@ import ReactFlow, {
   useNodesState,
   useReactFlow,
 } from 'reactflow';
-import CloseIcon from '@mui/icons-material/Close';
 import { z } from 'zod';
-import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
-import { Error } from '@mui/icons-material';
 import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
@@ -344,9 +334,10 @@ const WorkflowCreate: React.FC<Props> = () => {
             <Badge variant="destructive">
               {Object.keys(formState?.errors).length}
             </Badge>
-            <Button variant="secondary" onClick={openDefinitionDialog}>
-              Configure Definition
-            </Button>
+            <Button variant="secondary" onClick={handleMenuOpen}>
+              Configure Definition&nbsp;
+              <Code2 width="16" height="16" />
+            </Button>            
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="secondary" onClick={handleMenuOpen}>
@@ -403,90 +394,6 @@ const WorkflowCreate: React.FC<Props> = () => {
           <Controls />
           <Background />
         </ReactFlow>
-        <Dialog fullScreen open={definitionDialog} onClose={closeDefinitionDialog} TransitionComponent={Transition}>
-          <AppBar position="sticky">
-            <Toolbar>
-              <IconButton edge="start" color="inherit" onClick={closeDefinitionDialog} aria-label="close">
-                <CloseIcon />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                Configure Definition
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Container maxWidth="lg">
-            <Stack
-              sx={{
-                padding: 2,
-              }}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-              rowGap={4}
-            >
-              <Controller
-                control={control}
-                name="name"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Name"
-                    placeholder="Name of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    fullWidth
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="description"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Description"
-                    placeholder="Description about the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    multiline
-                    fullWidth
-                    minRows={4}
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="status"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Status"
-                    placeholder="Status of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    select
-                    fullWidth
-                  >
-                    <MenuItem value={'active'}>Active</MenuItem>
-                    <MenuItem value={'inactive'}>Inactive</MenuItem>
-                  </TextField>
-                )}
-              />
-              <Typography>Global:</Typography>
-              {globalEditorError && (
-                <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                  <Error color="error" />
-                  <Typography>{globalEditorError}</Typography>
-                </Stack>
-              )}
-
-              <WorkflowGlobalMonaco
-                initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
-                setValue={setValue}
-                setError={handleGlobalEditorError}
-              />
-            </Stack>
-          </Container>
-        </Dialog>
       </Stack>
     </Box>
   );

@@ -345,7 +345,6 @@ export function NewContactForm({ users, accounts }: NewTaskFormProps) {
                 )}
               />
             </div>
-
             <FormField
               control={form.control}
               name="description"

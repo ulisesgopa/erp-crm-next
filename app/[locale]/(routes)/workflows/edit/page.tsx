@@ -9,7 +9,7 @@ import WorkflowEdit from './components/WorkflowEdit';
 import WorkflowDefinitionContextProvider from '@/app/contexts/WorkflowDefinitionContext';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionSingle/api';
+import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
 
 interface Props {}
 

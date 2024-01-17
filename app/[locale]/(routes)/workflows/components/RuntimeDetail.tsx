@@ -1,6 +1,6 @@
 "use client";
 
-import { API, API_NAME } from '@/app/api/workflow/WorkflowRuntimeDetail/api';
+import { API, API_NAME } from '@/app/api/workflow/WorkflowRuntimeDetail/route';
 import { Refresh } from '@mui/icons-material';
 import {
   Box,
