@@ -1,12 +1,12 @@
-"use client";
-
-import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionDetail/route';
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Stack, Typography } from '@mui/material';
+import { Box, Card, CardActions, CardContent, CardHeader, Chip, Stack, Typography } from '@mui/material';
+import { getDefinitionDetail } from "@/actions/workflows/get-definition-detail";
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { type FC } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
+import Link from "next/link";
+import { useParams } from "next/navigation"; 
+import { Pencil } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 import StartNowDialog from './components/StartNowDialog';
 
@@ -16,10 +16,10 @@ const WorkflowDetailPage: FC<Props> = () => {
   const params = useParams<{ id: string }>();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: [API_NAME, params?.id],
+    queryKey: [params?.id],
     queryFn: async () => {
       if (params?.id) {
-        return API(params.id);
+        return getDefinitionDetail(params.id);
       }
       return null;
     },
@@ -52,7 +52,7 @@ const WorkflowDetailPage: FC<Props> = () => {
             <CardHeader
               title={<Typography variant="h4">{data?.name}</Typography>}
               action={
-                <Chip color={data?.status === 'active' ? 'success' : 'error'} label={data?.status?.toUpperCase()} />
+                <Chip color={data?.definitionStatus === 'active' ? 'success' : 'error'} label={data?.definitionStatus?.toUpperCase()} />
               }
             />
             <CardContent>
@@ -72,8 +72,8 @@ const WorkflowDetailPage: FC<Props> = () => {
                   justifyContent={'space-between'}
                   alignItems={{ sm: 'center', xs: 'flex-start' }}
                 >
-                  <Typography>Last Updated: {format(new Date(data?.updatedAt), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                  <Typography>Created: {format(new Date(data?.createdAt), 'dd MMM yyyy, hh:mm aa')}</Typography>
+                  <Typography>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
+                  <Typography>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
                 </Stack>
               </Stack>
             </CardContent>
@@ -82,17 +82,18 @@ const WorkflowDetailPage: FC<Props> = () => {
                 columnGap: 2,
               }}
             >
-              <Link to={`/edit/${data._id}`}>
-                <Button variant="outlined" startIcon={<EditIcon />}>
-                  Edit
+              <Link href={`/edit/${data.id}`}>
+                <Button variant="outline">
+                  Edit&nbsp;
+                  <Pencil />
                 </Button>
               </Link>
-              <StartNowDialog refetch={refetch} workflowDefinitionId={data._id} />
+              <StartNowDialog refetch={refetch} workflowDefinitionId={data.id} />
             </CardActions>
           </Card>
           <Typography variant="h4">Workflow Runtimes</Typography>
           {data.runtimes.map((runtime) => (
-            <Link style={{ width: '100%' }} key={runtime._id} to={`/runtime/${runtime._id}`}>
+            <Link style={{ width: '100%' }} key={runtime.id} href={`/runtime/${runtime.id}`}>
               <Card
                 elevation={0}
                 sx={{
@@ -104,7 +105,7 @@ const WorkflowDetailPage: FC<Props> = () => {
                 }}
               >
                 <CardHeader
-                  title={<Typography>{runtime._id}</Typography>}
+                  title={<Typography>{runtime.id}</Typography>}
                   action={
                     <Chip
                       color={runtime.workflowStatus === 'completed' ? 'success' : undefined}
@@ -121,9 +122,9 @@ const WorkflowDetailPage: FC<Props> = () => {
                     alignItems={{ sm: 'center', xs: 'flex-start' }}
                   >
                     <Typography>
-                      Last Updated: {format(new Date(runtime?.updatedAt), 'dd MMM yyyy, hh:mm aa')}
+                      Last Updated: {format(new Date(runtime.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}
                     </Typography>
-                    <Typography>Created: {format(new Date(runtime?.createdAt), 'dd MMM yyyy, hh:mm aa')}</Typography>
+                    <Typography>Created: {format(new Date(runtime.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
                   </Stack>
                 </CardContent>
               </Card>

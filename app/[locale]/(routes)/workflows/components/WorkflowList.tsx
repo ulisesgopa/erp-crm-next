@@ -20,7 +20,7 @@ const WorkflowListView = ({ data }: any) => {
         <Stack direction={'row'} justifyContent={'flex-end'} alignItems={'center'}>
           <Link href={`/workflows/create`}>
             <Button className="mb-5">
-              Create +
+              Create&nbsp; +
             </Button>
           </Link>
         </Stack>

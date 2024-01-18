@@ -23,11 +23,11 @@ export async function GET(
         id: params.runtimeId,
       },
       include: {
-        Definitions: {
+        definitions: {
           select: {
             id: true,
             name: true,
-            status: true,
+            definitionStatus: true,
             description: true,
             createdAt: true,
             updatedAt: true

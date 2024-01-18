@@ -18,7 +18,7 @@ export async function GET(
         id: true,
         name: true,
         description: true,
-        status: true,
+        definitionStatus: true,
         createdAt: true,
         updatedAt: true
       },

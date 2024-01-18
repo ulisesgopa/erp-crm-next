@@ -41,11 +41,11 @@ import ReactFlow, {
   useReactFlow,
 } from 'reactflow';
 import { z } from 'zod';
-import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useRouter } from 'next/navigation';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
+import axios from 'axios';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -274,7 +274,7 @@ const WorkflowCreate: React.FC<Props> = () => {
       status: values.status,
     };
 
-    await httpClient
+    await axios
       .post(
         '/definition/create',
         {
@@ -285,11 +285,6 @@ const WorkflowCreate: React.FC<Props> = () => {
             edges,
           },
         },
-        {
-          headers: {
-            //Authorization: ['Bearer', token].join(' '),
-          },
-        }
       )
       .then(() => {
         enqueueSnackbar('Workflow added successfully', {

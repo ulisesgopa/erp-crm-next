@@ -9,7 +9,7 @@ import WorkflowEdit from './components/WorkflowEdit';
 import WorkflowDefinitionContextProvider from '@/app/contexts/WorkflowDefinitionContext';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { API, API_NAME } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
+import { getDefinitionSingle } from "@/actions/workflows/get-definition-single";
 
 interface Props {}
 
@@ -17,10 +17,10 @@ const WorkflowDefinitionEditPage: FC<Props> = () => {
   const params = useParams<{ id: string }>();
 
   const { data, isLoading } = useQuery({
-    queryKey: [API_NAME, params?.id],
+    queryKey: [params?.id],
     queryFn: async () => {
       if (params?.id) {
-        return API(params.id);
+        return getDefinitionSingle(params.id);
       }
       return null;
     },
@@ -37,7 +37,7 @@ const WorkflowDefinitionEditPage: FC<Props> = () => {
       {!isLoading && data && (
         <ReactFlowProvider>
           <WorkflowDefinitionContextProvider>
-            <WorkflowEdit definition={data} />
+            <WorkflowEdit data={data} />
           </WorkflowDefinitionContextProvider>
         </ReactFlowProvider>
       )}

@@ -42,15 +42,14 @@ import FunctionsIcon from '@mui/icons-material/Functions';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { LoadingButton } from '@mui/lab';
-import { httpClient } from '@/lib/http/httpClient';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useNavigate } from 'react-router-dom';
-import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
 import ShieldIcon from '@mui/icons-material/Shield';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
 import WebhookIcon from '@mui/icons-material/Webhook';
+import axios from 'axios';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -78,11 +77,7 @@ const workflowMetadataFormSchema = z.object({
 
 type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
 
-interface Props {
-  definition: ResponseSchemaType;
-}
-
-const WorkflowEdit: FC<Props> = ({ definition }) => {
+const WorkflowEdit = ({ data }: any) => {
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
   const open = Boolean(menuEl);
@@ -90,8 +85,8 @@ const WorkflowEdit: FC<Props> = ({ definition }) => {
   const navigate = useNavigate();
   const [formLoading, setFormLoading] = useState<boolean>(false);
 
-  const [nodes, _, onNodesChange] = useNodesState(definition.uiObject.react.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(definition.uiObject.react.edges);
+  const [nodes, _, onNodesChange] = useNodesState(data.uiObject.react.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(data.uiObject.react.edges);
   const { addNodes } = useReactFlow();
 
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
@@ -102,10 +97,10 @@ const WorkflowEdit: FC<Props> = ({ definition }) => {
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
-      name: definition.name,
-      description: definition.description,
-      global: definition?.global ?? {},
-      status: definition.status,
+      name: data.name,
+      description: data.description,
+      global: data?.global ?? {},
+      status: data.status,
     },
   });
 
@@ -184,29 +179,24 @@ const WorkflowEdit: FC<Props> = ({ definition }) => {
       status: values.status,
     };
 
-    await httpClient
+    await axios
       .put(
-        `/definition/edit/${definition._id}`,
+        `/workflows/edit/${data.id}`,
         {
           workflowData,
           key: 'react',
           ui: {
             nodes,
             edges,
-          },
+          }
         },
-        {
-          headers: {
-            //Authorization: ['Bearer', token].join(' '),
-          },
-        }
       )
       .then(() => {
         enqueueSnackbar('Workflow updated successfully', {
           variant: 'success',
           autoHideDuration: 2 * 1000,
         });
-        navigate(`/workflows/${definition._id}`);
+        navigate(`/workflows/${data.id}`);
       })
       .catch((error) => {
         console.error(error);
