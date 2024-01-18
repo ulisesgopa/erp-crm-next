@@ -1,6 +1,6 @@
 "use client";
 
-import { API, API_NAME } from '@/app/api/workflow/WorkflowRuntimeDetail/route';
+import { getRuntimeDetail } from '@/actions/workflows/get-runtime-detail';
 import { Refresh } from '@mui/icons-material';
 import {
   Box,
@@ -14,11 +14,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { useSnackbar } from 'notistack';
-import type { FC } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { useSnackbar } from "notistack";
+import type { FC } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 interface Props {}
 
@@ -28,10 +29,10 @@ const RuntimeDetailPage: FC<Props> = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: [API_NAME, params?.id],
+    queryKey: [params?.id],
     queryFn: async () => {
       if (params?.id) {
-        return API(params.id);
+        return getRuntimeDetail(params.id);
       }
       return null;
     },
@@ -62,7 +63,7 @@ const RuntimeDetailPage: FC<Props> = () => {
             style={{
               width: '100%',
             }}
-            to={`/workflows/${data.definition._id}`}
+            href={`/workflows/${data.definitions.id}`}
           >
             <Card
               elevation={0}
@@ -75,11 +76,11 @@ const RuntimeDetailPage: FC<Props> = () => {
               }}
             >
               <CardHeader
-                title={<Typography variant="h4">{data.definition.name}</Typography>}
+                title={<Typography variant="h4">{data.definitions.name}</Typography>}
                 action={
                   <Chip
-                    color={data.definition.status === 'active' ? 'success' : 'error'}
-                    label={data.definition?.status?.toUpperCase()}
+                    color={data.definitions.definitionStatus === 'active' ? 'success' : 'error'}
+                    label={data.definitions?.definitionStatus?.toUpperCase()}
                   />
                 }
               />
@@ -91,7 +92,7 @@ const RuntimeDetailPage: FC<Props> = () => {
                       color: (theme) => theme.palette.grey['A700'],
                     }}
                   >
-                    {data?.definition?.description}
+                    {data?.definitions?.description}
                   </Typography>
                   <Stack
                     direction={{ sm: 'row', xs: 'column' }}
@@ -101,10 +102,10 @@ const RuntimeDetailPage: FC<Props> = () => {
                     alignItems={{ sm: 'center', xs: 'flex-start' }}
                   >
                     <Typography>
-                      Last Updated: {format(new Date(data?.definition?.updatedAt), 'dd MMM yyyy, hh:mm aa')}
+                      Last Updated: {format(new Date(data?.definitions?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}
                     </Typography>
                     <Typography>
-                      Created: {format(new Date(data?.definition?.createdAt), 'dd MMM yyyy, hh:mm aa')}
+                      Created: {format(new Date(data?.definitions?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -142,7 +143,7 @@ const RuntimeDetailPage: FC<Props> = () => {
               }}
             >
               <CardHeader
-                title={<Typography>{data._id}</Typography>}
+                title={<Typography>{data.id}</Typography>}
                 action={
                   <Chip
                     label={data.workflowStatus.toUpperCase()}
@@ -152,8 +153,8 @@ const RuntimeDetailPage: FC<Props> = () => {
               />
               <CardContent>
                 <Stack rowGap={2}>
-                  <Typography>Last Updated: {format(new Date(data?.updatedAt), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                  <Typography>Created: {format(new Date(data?.createdAt), 'dd MMM yyyy, hh:mm aa')}</Typography>
+                  <Typography>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
+                  <Typography>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
                 </Stack>
               </CardContent>
             </Card>
@@ -171,7 +172,7 @@ const RuntimeDetailPage: FC<Props> = () => {
               rowGap={2}
               columnGap={2}
             >
-              {data.tasks.map((task) => (
+              {data.runtimeTasks.map((task) => (
                 <Card
                   elevation={0}
                   key={task.id}
@@ -181,7 +182,7 @@ const RuntimeDetailPage: FC<Props> = () => {
                 >
                   <CardHeader
                     title={task.name}
-                    action={<Chip color="primary" size="small" label={task.type.toUpperCase()} />}
+                    action={<Chip color="primary" size="small" label={task.taskType.toUpperCase()} />}
                   />
                   <CardContent>
                     <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={4}>
@@ -189,17 +190,17 @@ const RuntimeDetailPage: FC<Props> = () => {
                         <Typography>Status:</Typography>
                         <Chip
                           size="small"
-                          label={task.status.toUpperCase()}
-                          color={task.status === 'completed' ? 'success' : undefined}
+                          label={task.taskStatus.toUpperCase()}
+                          color={task.taskStatus === 'completed' ? 'success' : undefined}
                         />
                       </Stack>
-                      {data?.workflowResults?.[task.name] && (
-                        <Tooltip title={JSON.stringify(data?.workflowResults?.[task.name], undefined, 4)}>
+                      {data?.workflowResults && (
+                        <Tooltip title={JSON.stringify(data?.workflowResults, undefined, 4)}>
                           <Button
                             variant="outlined"
                             onClick={() => {
                               navigator.clipboard
-                                .writeText(JSON.stringify(data?.workflowResults?.[task.name], undefined, 4))
+                                .writeText(JSON.stringify(data?.workflowResults, undefined, 4))
                                 .then(() => {
                                   enqueueSnackbar('Result copied to Clipboard', {
                                     variant: 'success',
@@ -231,16 +232,16 @@ const RuntimeDetailPage: FC<Props> = () => {
               justifyContent={'flex-start'}
               alignItems={'flex-start'}
             >
-              {data.logs.map(({ log, timestamp, severity, taskName }, index) => (
+              {data.runtimeLogs.map(({ log, timestamp, severity, taskName }, index) => (
                 <Stack
-                  key={timestamp}
+                  key={timestamp as any}
                   direction={'row'}
                   justifyContent={'flex-start'}
                   alignItems={'center'}
                   columnGap={2}
                   sx={{
                     width: '100%',
-                    ...(index < data.logs.length - 1 && {
+                    ...(index < data.runtimeLogs.length - 1 && {
                       borderBottom: (theme) => `1px solid ${theme.palette.grey['200']}`,
                     }),
                     paddingY: 2,
@@ -248,8 +249,8 @@ const RuntimeDetailPage: FC<Props> = () => {
                   }}
                 >
                   <Chip label={severity} />
-                  <Tooltip title={format(new Date(timestamp), 'dd MMM yyyy, hh:mm aa')}>
-                    <Chip label={timestamp} />
+                  <Tooltip title={format(new Date(timestamp as any), 'dd MMM yyyy, hh:mm aa')}>
+                    <Chip label={timestamp as any} />
                   </Tooltip>
                   <Typography
                     sx={{

@@ -65,7 +65,8 @@ export const POST = async (req: Request) => {
     prismadb.definitions.create({
       data: {
         name: requestBodyResult.data.workflowData.name,
-        status: requestBodyResult.data.workflowData.status,
+        description: requestBodyResult.data.workflowData.description,
+        definitionStatus: requestBodyResult.data.workflowData.status,
         global: requestBodyResult.data.workflowData.global ?? {},
         tasks: requestBodyResult.data.workflowData.tasks,
         ...(requestBodyResult.data?.ui && {
