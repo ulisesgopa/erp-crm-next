@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -27,15 +27,19 @@ import {
 } from "@/components/ui/select";
 
 import { Textarea } from "@/components/ui/textarea";
+import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 
 import useDebounce from "@/hooks/useDebounce";
+import { useWorkflowDefinitionContext } from "@/app/contexts/WorkflowDefinitionContext";
+import { Grid } from "@radix-ui/themes";
 
 //TODO: fix all the types
-type NewTaskFormProps = {
-  users: any[];
-};
+//type NewTaskFormProps = {
+//  users: any[];
+//};
 
-export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
+export function NewConfigureDefinitionForm() {
+  const { setConfig } = useWorkflowDefinitionContext();  
   const router = useRouter();
   const { toast } = useToast();
 
@@ -43,35 +47,65 @@ export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
 
   const debounceSearchTerm = useDebounce(searchTerm, 1000);
 
-  const filteredData = users.filter((item) =>
-    item.name.toLowerCase().includes(debounceSearchTerm.toLowerCase())
-  );
+  //const filteredData = users.filter((item) =>
+  //  item.name.toLowerCase().includes(debounceSearchTerm.toLowerCase())
+  //);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const formSchema = z.object({
-    name: z.string(),
-    description: z.string(),
-    status: z.string(),
-    global: z.string(),
-    assigned_to: z.string(),
+  const workflowMetadataFormSchema = z.object({
+    name: z
+      .string({
+        required_error: 'Name is required',
+      })
+      .min(1, 'Name is required'),
+    description: z
+      .string({
+        required_error: 'Description is required',
+      })
+      .min(1, 'Description is required'),
+    global: z.record(z.string(), z.any()).refine((val) => !Object.keys(val).includes(''), 'Empty keys is not valid'),
+    status: z.enum(['active', 'inactive']),
+  });
+  
+  type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
+
+  const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
+
+  const { control, setValue, watch, handleSubmit, formState } = useForm<WorkflowMetadataFormSchema>({
+    resolver: zodResolver(workflowMetadataFormSchema),
+    mode: 'all',
+    values: {
+      name: '',
+      description: '',
+      global: {},
+      status: 'active',
+    },
   });
 
-  type NewConfigureDefinitionFormValues = z.infer<typeof formSchema>;
+  const globalObjectValue = watch('global');
 
+  useEffect(() => {
+    setConfig(globalObjectValue);
+  }, [globalObjectValue, setConfig]);
+
+  const handleGlobalEditorError = (error: string | null) => {
+    setGlobalEditorError(() => error);
+  };
+    
   const definitionStatus = [
     { name: "Active", id: "Active" },
     { name: "Inactive", id: "Inactive" },
   ];
 
-  const form = useForm<NewConfigureDefinitionFormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<WorkflowMetadataFormSchema>({
+    resolver: zodResolver(workflowMetadataFormSchema),
   });
 
-  const onSubmit = async (data: NewConfigureDefinitionFormValues) => {
+  const onSubmit = async (data: WorkflowMetadataFormSchema) => {
     setIsLoading(true);
     try {
-      await axios.post("/api/workflow", data);
+      await axios.post("/api/definition/create", data);
       toast({
         title: "Success",
         description: "Definition created successfully",
@@ -87,9 +121,8 @@ export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
       form.reset({
         name: "",
         description: "",
-        status: "",
-        global: "",
-        assigned_to: "",
+        status: undefined,
+        global: {},
       });      
       router.refresh();
     }
@@ -99,7 +132,7 @@ export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full px-10">
         <div className="w-[800px] pb-5 space-y-2">
-          <div className="flex gap-5 pb-5">
+          <div className="grid grid-rows-1 grid-flow-col gap-4">
             <div className="w-1/2 space-y-2">
               <FormField
                 control={form.control}
@@ -154,7 +187,7 @@ export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
                           <SelectValue placeholder="Choose definition status " />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="flex overflow-y-auto h-56">
+                      <SelectContent className="flex overflow-y-auto">
                         {definitionStatus.map((status) => (
                           <SelectItem key={status.id} value={status.id}>
                             {status.name}
@@ -167,40 +200,17 @@ export function NewConfigureDefinitionForm({ users }: NewTaskFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/2 space-y-2">
-              <FormField
-                control={form.control}
-                name="assigned_to"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Assigned user</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose a user " />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="h-96 overflow-y-auto">
-                        <Input
-                          type="text"
-                          placeholder="Search in users ..."
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        {filteredData?.map((item, index) => (
-                          <SelectItem key={index} value={item.id}>
-                            {item.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            <h5>Global Editor</h5>
+              {globalEditorError && (
+                <div className="flex gap-2">
+                  <h5 className="text-red-600">{globalEditorError}</h5>
+                </div>
+              )}
+              <WorkflowGlobalMonaco
+                initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
+                setValue={setValue}
+                setError={handleGlobalEditorError}
               />
-            </div>
           </div>
         </div>
         <div className="grid gap-2 py-5">

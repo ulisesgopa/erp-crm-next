@@ -13,6 +13,7 @@ type Props = {
   description: string;
   width?: string;
   children: ReactNode;
+  buttonVariant?: "link" | "default" | "outline" | "destructive" | "secondary" | "ghost" | null | undefined;
 };
 
 const RightViewModal = ({
@@ -21,6 +22,7 @@ const RightViewModal = ({
   description,
   width,
   children,
+  buttonVariant,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -36,7 +38,7 @@ const RightViewModal = ({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button className="mb-5">{label}</Button>
+        <Button className="mb-5" variant={buttonVariant}>{label}</Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="data-[state=open]:animate-[dialog-overlay-show_1000ms] data-[state=closed]:animate-[dialog-overlay-hide_1000ms] fixed inset-0 bg-black/50" />
