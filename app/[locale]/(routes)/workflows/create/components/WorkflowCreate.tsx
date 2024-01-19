@@ -24,7 +24,7 @@ import {
   ShieldCheck, 
   Hand,
   Webhook,
-  Code2
+  Cog
 } from "lucide-react";
 import type { TransitionProps } from '@mui/material/transitions';
 import type { MouseEvent, ReactElement, Ref } from 'react';
@@ -34,7 +34,6 @@ import type { Connection, Edge, Node } from 'reactflow';
 import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
   addEdge,
   useEdgesState,
   useNodesState,
@@ -46,6 +45,8 @@ import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionC
 import { useRouter } from 'next/navigation';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
 import axios from 'axios';
+import { NewConfigureDefinitionForm } from './NewConfigureDefinitionForm';
+import RightViewModal from '@/components/modals/right-view-modal';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -276,7 +277,7 @@ const WorkflowCreate: React.FC<Props> = () => {
 
     await axios
       .post(
-        '/definition/create',
+        `/definition/create`,
         {
           workflowData,
           key: 'react',
@@ -329,10 +330,16 @@ const WorkflowCreate: React.FC<Props> = () => {
             <Badge variant="destructive">
               {Object.keys(formState?.errors).length}
             </Badge>
-            <Button variant="secondary" onClick={handleMenuOpen}>
-              Configure Definition&nbsp;
-              <Code2 width="16" height="16" />
-            </Button>            
+            <div className="mt-5">
+              <RightViewModal
+                label="Configure Definition"
+                title="Configure Definition" 
+                description="Define tasks for this workflow"
+                buttonVariant="secondary"
+              >
+                <NewConfigureDefinitionForm />
+              </RightViewModal>
+            </div>          
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="secondary" onClick={handleMenuOpen}>
@@ -385,7 +392,6 @@ const WorkflowCreate: React.FC<Props> = () => {
             deleteEdge(edge);
           }}
         >
-          <MiniMap />
           <Controls />
           <Background />
         </ReactFlow>
