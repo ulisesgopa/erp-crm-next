@@ -45,8 +45,33 @@ import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionC
 import { useRouter } from 'next/navigation';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
 import axios from 'axios';
-import { NewConfigureDefinitionForm } from './NewConfigureDefinitionForm';
-import RightViewModal from '@/components/modals/right-view-modal';
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
+import { Separator } from '@/components/ui/separator';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -173,7 +198,7 @@ const initialEdges: Edge[] = [
 type Props = {}
 
 const WorkflowCreate: React.FC<Props> = () => {
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
   const open = Boolean(menuEl);
@@ -202,6 +227,10 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const globalObjectValue = watch('global');
 
+  const form = useForm<WorkflowMetadataFormSchema>({
+    resolver: zodResolver(workflowMetadataFormSchema),
+  });
+
   useEffect(() => {
     setConfig(globalObjectValue);
   }, [globalObjectValue, setConfig]);
@@ -209,6 +238,11 @@ const WorkflowCreate: React.FC<Props> = () => {
   const handleGlobalEditorError = (error: string | null) => {
     setGlobalEditorError(() => error);
   };
+
+  const definitionStatus = [
+    { name: "Active", id: "Active" },
+    { name: "Inactive", id: "Inactive" },
+  ];  
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
@@ -330,16 +364,104 @@ const WorkflowCreate: React.FC<Props> = () => {
             <Badge variant="destructive">
               {Object.keys(formState?.errors).length}
             </Badge>
-            <div className="mt-5">
-              <RightViewModal
-                label="Configure Definition"
-                title="Configure Definition" 
-                description="Define tasks for this workflow"
-                buttonVariant="secondary"
-              >
-                <NewConfigureDefinitionForm />
-              </RightViewModal>
-            </div>          
+            <Sheet>
+              <Form {...form}>
+                <SheetTrigger asChild>
+                  <Button variant="secondary">Configure Definition&nbsp; <Cog width="15" height="15" /></Button>
+                </SheetTrigger>
+                <SheetContent className="sm:max-w-[540px]">
+                  <SheetHeader>
+                    <SheetTitle>Create Definition</SheetTitle>
+                    <SheetDescription>
+                      Make changes to your workflow definition here. You&apos;re work remains when dialog is closed.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <Separator className="mt-6" />
+                  <div className="grid gap-4 py-4">
+                      <div className="w-1/2 space-y-2">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  disabled={isLoading}
+                                  placeholder="Definition name"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-1/2 space-y-2">
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  disabled={isLoading}
+                                  placeholder="Definition description"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-1/2 space-y-2">
+                        <FormField
+                          control={form.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="SelectTrigger">
+                                    <SelectValue placeholder="Choose definition status" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="flex overflow-y-auto">
+                                  {definitionStatus.map((status) => (
+                                    <SelectItem key={status.id} value={status.id}>
+                                      {status.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-1/2 space-y-5">
+                        <FormLabel>Global Editor</FormLabel>
+                        {globalEditorError && (
+                          <div className="flex gap-2">
+                            <FormLabel className="text-red-600">{globalEditorError}</FormLabel>
+                          </div>
+                        )}
+                        <WorkflowGlobalMonaco
+                          initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
+                          setValue={setValue}
+                          setError={handleGlobalEditorError}
+                        />
+                      </div>
+                  </div>  
+                </SheetContent>
+              </Form>
+            </Sheet>         
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="secondary" onClick={handleMenuOpen}>

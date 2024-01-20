@@ -117,3 +117,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.SelectTrigger[data-placeholder] {
+  @apply text-slate-500;
+}
