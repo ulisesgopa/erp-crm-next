@@ -7,13 +7,38 @@ import Header from "./components/Header";
 import SideBar from "./components/SideBar";
 import Footer from "./components/Footer";
 import getAllCommits from "@/actions/github/get-repo-commits";
+import { Metadata } from "next";
 
-export const metadata = {
-  title: "SaasHQ",
+export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL! || "http://localhost:3000"
+  ),
+  title: "",
   description: "",
+  openGraph: {
+    images: [
+      {
+        url: "/images/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [
+      {
+        url: "/images/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "",
+      },
+    ],
+  },
 };
 
-export default async function RootLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
