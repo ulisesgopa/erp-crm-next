@@ -20,6 +20,24 @@ import {
 } from '@mui/material';
 import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Separator } from '@/components/ui/separator';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -60,6 +78,10 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
   });
 
   const labelValue = watch('label');
+
+  const form = useForm<StartConfigSchema>({
+    resolver: zodResolver(startConfigSchema),
+  });   
 
   const { enqueueSnackbar } = useSnackbar();
 

@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { SetLanguage } from "@/components/SetLanguage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CommandComponent } from "@/components/CommandComponent";
+import SupportComponent from "@/components/support";
 
 type Props = {
   id: string;
@@ -22,12 +23,12 @@ const Header = ({ id, name, email, avatar, lang }: Props) => {
         <div className="flex justify-center ">
           <FulltextSearch />
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3">
           <CommandComponent />
           <SetLanguage userId={id} />
           <Feedback />
           <ThemeToggle />
-          <div className="hidden lg:flex flex-col text-xs text-gray-500"></div>
+          <SupportComponent />          
           <AvatarDropdown
             avatar={avatar}
             userId={id}
