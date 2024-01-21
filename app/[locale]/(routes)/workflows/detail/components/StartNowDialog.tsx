@@ -1,6 +1,5 @@
 "use client";
 
-import { httpClient } from '@/lib/http/httpClient';
 import { useSnackbar } from 'notistack';
 import type { ElementRef, FC } from 'react';
 import { useRef, useState } from 'react';
@@ -13,7 +12,7 @@ import { Editor } from '@monaco-editor/react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Error } from '@mui/icons-material';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const startNowSchema = z.object({
   global: z.record(z.string(), z.any()).refine((val) => !Object.keys(val).includes(''), 'Empty keys is not valid'),
@@ -80,7 +79,7 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
   const startWorkflowHandler = handleSubmit(async (values) => {
     setStartWorkflowLoading(() => true);
 
-    httpClient
+    axios
       .post(
         '/transport/start',
         {

@@ -21,6 +21,24 @@ import {
 } from '@mui/material';
 import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Separator } from '@/components/ui/separator';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -71,6 +89,10 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
   const labelValue = watch('label');
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const form = useForm<WaitConfigSchema>({
+    resolver: zodResolver(waitConfigSchema),
+  });   
 
   useEffect(() => {
     const timeout = setTimeout(() => {

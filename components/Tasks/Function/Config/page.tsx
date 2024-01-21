@@ -28,6 +28,24 @@ import { Error } from '@mui/icons-material';
 import ParamsMonaco from './ParamsMonaco/ParamsMonaco';
 import ExecMonaco from './ExecMonaco/ExecMonaco';
 import { useReactFlow } from 'reactflow';
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Separator } from '@/components/ui/separator';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -99,6 +117,10 @@ async function handler(){
   const execObjectValue = watch('execTs');
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const form = useForm<FunctionConfigSchema>({
+    resolver: zodResolver(functionConfigSchema),
+  });  
 
   useEffect(() => {
     const timeout = setTimeout(() => {

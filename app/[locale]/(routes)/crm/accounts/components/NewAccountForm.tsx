@@ -90,7 +90,6 @@ export function NewAccountForm({ industries, users }: Props) {
     } finally {
       form.reset();
       router.refresh();
-      onFinish();
       setIsLoading(false);
     }
   };
@@ -98,11 +97,11 @@ export function NewAccountForm({ industries, users }: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full px-10">
-        <div>
+        {/* <div>
           <pre>
-            <code>{JSON.stringify(form.watch(), null, 2)}</code>
+            <code>&#123;JSON.stringify(form.watch(), null, 2)&#125;</code>
           </pre>
-        </div>
+        </div> */}
         <div className=" w-[800px] text-sm">
           <div className="pb-5 space-y-2">
             <FormField
@@ -497,7 +496,3 @@ export function NewAccountForm({ industries, users }: Props) {
     </Form>
   );
 }
-function onFinish() {
-  throw new Error("Function not implemented.");
-}
-

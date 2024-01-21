@@ -192,6 +192,10 @@ Available soon at: https://docs.saashq.org
 6. http://localhost:3000
 </details>
 
+## Issues
+
+- [Open an issue](https://github.com/saashqdev/saashq/issues) if you find a bug or have a suggestion for improvements.
+
 ## Contact
 
 [saashq.org](https://saashq.org)
