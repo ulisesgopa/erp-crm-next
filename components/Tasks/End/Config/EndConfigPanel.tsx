@@ -51,10 +51,8 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
   const [isLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const { getNodes } = useReactFlow();
-  const [openConfigPanel, setOpenConfigPanel] = useState<boolean>(false);
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
-
+  
   const { watch } = useForm<EndConfigSchema>({
     resolver: zodResolver(endConfigSchema),
     values: {
@@ -94,7 +92,7 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
       {/*<Badge variant="destructive">
         {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
       </Badge>*/}
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet>
         <Form {...form}>
           <SheetTrigger asChild>
             <Button variant="outline">Configure</Button>

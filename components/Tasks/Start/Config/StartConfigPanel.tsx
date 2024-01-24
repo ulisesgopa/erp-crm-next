@@ -1,30 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TransitionProps } from 'notistack';
 import { useSnackbar } from 'notistack';
-import type { FC, ReactElement, Ref } from 'react';
-import { forwardRef, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { X } from "lucide-react";
-import {
-  Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Container,
-  Stack,
-  TextField,
-  Slide,
-  Badge,
-} from '@mui/material';
 import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -38,15 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from '@/components/ui/separator';
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: ReactElement;
-  },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { useToast } from '@/components/ui/use-toast';
 
 const startConfigSchema = z.object({
   label: z
@@ -66,8 +46,9 @@ interface Props {
 }
 
 const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
+  const [isLoading] = useState<boolean>(false);
+  const { toast } = useToast();  
   const { getNodes } = useReactFlow();
-  const [openConfigPanel, setOpenConfigPanel] = useState<boolean>(false);
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
 
   const { control, handleSubmit, formState, watch } = useForm<StartConfigSchema>({
@@ -106,89 +87,71 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
     };
   }, [getNodes, id, labelValue]);
 
-  const submitHandler = handleSubmit(async (value) => {
-    onSubmit(value);
-    enqueueSnackbar('Config changed successfully', {
-      variant: 'success',
-      autoHideDuration: 2 * 1000,
-    });
-    handleConfigPanelClose();
-  });
-
-  const handleConfigPanelOpen = () => {
-    setOpenConfigPanel(() => true);
-  };
-
-  const handleConfigPanelClose = () => {
-    setOpenConfigPanel(() => false);
-  };
-
   return (
     <>
-      <Badge color="error" badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}>
-        <Button variant="outline" onClick={handleConfigPanelOpen}>
-          Configure
-        </Button>
-      </Badge>
-      <Dialog fullScreen open={openConfigPanel} onClose={handleConfigPanelClose} TransitionComponent={Transition}>
-        <AppBar position="sticky">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleConfigPanelClose} aria-label="close">
-              <X />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {[initialValue?.label, 'Configuration'].join(' ')}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Container maxWidth="lg">
-          <Stack
-            sx={{
-              paddingY: 2,
-              paddingX: 2,
-            }}
-            justifyContent={'flex-start'}
-            alignItems={'flex-start'}
-            rowGap={2}
-          >
-            <form
-              style={{
-                width: '100%',
-              }}
-              onSubmit={submitHandler}
-            >
-              <Stack rowGap={4}>
-                <Controller
-                  control={control}
+      {/* <Badge variant="destructive">
+        badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
+      </Badge> */}
+      <Sheet>
+        <Form {...form}>
+          <SheetTrigger asChild>
+            <Button variant="outline">Configure</Button>
+          </SheetTrigger>
+          <SheetContent className="sm:max-w-[540px]">
+            <SheetHeader>
+              <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
+                <SheetDescription>
+                  Make changes to Start Configuration panel.
+                </SheetDescription>
+              </SheetHeader>
+            <Separator className="mt-6" />
+            <div className="grid gap-4 py-4">
+              <div className="w-1/2 space-y-2">
+                <FormField
+                  control={form.control}
                   name="label"
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Label"
-                      placeholder="Name of the Task"
-                      error={!!fieldState?.error?.message || !!labelUniqueError}
-                      helperText={labelUniqueError ?? fieldState?.error?.message}
-                      fullWidth
-                    />
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Label</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="Name of the Task"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
-                <Button type="submit">
+              </div>                
+            </div>
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button 
+                  type="submit"
+                  onClick={() => {
+                    toast({
+                      title: "Success",
+                      description: "Task changed successfully."
+                    })
+                  }}                  
+                >
                   Submit
                 </Button>
-              </Stack>
-            </form>
-            <Button
-              color="error"
-              type="button"
-              onClick={() => {
-                deleteNode();
-              }}
-            >
-              Delete Task
-            </Button>
-          </Stack>
-        </Container>
-      </Dialog>
+              </SheetClose>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  deleteNode();
+                }}
+              >
+                Delete Task
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Form>
+      </Sheet>
     </>
   );
 };
