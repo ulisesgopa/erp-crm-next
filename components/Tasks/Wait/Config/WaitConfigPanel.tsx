@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { FC } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
@@ -48,11 +48,13 @@ interface Props {
   id: string;
 }
 
-const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
+const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
   const [isLoading] = useState<boolean>(false);
   const { toast } = useToast();  
   const { getNodes } = useReactFlow();
-  const [openConfigPanel, setOpenConfigPanel] = useState<boolean>(false);
+
+  let OPTIONS: Option[] = useMemo(() => [], []);
+
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
   const [taskNamesUnknownError, setTaskNamesUnknownError] = useState<string | null>(null);
 
@@ -73,7 +75,7 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
     resolver: zodResolver(waitConfigSchema),
   });
 
-   useEffect(() => {
+  useEffect(() => {
     const timeout = setTimeout(() => {
       const nodes = getNodes();
 
@@ -106,15 +108,15 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
     }
   }, [getNodes, taskNamesValue]);
 
-  useEffect(() => {
+  useEffect(() => {  
     const nodes = getNodes().filter((node) => node.id !== id).map((node) => node?.data?.label);
     const delimitNodes = [...nodes.values()].flat().join('&');
+    const options = delimitNodes.split('&');  
 
-    const opts = delimitNodes.split('&');
-
-    console.log("Option:", opts);
-
-  }, [getNodes, id]); 
+    for (let i=0; i<nodes.length; i++) {
+      OPTIONS.push({ label: options[i], value: options[i] } as unknown as Option);
+    };
+  }, [OPTIONS, getNodes, id]);    
 
   return (
     <>
@@ -164,6 +166,8 @@ const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) 
                       <FormControl>
                         <MultipleSelector
                           onChange={field.onChange}
+                          defaultOptions={OPTIONS}
+                          hidePlaceholderWhenSelected={true}
                           placeholder="Select tasks to wait on..."
                           emptyIndicator={
                             <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
