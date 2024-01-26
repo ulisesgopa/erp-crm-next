@@ -48,7 +48,7 @@ const WorkflowGlobalMonaco: FC<Props> = ({ initialValue, setError, setValue }) =
       onChange={handleChange}
       language="json"
       height={'50vh'}
-      width={'50vh'}
+      width={'60vh'}
       theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'light'}
     />
   );

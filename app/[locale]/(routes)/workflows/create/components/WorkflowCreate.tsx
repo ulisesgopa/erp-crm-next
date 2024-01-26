@@ -350,9 +350,9 @@ const WorkflowCreate: React.FC<Props> = () => {
           columnGap={2}
         >
           <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-            {/*<Badge variant="destructive">
+            <Badge variant="destructive"> 
               {Object.keys(formState?.errors).length}
-            </Badge>*/}
+            </Badge>
             <Sheet>
               <Form {...form}>
                 <SheetTrigger asChild>
@@ -367,7 +367,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                   </SheetHeader>
                   <Separator className="mt-6" />
                   <div className="grid gap-4 py-4">
-                    <div className="w-1/2 space-y-2">
+                    <div className="space-y-2 w-full">
                       <FormField
                         control={form.control}
                         name="name"
@@ -386,7 +386,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                         )}
                       />
                     </div>
-                    <div className="w-1/2 space-y-2">
+                    <div className="space-y-2 w-full">
                       <FormField
                         control={form.control}
                         name="description"
@@ -405,7 +405,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                         )}
                       />
                     </div>
-                    <div className="w-1/2 space-y-2">
+                    <div className="space-y-2 w-full">
                       <FormField
                         control={form.control}
                         name="status"

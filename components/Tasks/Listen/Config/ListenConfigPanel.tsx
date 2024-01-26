@@ -59,7 +59,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
   const { getNodes } = useReactFlow();
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);  
 
-  const { watch } = useForm<ListenConfigSchema>({
+  const { formState, watch } = useForm<ListenConfigSchema>({
     resolver: zodResolver(listenConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -98,9 +98,9 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
 
   return (
     <>
-      {/* <Badge variant="destructive"> 
+      <Badge variant="destructive" className="mr-3"> 
         badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
-      </Badge> */}
+      </Badge>
       <Sheet>
         <Form {...form}>
           <SheetTrigger asChild>
@@ -115,7 +115,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
               </SheetHeader>
             <Separator className="mt-6" />
             <div className="grid gap-4 py-4">
-              <div className="w-1/2 space-y-2">
+              <div className="space-y-2 w-full">
                 <FormField
                   control={form.control}
                   name="label"
