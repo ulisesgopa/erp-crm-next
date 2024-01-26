@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useReactFlow } from 'reactflow';
 import { Input } from "@/components/ui/input";
 import {
@@ -51,7 +52,7 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
   const { getNodes } = useReactFlow();
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
 
-  const { control, handleSubmit, formState, watch } = useForm<StartConfigSchema>({
+  const { formState, watch } = useForm<StartConfigSchema>({
     resolver: zodResolver(startConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -89,9 +90,9 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
 
   return (
     <>
-      {/* <Badge variant="destructive">
-        badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
-      </Badge> */}
+      <Badge variant="destructive" className="mr-3">
+        {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
+      </Badge>
       <Sheet>
         <Form {...form}>
           <SheetTrigger asChild>
@@ -106,7 +107,7 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
               </SheetHeader>
             <Separator className="mt-6" />
             <div className="grid gap-4 py-4">
-              <div className="w-1/2 space-y-2">
+              <div className="space-y-2 w-full">
                 <FormField
                   control={form.control}
                   name="label"

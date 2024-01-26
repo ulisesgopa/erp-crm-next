@@ -53,7 +53,7 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
   const { getNodes } = useReactFlow();
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
   
-  const { watch } = useForm<EndConfigSchema>({
+  const { formState, watch } = useForm<EndConfigSchema>({
     resolver: zodResolver(endConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -89,9 +89,9 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
 
   return (
     <>
-      {/*<Badge variant="destructive">
+      <Badge variant="destructive" className="mr-3">
         {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
-      </Badge>*/}
+      </Badge>
       <Sheet>
         <Form {...form}>
           <SheetTrigger asChild>
@@ -106,7 +106,7 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
               </SheetHeader>
             <Separator className="mt-6" />
             <div className="grid gap-4 py-4">
-              <div className="w-1/2 space-y-2">
+              <div className="space-y-2 w-full">
                 <FormField
                   control={form.control}
                   name="label"

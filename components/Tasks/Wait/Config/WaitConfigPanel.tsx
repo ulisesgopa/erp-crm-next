@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { FC } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { useReactFlow } from 'reactflow';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetClose,
@@ -24,9 +25,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Autocomplete,
+  TextField
+} from "@mui/material";
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
+import { Badge } from '@/components/ui/badge';
 
 const waitConfigSchema = z.object({
   label: z
@@ -58,7 +64,7 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
   const [taskNamesUnknownError, setTaskNamesUnknownError] = useState<string | null>(null);
 
-  const { watch } = useForm<WaitConfigSchema>({
+  const { control, formState, watch } = useForm<WaitConfigSchema>({
     resolver: zodResolver(waitConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -116,13 +122,13 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
     for (let i=0; i<nodes.length; i++) {
       OPTIONS.push({ label: options[i], value: options[i] } as unknown as Option);
     };
-  }, [OPTIONS, getNodes, id]);    
+  }, [OPTIONS, getNodes, id]);   
 
   return (
     <>
-      {/* <Badge variant="descructive">
-          Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0) + (taskNamesUnknownError ? 1 : 0)
-      </Badge> */}
+      <Badge variant="destructive" className="mr-3">
+        {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0) + (taskNamesUnknownError ? 1 : 0)}
+      </Badge>
       <Sheet>
         <Form {...form}>
           <SheetTrigger asChild>
@@ -137,7 +143,7 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
               </SheetHeader>
             <Separator className="mt-6" />
             <div className="grid gap-4 py-4">
-              <div className="w-1/2 space-y-2">
+              <div className="space-y-2 w-full">
                 <FormField
                   control={form.control}
                   name="label"
@@ -156,7 +162,7 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
                   )}
                 />
               </div>
-              <div className="w-1/2 space-y-2">
+              <div className="space-y-2 w-full">
                 <FormField
                   control={form.control}
                   name="params.taskNames"
@@ -165,6 +171,7 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
                       <FormLabel>Tasks</FormLabel>
                       <FormControl>
                         <MultipleSelector
+                          value={field.value as unknown as Option[]}
                           onChange={field.onChange}
                           defaultOptions={OPTIONS}
                           hidePlaceholderWhenSelected={true}
@@ -176,13 +183,13 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
                           }
                         />
                       </FormControl>
-                      <FormMessage />
+                    <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>                              
+              </div>
             </div>
-            <SheetFooter>
+            <SheetFooter className="mt-25">
               <SheetClose asChild>
                 <Button 
                   type="submit"
