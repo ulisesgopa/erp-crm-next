@@ -66,10 +66,10 @@ declare var workflowParams: ParamMap;
 declare var workflowResults: ResultMap;
 
 /**
-* Axios Wrapper Http Client
+* Axios 
 * @returns {Promise<T>} Response Body Promise
 */
-declare function axios<T=unknown>(params: {
+declare function Axios<T=unknown>(params: {
   url: string;
   payload?: any;
   headers?: Record<string, any>;
