@@ -21,7 +21,7 @@ const WorkflowsPage = async () => {
 
   return (
     <Container
-      title="Workflows"
+      title="Workflows (WIP)"
       description={"Everything you need to know about workflows"}
     >
       <Suspense fallback={<SuspenseLoading />}>
