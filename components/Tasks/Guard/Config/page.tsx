@@ -1,38 +1,23 @@
 "use client";
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TransitionProps } from 'notistack';
-import { useSnackbar } from 'notistack';
-import type { FC, ReactElement, Ref } from 'react';
-import { forwardRef, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { X } from "lucide-react";
-import {
-  Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Container,
-  Stack,
-  TextField,
-  Slide,
-  Badge,
-  Stepper,
-  Step,
-  StepLabel,
-} from '@mui/material';
+
 import { Button } from "@/components/ui/button";
-import { Error } from '@mui/icons-material';
+import { Badge } from "@/components/ui/badge";
 import ParamsMonaco from './ParamsMonaco/ParamsMonaco';
 import ExecMonaco from './ExecMonaco/ExecMonaco';
 import { useReactFlow } from 'reactflow';
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -46,15 +31,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from '@/components/ui/separator';
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: ReactElement;
-  },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { useToast } from '@/components/ui/use-toast';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const guardConfigSchema = z.object({
   label: z
@@ -77,8 +55,6 @@ const guardConfigSchema = z.object({
 
 export type GuardConfigSchema = z.infer<typeof guardConfigSchema>;
 
-const Steps = ['Config', 'Function'];
-
 interface Props {
   onSubmit: (value: GuardConfigSchema) => void;
   initialValue: GuardConfigSchema;
@@ -86,15 +62,16 @@ interface Props {
   id: string;
 }
 
-const GuardConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
+const GuardConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
+  const [isLoading] = useState<boolean>(false);
+  const { toast } = useToast();  
   const { getNodes } = useReactFlow();
-  const [openConfigPanel, setOpenConfigPanel] = useState<boolean>(false);
   const [paramsEditorError, setParamsEditorError] = useState<string | null>(null);
   const [execEditorError, setExecEditorError] = useState<string | null>(null);
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  const { control, handleSubmit, formState, watch, setValue } = useForm<GuardConfigSchema>({
+  const { formState, watch, setValue } = useForm<GuardConfigSchema>({
     resolver: zodResolver(guardConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -104,11 +81,10 @@ const GuardConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
         initialValue?.execTs ??
         `
 /**
- * @returns {Promise<boolean>} Return Boolean output
- * @see {@link https://workflow-engine-docs.pages.dev/docs/tasks/guard_task}
+ * @see {@link https://workflow-engine-docs.pages.dev/docs/tasks/function_task}
 */
-async function handler(): Promise<boolean> {
-  return true;
+async function handler(){
+  return {};
 }
       `,
     },
@@ -117,11 +93,9 @@ async function handler(): Promise<boolean> {
   const paramsObjectValue = watch('params');
   const execObjectValue = watch('execTs');
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const form = useForm<GuardConfigSchema>({
     resolver: zodResolver(guardConfigSchema),
-  });   
+  });  
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -152,105 +126,55 @@ async function handler(): Promise<boolean> {
     setExecEditorError(() => error);
   };
 
-  const submitHandler = handleSubmit(async (value) => {
-    onSubmit(value);
-    enqueueSnackbar('Config changed successfully', {
-      variant: 'success',
-      autoHideDuration: 2 * 1000,
-    });
-    handleConfigPanelClose();
-  });
-
-  const handleConfigPanelOpen = () => {
-    setOpenConfigPanel(() => true);
-  };
-
-  const handleConfigPanelClose = () => {
-    setOpenConfigPanel(() => false);
-  };
-
   return (
     <>
-      <Badge
-        color="error"
-        badgeContent={
+      <Badge variant="destructive" className="mr-3">
+        {
           Object.keys(formState.errors).length +
           (labelUniqueError ? 1 : 0) +
           (execEditorError ? 1 : 0) +
           (paramsEditorError ? 1 : 0)
         }
-      >
-        <Button variant="outline" onClick={handleConfigPanelOpen}>
-          Configure
-        </Button>
       </Badge>
-      <Dialog fullScreen open={openConfigPanel} onClose={handleConfigPanelClose} TransitionComponent={Transition}>
-        <AppBar position="sticky">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleConfigPanelClose} aria-label="close">
-              <X />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {[initialValue?.label, 'Configuration'].join(' ')}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Container maxWidth="lg">
-          <Stack
-            sx={{
-              paddingY: 2,
-              paddingX: 2,
-            }}
-            justifyContent={'flex-start'}
-            alignItems={'flex-start'}
-            rowGap={2}
-          >
-            <form
-              style={{
-                width: '100%',
-              }}
-              onSubmit={submitHandler}
-            >
-              <Stepper activeStep={activeStep}>
-                {Steps.map((label) => (
-                  <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
+      <Sheet>
+        <Form {...form}>
+          <SheetTrigger asChild>
+            <Button variant="outline">Configure</Button>
+          </SheetTrigger>
+          <SheetContent className="sm:max-w-[540px]">
+            <SheetHeader>
+              <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
+                <SheetDescription>
+                  Make changes to Guard Configuration panel.
+                </SheetDescription>
+              </SheetHeader>
+            <Separator className="mt-6" />
+            <div className="grid gap-4 py-4">
               {activeStep === 0 && (
-                <Stack
-                  sx={{
-                    paddingY: 4,
-                  }}
-                  rowGap={4}
-                  justifyContent={'flex-start'}
-                  alignItems={'flex-start'}
-                >
-                  <Controller
-                    control={control}
+                <>
+                  <FormField
+                    control={form.control}
                     name="label"
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        {...field}
-                        label="Label"
-                        placeholder="Name of the Task"
-                        error={!!fieldState?.error?.message || !!labelUniqueError}
-                        helperText={labelUniqueError ?? fieldState?.error?.message}
-                        fullWidth
-                      />
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Name of the Task"
+                            {...field}
+                          />
+                        </FormControl>
+                      <FormMessage />
+                      </FormItem>
                     )}
                   />
-
-                  <Typography>Params:</Typography>
-
+                  <FormLabel>Params</FormLabel>
                   {paramsEditorError && (
-                    <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                      <Error color="error" />
-                      <Typography>{paramsEditorError}</Typography>
-                    </Stack>
+                    <div className="flex gap-2">
+                      <FormLabel className="text-red-600">{paramsEditorError}</FormLabel>
+                    </div>
                   )}
-
                   <ParamsMonaco
                     initialValue={JSON.stringify(paramsObjectValue, undefined, 4)}
                     setValue={setValue}
@@ -258,68 +182,66 @@ async function handler(): Promise<boolean> {
                   />
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     onClick={() => {
                       setActiveStep(() => 1);
                     }}
                   >
-                    Next
+                    Next&nbsp; <ChevronRight />
                   </Button>
-                </Stack>
+                </>
               )}
               {activeStep === 1 && (
-                <Stack
-                  sx={{
-                    paddingY: 4,
-                  }}
-                  rowGap={4}
-                  justifyContent={'flex-start'}
-                  alignItems={'flex-start'}
-                >
-                  <Typography>Function:</Typography>
-
+                <>
+                  <FormLabel>Function</FormLabel>
                   {execEditorError && (
-                    <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                      <Error color="error" />
-                      <Typography>{execEditorError}</Typography>
-                    </Stack>
+                    <div className="flex gap-2">
+                      <FormLabel className="text-red-600">{execEditorError}</FormLabel>
+                    </div>
                   )}
-
                   <ExecMonaco
                     initialValue={execObjectValue}
                     setValue={setValue}
                     setError={handleExecEditorError}
                     params={paramsObjectValue}
                   />
-                  <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        setActiveStep(() => 0);
-                      }}
-                    >
-                      Prev
-                    </Button>
-                    <Button type="submit">
-                      Submit
-                    </Button>
-                  </Stack>
-                </Stack>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setActiveStep(() => 0);
+                    }}
+                  >
+                    <ChevronLeft /> &nbsp;Prev
+                  </Button>
+                </>
               )}
-            </form>
-            <Button
-              color="error"
-              type="button"
-              onClick={() => {
-                deleteNode();
-              }}
-            >
-              Delete Task
-            </Button>
-          </Stack>
-        </Container>
-      </Dialog>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button 
+                    type="submit"
+                    onClick={() => {
+                      toast({
+                        title: "Success",
+                        description: "Task changed successfully."
+                      })
+                    }}                  
+                  >
+                    Submit
+                  </Button>
+                </SheetClose>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    deleteNode();
+                  }}
+                >
+                  Delete Task
+                </Button>
+              </SheetFooter>  
+            </div>
+          </SheetContent>
+        </Form>
+      </Sheet>
     </>
   );
 };
