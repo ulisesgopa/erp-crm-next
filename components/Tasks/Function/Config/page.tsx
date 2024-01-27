@@ -55,8 +55,6 @@ const functionConfigSchema = z.object({
 
 export type FunctionConfigSchema = z.infer<typeof functionConfigSchema>;
 
-const Steps = ['Config', 'Function'];
-
 interface Props {
   onSubmit: (value: FunctionConfigSchema) => void;
   initialValue: FunctionConfigSchema;
