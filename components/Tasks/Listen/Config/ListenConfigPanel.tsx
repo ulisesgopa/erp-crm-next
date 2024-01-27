@@ -99,7 +99,7 @@ const ListenConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }
   return (
     <>
       <Badge variant="destructive" className="mr-3"> 
-        badgeContent={Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
+        {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
       </Badge>
       <Sheet>
         <Form {...form}>
