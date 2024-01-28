@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 
-import { Stack } from '@mui/material';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,17 +14,17 @@ const WorkflowListView = ({ data }: any) => {
   const [isLoading] = useState(false);
 
   return (
-    <Box className="height: 100%, width: 100%, padding: 3px">
-      <Stack rowGap={4}>
-        <Stack direction={'row'} justifyContent={'flex-end'} alignItems={'center'}>
+    <Box>
+      <div className="gap-y-1">
+        <div className="flex flex-row justify-end items-center">
           <Link href={`/workflows/create`}>
             <Button className="mb-5">
               Create&nbsp; +
             </Button>
           </Link>
-        </Stack>
+        </div>
         {!isLoading && data && (
-          <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={2}>
+          <div className="justify-start items-start gap-y-0.5">
             {data.map((item: any) => (
               <Link
                 style={{
@@ -36,35 +35,21 @@ const WorkflowListView = ({ data }: any) => {
               >
                 <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
                   <CardContent>
-                    <Stack
-                      sx={{
-                        width: '100%',
-                      }}
-                      direction={'row'}
-                      justifyContent={'space-between'}
-                      alignItems={'center'}
-                    >
+                    <div className="w-full flex flex-row justify-between items-center">
                       <span>{item.name}</span>
                       <Badge color={item.status === 'active' ? 'primary' : 'error'}>{item.status.toUpperCase()}</Badge>
-                    </Stack>
+                    </div>
                     <span style={{paddingTop:2, width:'100%'}}>
                       {item.description}
                     </span>
-                    <Stack
-                      sx={{
-                        width: '100%',
-                      }}
-                      direction={'row'}
-                      justifyContent={'space-between'}
-                      alignItems={'center'}
-                    >
+                    <div className="w-full flex flex-row justify-between items-center">
                       <span>
                         Created at: {format(new Date(item.createdAt), 'dd MMM, yyyy')}
                       </span>
                       <span>
                         Updated at: {format(new Date(item.updatedAt), 'dd MMM, yyyy')}
                       </span>
-                    </Stack>
+                    </div>
                   </CardContent>
                 </Card>
               </Link>
@@ -74,94 +59,52 @@ const WorkflowListView = ({ data }: any) => {
                 No workflow definitions found!
               </span>
             ) : null}
-          </Stack>
+          </div>
         )}
         {isLoading && (
-          <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={2}>
+          <div className="justify-start items-start gap-y-0.5">
             <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div className="w-full flex flex-row justify-between iteeems-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="height=30px width=75px" />
-                </Stack>
+                </div>
                 <Skeleton />
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div className="w-full flex flex-row justify-between items-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="width=100px" />
-                </Stack>
+                </div>
               </CardContent>
             </Card>
             <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div className="w-full flex flex-row juuustify-between items-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="height=30px width=75px" />
-                </Stack>
+                </div>
                 <Skeleton />
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div  className="w-full flex flex-row justify-between items-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="width=100px" />
-                </Stack>
+                </div>
               </CardContent>
             </Card>
             <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
               <CardContent>
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div className="w-full flex flex-row justify-between items-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="height=30px width=75px" />
-                </Stack>
+                </div>
                 <Skeleton />
-                <Stack
-                  sx={{
-                    width: '100%',
-                  }}
-                  direction={'row'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                >
+                <div className="w-full flex flex-row justify-between items-center">
                   <Skeleton className="width=100px" />
                   <Skeleton className="width=100px" />
-                </Stack>
+                </div>
               </CardContent>
             </Card>
-          </Stack>
+          </div>
         )}
-      </Stack>
+      </div>
     </Box>
   );
 };

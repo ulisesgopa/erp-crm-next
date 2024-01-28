@@ -5,7 +5,8 @@ import type { ElementRef, FC } from 'react';
 import { useRef, useState } from 'react';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, useTheme } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, useTheme } from '@mui/material';
+import { Button } from "@/components/ui/button";
 import { useForm } from 'react-hook-form';
 import type { OnChange, OnMount } from '@monaco-editor/react';
 import { Editor } from '@monaco-editor/react';
@@ -119,7 +120,7 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleDialogOpen} startIcon={<PlayCircleFilledWhiteOutlinedIcon />}>
+      <Button variant="outline" onClick={handleDialogOpen} startIcon={<PlayCircleFilledWhiteOutlinedIcon />}>
         Start Now
       </Button>
 
