@@ -3,16 +3,12 @@
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Box,
-  Slide,
-  Stack,
-} from '@mui/material';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Box } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingButton } from "@/components/ui/loading-button";
@@ -26,7 +22,6 @@ import {
   Webhook,
   Cog
 } from "lucide-react";
-import type { TransitionProps } from '@mui/material/transitions';
 import type { MouseEvent, ReactElement, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -72,15 +67,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Separator } from '@/components/ui/separator';
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: ReactElement;
-  },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const workflowMetadataFormSchema = z.object({
   name: z
@@ -331,25 +317,9 @@ const WorkflowCreate: React.FC<Props> = () => {
   
   return (
     <Box>
-      <Stack
-        sx={{
-          height: '80vh',
-          width: '100%',
-        }}
-        justifyContent={'flex-start'}
-        alignItems={'flex-start'}
-        rowGap={4}
-      >
-        <Stack
-          sx={{
-            width: '100%',
-          }}
-          direction={'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          columnGap={2}
-        >
-          <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
+      <div className="w-full h-[80vh] justify-start items-start gap-y-1">
+        <div className="flex flex-row justify-between items-center gap-x-0.5 w-full">
+          <div className="flex flex-row justify-start items-center gap-x-2">
             <Badge variant="destructive"> 
               {Object.keys(formState?.errors).length}
             </Badge>
@@ -485,11 +455,11 @@ const WorkflowCreate: React.FC<Props> = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </Stack>
+          </div>
           <LoadingButton loading={formLoading} onClick={submitHandle}>
             Submit
           </LoadingButton>
-        </Stack>
+        </div>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -506,7 +476,7 @@ const WorkflowCreate: React.FC<Props> = () => {
           <Controls />
           <Background />
         </ReactFlow>
-      </Stack>
+      </div>
     </Box>
   );
 };
