@@ -1,12 +1,22 @@
-import { Box, Card, CardActions, CardContent, CardHeader, Chip, Stack, Typography } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { getDefinitionDetail } from "@/actions/workflows/get-definition-detail";
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { type FC } from 'react';
 import Link from "next/link";
 import { useParams } from "next/navigation"; 
-import { Pencil } from 'lucide-react';
+import { Heading4, Pencil } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Box } from "@radix-ui/themes";
 
 import StartNowDialog from './components/StartNowDialog';
 
@@ -26,62 +36,30 @@ const WorkflowDetailPage: FC<Props> = () => {
   });
 
   return (
-    <Box
-      sx={{
-        padding: { sm: 3, xs: 1 },
-      }}
-    >
-      {isLoading && <Typography>Loading...</Typography>}
+    <Box className="p-3">
+      {isLoading && <Label>Loading...</Label>}
       {!isLoading && data && (
-        <Stack
-          justifyContent={'flex-start'}
-          alignItems={'flex-start'}
-          rowGap={2}
-          sx={{
-            width: '100%',
-          }}
-        >
-          <Typography variant="h4">Workflow Definition</Typography>
-          <Card
-            elevation={0}
-            sx={{
-              border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-              width: '100%',
-            }}
-          >
-            <CardHeader
-              title={<Typography variant="h4">{data?.name}</Typography>}
-              action={
-                <Chip color={data?.definitionStatus === 'active' ? 'success' : 'error'} label={data?.definitionStatus?.toUpperCase()} />
-              }
-            />
+        <div className="justify-start items-start gap-y-0.5 w-full">
+          <Heading4>Workflow Definition</Heading4>
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>={<Heading4>{data?.name}</Heading4>}</CardTitle>
+              <Badge color={data?.definitionStatus === 'active' ? 'success' : 'error'}>
+                {data?.definitionStatus?.toUpperCase()}
+              </Badge>
+            </CardHeader>
             <CardContent>
-              <Stack rowGap={2}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    color: (theme) => theme.palette.grey['A700'],
-                  }}
-                >
+              <div className="gap-y-0.5">
+                <CardDescription>
                   {data?.description}
-                </Typography>
-                <Stack
-                  direction={{ sm: 'row', xs: 'column' }}
-                  columnGap={2}
-                  rowGap={2}
-                  justifyContent={'space-between'}
-                  alignItems={{ sm: 'center', xs: 'flex-start' }}
-                >
-                  <Typography>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                  <Typography>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                </Stack>
-              </Stack>
+                </CardDescription>
+                <div className="grid grid-flow-row auto-rows-auto grid-flow auto-cols-auto gap-y-0.5 gap-x-0.5 justify-between items-center"> 
+                  <Label>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                  <Label>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                </div>
+              </div>
             </CardContent>
-            <CardActions
-              sx={{
-                columnGap: 2,
-              }}
-            >
+            <CardFooter className="gap-y-0.5">
               <Link href={`/edit/${data.id}`}>
                 <Button variant="outline">
                   Edit&nbsp;
@@ -89,58 +67,35 @@ const WorkflowDetailPage: FC<Props> = () => {
                 </Button>
               </Link>
               <StartNowDialog refetch={refetch} workflowDefinitionId={data.id} />
-            </CardActions>
+            </CardFooter>
           </Card>
-          <Typography variant="h4">Workflow Runtimes</Typography>
+          <Heading4>Workflow Runtimes</Heading4>
           {data.runtimes.map((runtime) => (
             <Link style={{ width: '100%' }} key={runtime.id} href={`/runtime/${runtime.id}`}>
-              <Card
-                elevation={0}
-                sx={{
-                  border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-                  width: '100%',
-                  ':hover': {
-                    backgroundColor: (theme) => theme.palette.grey['100'],
-                  },
-                }}
-              >
-                <CardHeader
-                  title={<Typography>{runtime.id}</Typography>}
-                  action={
-                    <Chip
-                      color={runtime.workflowStatus === 'completed' ? 'success' : undefined}
-                      label={runtime.workflowStatus.toUpperCase()}
-                    />
-                  }
-                />
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle>{<Label>{runtime.id}</Label>}</CardTitle>
+                  <Badge color={runtime.workflowStatus === 'completed' ? 'success' : undefined}>
+                    label={runtime.workflowStatus.toUpperCase()}
+                  </Badge>
+                </CardHeader>
                 <CardContent>
-                  <Stack
-                    direction={{ sm: 'row', xs: 'column' }}
-                    columnGap={2}
-                    rowGap={2}
-                    justifyContent={'space-between'}
-                    alignItems={{ sm: 'center', xs: 'flex-start' }}
-                  >
-                    <Typography>
+                  <div className="grid grid-flow-row auto-rows-auto grid-flow auto-cols-auto gap-y-0.5 gap-x-0.5 justify-between items-center"> 
+                    <Label>
                       Last Updated: {format(new Date(runtime.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}
-                    </Typography>
-                    <Typography>Created: {format(new Date(runtime.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                  </Stack>
+                    </Label>
+                    <Label>Created: {format(new Date(runtime.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                  </div>
                 </CardContent>
               </Card>
             </Link>
           ))}
           {data.runtimes?.length < 1 ? (
-            <Typography
-              sx={{
-                textAlign: 'center',
-                width: '100%',
-              }}
-            >
+            <Label className="text-center w-full">
               No runtime found!
-            </Typography>
+            </Label>
           ) : null}
-        </Stack>
+        </div>
       )}
     </Box>
   );

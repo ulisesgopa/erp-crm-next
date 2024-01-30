@@ -1,32 +1,37 @@
 "use client";
 
 import { getRuntimeDetail } from '@/actions/workflows/get-runtime-detail';
-import { Refresh } from '@mui/icons-material';
+import { Heading4, Heading5, RefreshCw } from "lucide-react";
 import {
-  Box,
-  Button,
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
-  Chip,
-  IconButton,
-  Stack,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Tooltip,
-  Typography,
-} from '@mui/material';
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { useToast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Box } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useSnackbar } from "notistack";
 import type { FC } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Label } from '@/components/ui/label';
 
 interface Props {}
 
 const RuntimeDetailPage: FC<Props> = () => {
   const params = useParams<{ id: string }>();
 
-  const { enqueueSnackbar } = useSnackbar();
+  const { toast } = useToast();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: [params?.id],
@@ -43,236 +48,142 @@ const RuntimeDetailPage: FC<Props> = () => {
   };
 
   return (
-    <Box
-      sx={{
-        padding: { sm: 3, xs: 1 },
-      }}
-    >
-      {isLoading && <Typography>Loading...</Typography>}
+    <Box className="p-3">
+      {isLoading && <Label>Loading...</Label>}
       {!isLoading && data && (
-        <Stack
-          justifyContent={'flex-start'}
-          alignItems={'flex-start'}
-          rowGap={4}
-          sx={{
-            width: '100%',
-          }}
-        >
-          <Typography variant="h4">Workflow Definition</Typography>
-          <Link
-            style={{
-              width: '100%',
-            }}
+        <div className="justify-start items-start gap-y-1 w-full">
+          <Heading4>Workflow Definition</Heading4>
+          <Link className="w-full"
             href={`/workflows/${data.definitions.id}`}
-          >
-            <Card
-              elevation={0}
-              sx={{
-                border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-                width: '100%',
-                ':hover': {
-                  backgroundColor: (theme) => theme.palette.grey['100'],
-                },
-              }}
-            >
-              <CardHeader
-                title={<Typography variant="h4">{data.definitions.name}</Typography>}
-                action={
-                  <Chip
-                    color={data.definitions.definitionStatus === 'active' ? 'success' : 'error'}
-                    label={data.definitions?.definitionStatus?.toUpperCase()}
-                  />
-                }
-              />
+          >  
+            <Card className="w-full hover:bg-slate-100 border-slate-200">
+              <CardHeader>
+                <CardTitle>
+                  {<Heading4>{data.definitions.name}</Heading4>}
+                  <Badge color={data.definitions.definitionStatus === 'active' ? 'success' : 'error'}>
+                    <Label>{data.definitions?.definitionStatus?.toUpperCase()}</Label>
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
               <CardContent>
-                <Stack rowGap={2}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{
-                      color: (theme) => theme.palette.grey['A700'],
-                    }}
-                  >
+                <div className="gap-y-0.5">
+                  <CardDescription>
                     {data?.definitions?.description}
-                  </Typography>
-                  <Stack
-                    direction={{ sm: 'row', xs: 'column' }}
-                    columnGap={2}
-                    rowGap={2}
-                    justifyContent={'space-between'}
-                    alignItems={{ sm: 'center', xs: 'flex-start' }}
-                  >
-                    <Typography>
+                  </CardDescription>
+                  <div className="grid grid-flow-row auto-rows-auto grid-flow auto-cols-auto gap-y-0.5 gap-x-0.5 justify-between items-center"> 
+                    <Label>
                       Last Updated: {format(new Date(data?.definitions?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}
-                    </Typography>
-                    <Typography>
+                    </Label>
+                    <Label>
                       Created: {format(new Date(data?.definitions?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}
-                    </Typography>
-                  </Stack>
-                </Stack>
+                    </Label>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>
-          <Stack
-            direction={{ sm: 'row', xs: 'column' }}
-            justifyContent={'space-between'}
-            alignItems={{ sm: 'center', xs: 'flex-start' }}
-            columnGap={1}
-            rowGap={2}
-            sx={{
-              width: '100%',
-            }}
-          >
-            <Typography variant="h5">Runtime</Typography>
-            <Tooltip title="Refresh">
-              <IconButton onClick={handleRefresh}>
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-          <Stack
-            sx={{
-              width: '100%',
-            }}
-            rowGap={2}
-          >
-            <Card
-              elevation={0}
-              sx={{
-                border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-                width: '100%',
-              }}
-            >
-              <CardHeader
-                title={<Typography>{data.id}</Typography>}
-                action={
-                  <Chip
+          <div className="grid grid-flow-row auto-rows-auto grid-flow auto-cols-auto gap-y-1 gap-x-0.5 justify-between items-center w-full"> 
+            <Heading5>Runtime</Heading5>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>                
+                  <Button variant="outline" size="icon" onClick={handleRefresh}>
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Refresh</p>
+                </TooltipContent>  
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className="w-full gap-y-0.5">
+            <Card className="border-[1px] border-slate-200 w-full">
+              <CardHeader>
+                <CardTitle>
+                  {<Label>{data.id}</Label>}
+                  <Badge color={data.workflowStatus === 'completed' ? 'success' : undefined}>
                     label={data.workflowStatus.toUpperCase()}
-                    color={data.workflowStatus === 'completed' ? 'success' : undefined}
-                  />
-                }
-              />
+                  </Badge>          
+                </CardTitle>
+              </CardHeader>
               <CardContent>
-                <Stack rowGap={2}>
-                  <Typography>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                  <Typography>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Typography>
-                </Stack>
+                <div className="gap-y-0.5">
+                  <Label>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                  <Label>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                </div>
               </CardContent>
             </Card>
-            <Typography variant="h5">Tasks</Typography>
-            <Stack
-              direction={'row'}
-              sx={{
-                width: '100%',
-                flexWrap: 'wrap',
-                border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-                padding: 2,
-              }}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-              rowGap={2}
-              columnGap={2}
-            >
-              {data.runtimeTasks.map((task) => (
-                <Card
-                  elevation={0}
-                  key={task.id}
-                  sx={{
-                    border: (theme) => `1px solid ${theme.palette.grey['100']}`,
-                  }}
-                >
-                  <CardHeader
-                    title={task.name}
-                    action={<Chip color="primary" size="small" label={task.taskType.toUpperCase()} />}
-                  />
+            <Heading5>Tasks</Heading5>
+            <div className="flex flex-row w-full border-[1px] border-slate-200 p-2 justify-start items-start gap-y-0.5 gap-x-0.5">
+              {data.tasks.map((task) => (
+                <Card className="border-[1px] border-slate-100" key={task.id}>
+                  <CardHeader>
+                    <CardTitle>{task.name}</CardTitle>
+                    {<Badge color="primary">{task.type.toUpperCase()}</Badge>}
+                  </CardHeader>
                   <CardContent>
-                    <Stack justifyContent={'flex-start'} alignItems={'flex-start'} rowGap={4}>
-                      <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={1}>
-                        <Typography>Status:</Typography>
-                        <Chip
-                          size="small"
-                          label={task.taskStatus.toUpperCase()}
-                          color={task.taskStatus === 'completed' ? 'success' : undefined}
-                        />
-                      </Stack>
-                      {data?.workflowResults && (
-                        <Tooltip title={JSON.stringify(data?.workflowResults, undefined, 4)}>
-                          <Button
-                            variant="outlined"
-                            onClick={() => {
-                              navigator.clipboard
-                                .writeText(JSON.stringify(data?.workflowResults, undefined, 4))
+                    <div className="justify-start items-start gap-y-2">
+                      <div className="flex flex-row justify-start items-center gap-x-0.5">
+                        <Label>Status</Label>
+                        <Badge color={task?.status === 'completed' ? 'success' : undefined}>
+                          {task.status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      {data?.workflowResults?.[task.name] && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard
+                                .writeText(JSON.stringify(data?.workflowResults?.[task.name], undefined, 4))
                                 .then(() => {
-                                  enqueueSnackbar('Result copied to Clipboard', {
-                                    variant: 'success',
-                                    autoHideDuration: 2 * 1000,
+                                  toast({
+                                    title: "Success",
+                                    description: "Results copied to Clipboard",
                                   });
                                 })
                                 .catch();
-                            }}
-                          >
-                            Copy Result
-                          </Button>
-                        </Tooltip>
+                              }}
+                            >
+                              Copy Result
+                            </Button>
+                            <TooltipContent>
+                              {JSON.stringify(data?.workflowResults, undefined, 4)}
+                            </TooltipContent>  
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
-                    </Stack>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
-            </Stack>
-
-            <Typography variant="h5">Logs</Typography>
-            <Stack
-              sx={{
-                width: '100%',
-                overflowX: 'auto',
-                overflowY: 'auto',
-                maxHeight: '500px',
-                border: (theme) => `1px solid ${theme.palette.grey['A200']}`,
-              }}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-            >
-              {data.runtimeLogs.map(({ log, timestamp, severity, taskName }, index) => (
-                <Stack
-                  key={timestamp as any}
-                  direction={'row'}
-                  justifyContent={'flex-start'}
-                  alignItems={'center'}
-                  columnGap={2}
-                  sx={{
-                    width: '100%',
-                    ...(index < data.runtimeLogs.length - 1 && {
-                      borderBottom: (theme) => `1px solid ${theme.palette.grey['200']}`,
-                    }),
-                    paddingY: 2,
-                    paddingX: 1,
-                  }}
-                >
-                  <Chip label={severity} />
-                  <Tooltip title={format(new Date(timestamp as any), 'dd MMM yyyy, hh:mm aa')}>
-                    <Chip label={timestamp as any} />
-                  </Tooltip>
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                    }}
-                  >
+            </div>
+            <Heading5>Logs</Heading5>
+            <div className="w-full border-[1px] border-slate-200 justify-start items-start overflow-x-auto overflow-y-auto max-h-[500px]">
+              {data.logs.map(({ log, timestamp, severity, taskName }) => (
+                <div className="flex flex-row justify-start items-center gap-x-0.5 w-full py-2 px-2 border-[1px] border-slate-200" key={timestamp as any}>
+                  <Badge>{severity}</Badge>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipContent> 
+                        {format(new Date(timestamp as any), 'dd MMM yyyy, hh:mm aa')}
+                        <Badge>{timestamp as any}</Badge>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <Label className="font-semibold">
                     {taskName}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: (theme) => theme.palette.grey['800'],
-                      width: '100%',
-                      flex: 1,
-                    }}
-                  >
+                  </Label>
+                  <Label className="flex-1 text-slate-800 w-full">
                     {log}
-                  </Typography>
-                </Stack>
+                  </Label>
+                </div>
               ))}
-            </Stack>
-          </Stack>
-        </Stack>
+            </div>
+          </div>
+        </div>
       )}
     </Box>
   );

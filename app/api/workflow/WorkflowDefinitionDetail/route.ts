@@ -40,7 +40,7 @@ export async function GET(
       },
     })
 
-    return NextResponse.json(definitions);
+    return NextResponse.json({definitions});
   } catch (error) {
     console.log("[DEFINITIONS_DETAIL_GET]", error);
     return new NextResponse("Initial error", { status: 500 });

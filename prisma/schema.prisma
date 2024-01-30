@@ -798,35 +798,6 @@ enum DefinitionStatus {
   inactive
 }
 
-enum RuntimeStatus {
-  pending
-  completed
-  failed
-}
-
-enum LogSeverity {
-  log
-  info
-  warn
-  error
-}
-
-enum TaskType {
-  FUNCTION
-  WAIT
-  START
-  END
-  LISTEN
-  GUARD
-}
-
-enum TaskStatus {
-  pending
-  completed
-  started
-  failed
-}
-
 model Definitions {
   id                  String                @id @default(cuid())
   name                String
@@ -842,6 +813,12 @@ model Definitions {
   userWfDefinition    Users                 @relation(fields: [userWfDefinitionId], references: [id])
 }
 
+enum RuntimeStatus {
+  pending
+  completed
+  failed
+}
+
 model Runtimes {
   id                        String             @id @default(cuid())
   workflowResults           Json?
@@ -849,34 +826,8 @@ model Runtimes {
   tasks                     Json[]
   logs                      Json[]
   workflowStatus            RuntimeStatus      @default(pending)
-  runtimeTasks              RuntimeTasks[]
-  runtimeLogs               RuntimeLogs[]
   workflowDefinitionId      String
   definitions               Definitions        @relation(fields: [workflowDefinitionId], references: [id])
   createdAt                 DateTime?          @default(now()) @db.Date
   updatedAt                 DateTime?          @db.Date
-}
-
-model RuntimeLogs {
-  id             String        @id @default(cuid())
-  timestamp      DateTime?     @default(now()) @db.Date
-  taskName       String
-  log            String
-  severity       LogSeverity   @default(info)
-  runtimeLogId   String      
-  runtimeLog     Runtimes      @relation(fields: [runtimeLogId], references: [id])
-}
-
-model RuntimeTasks {
-  id             String        @id @default(cuid())
-  name           String
-  next           String
-  previous       String
-  params         Json?
-  exec           String
-  execTs         String
-  taskType       TaskType      @default(START)
-  taskStatus     TaskStatus    @default(pending)
-  runtimeTaskId  String      
-  runtimeTask    Runtimes      @relation(fields: [runtimeTaskId], references: [id])
 }

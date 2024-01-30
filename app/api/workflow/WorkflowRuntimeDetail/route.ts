@@ -36,7 +36,7 @@ export async function GET(
       },
     })
 
-    return NextResponse.json(runtime);
+    return NextResponse.json({runtime});
   } catch (error) {
     console.log("[RUNTIME_DETAIL_GET]", error);
     return new NextResponse("Initial error", { status: 500 });

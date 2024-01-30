@@ -3,17 +3,23 @@
 import { useSnackbar } from 'notistack';
 import type { ElementRef, FC } from 'react';
 import { useRef, useState } from 'react';
-import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
-import { LoadingButton } from '@mui/lab';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, useTheme } from '@mui/material';
+import { LoadingButton } from '@/components/ui/loading-button';
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useTheme } from "next-themes";
+import { PlayCircle, XCircle } from "lucide-react";
 import { useForm } from 'react-hook-form';
 import type { OnChange, OnMount } from '@monaco-editor/react';
 import { Editor } from '@monaco-editor/react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Error } from '@mui/icons-material';
 import axios, { AxiosError } from 'axios';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const startNowSchema = z.object({
   global: z.record(z.string(), z.any()).refine((val) => !Object.keys(val).includes(''), 'Empty keys is not valid'),
@@ -120,20 +126,19 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
 
   return (
     <>
-      <Button variant="outline" onClick={handleDialogOpen} startIcon={<PlayCircleFilledWhiteOutlinedIcon />}>
-        Start Now
+      <Button variant="outline" onClick={handleDialogOpen}>
+        Start Now&nbsp;<PlayCircle width="15" height="15" />
       </Button>
-
-      <Dialog fullWidth={true} maxWidth={'md'} open={open} onClose={handleDialogClose}>
+      <Dialog open={open}>
         <DialogTitle>Start Now</DialogTitle>
-        <DialogContent>
-          <Stack rowGap={2}>
-            <Typography>Global Params:</Typography>
+        <DialogContent className="w-full max-w-md">
+          <div className="gap-y-0.5">
+            <Label>Global Params</Label>
             {!!error && (
-              <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                <Error color="error" />
-                <Typography>{error}</Typography>
-              </Stack>
+              <div className="flex flex-row justify-start items-center gap-x-0.5">
+                <XCircle color="error" />
+                <Label>{error}</Label>
+              </div>
             )}
             <Editor
               defaultValue={JSON.stringify({}, undefined, 4)}
@@ -141,23 +146,23 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
               onChange={handleChange}
               language="json"
               height={'30vh'}
-              theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'light'}
+              theme={theme.resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
             />
-          </Stack>
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleDialogClose}>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleDialogClose}>
             Cancel
           </Button>
           <LoadingButton
             loading={startWorkflowLoading}
-            variant="contained"
+            variant="default"
             onClick={startWorkflowHandler}
             disabled={!!error || !formState.isValid}
           >
             Start
           </LoadingButton>
-        </DialogActions>
+        </DialogFooter>
       </Dialog>
     </>
   );

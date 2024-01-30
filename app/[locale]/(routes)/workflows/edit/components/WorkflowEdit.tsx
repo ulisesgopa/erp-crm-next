@@ -3,62 +3,71 @@
 import 'reactflow/dist/style.css';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AppBar,
-  Badge,
-  Box,
-  Button,
-  Container,
-  Dialog,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Slide,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import type { TransitionProps } from '@mui/material/transitions';
-import type { FC, MouseEvent, ReactElement, Ref } from 'react';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Box } from "@radix-ui/themes";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { 
+  ChevronDown,
+  Sigma,
+  PlayCircle,
+  CircleOff,
+  ShieldCheck, 
+  Hand,
+  Webhook,
+  Cog
+} from "lucide-react";
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import type { Connection, Edge } from 'reactflow';
 import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
   addEdge,
   useEdgesState,
   useNodesState,
   useReactFlow,
 } from 'reactflow';
-import CloseIcon from '@mui/icons-material/Close';
 import { z } from 'zod';
-import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
-import { Error } from '@mui/icons-material';
-import FunctionsIcon from '@mui/icons-material/Functions';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { LoadingButton } from '@mui/lab';
 import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
-import { useNavigate } from 'react-router-dom';
-import ShieldIcon from '@mui/icons-material/Shield';
-import PanToolIcon from '@mui/icons-material/PanTool';
+import { useRouter } from 'next/navigation';
+import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
-import WebhookIcon from '@mui/icons-material/Webhook';
 import axios from 'axios';
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: ReactElement;
-  },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
+import { Separator } from '@/components/ui/separator';
 
 const workflowMetadataFormSchema = z.object({
   name: z
@@ -77,16 +86,21 @@ const workflowMetadataFormSchema = z.object({
 
 type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
 
-const WorkflowEdit = ({ data }: any) => {
+interface Props {
+  definition: ResponseSchemaType;
+};
+
+const WorkflowEdit: React.FC<Props> = ( definition ) => {
+  const [isLoading] = useState<boolean>(false);  
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
   const open = Boolean(menuEl);
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const [formLoading, setFormLoading] = useState<boolean>(false);
 
-  const [nodes, _, onNodesChange] = useNodesState(data.uiObject.react.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(data.uiObject.react.edges);
+  const [nodes, _, onNodesChange] = useNodesState(definition.definition.uiObject.react.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(definition.definition.uiObject.react.edges);
   const { addNodes } = useReactFlow();
 
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
@@ -97,14 +111,18 @@ const WorkflowEdit = ({ data }: any) => {
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
-      name: data.name,
-      description: data.description,
-      global: data?.global ?? {},
-      status: data.status,
+      name: definition.definition.name,
+      description: definition.definition.description,
+      global: definition.definition?.global ?? {},
+      status: definition.definition.definitionStatus,
     },
   });
 
   const globalObjectValue = watch('global');
+
+  const form = useForm<WorkflowMetadataFormSchema>({
+    resolver: zodResolver(workflowMetadataFormSchema),
+  });  
 
   useEffect(() => {
     setConfig(globalObjectValue);
@@ -113,6 +131,11 @@ const WorkflowEdit = ({ data }: any) => {
   const handleGlobalEditorError = (error: string | null) => {
     setGlobalEditorError(() => error);
   };
+
+  const definitionStatus = [
+    { name: "Active", id: "Active" },
+    { name: "Inactive", id: "Inactive" },
+  ];   
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
@@ -125,14 +148,6 @@ const WorkflowEdit = ({ data }: any) => {
     },
     [setEdges]
   );
-
-  const openDefinitionDialog = () => {
-    setDefinitionDialog(() => true);
-  };
-
-  const closeDefinitionDialog = () => {
-    setDefinitionDialog(() => false);
-  };
 
   const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
     setMenuEl(() => event.currentTarget);
@@ -181,7 +196,7 @@ const WorkflowEdit = ({ data }: any) => {
 
     await axios
       .put(
-        `/workflows/edit/${data.id}`,
+        `/definition/${definition.definition.id}`,
         {
           workflowData,
           key: 'react',
@@ -196,7 +211,7 @@ const WorkflowEdit = ({ data }: any) => {
           variant: 'success',
           autoHideDuration: 2 * 1000,
         });
-        navigate(`/workflows/${data.id}`);
+        router.push(`/workflows/${definition.definition.id}`);
       })
       .catch((error) => {
         console.error(error);
@@ -212,85 +227,149 @@ const WorkflowEdit = ({ data }: any) => {
 
   return (
     <Box>
-      <Stack
-        sx={{
-          height: '80vh',
-          width: '100%',
-        }}
-        justifyContent={'flex-start'}
-        alignItems={'flex-start'}
-        rowGap={4}
-      >
-        <Stack
-          sx={{
-            width: '100%',
-          }}
-          direction={'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          columnGap={2}
-        >
-          <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-            <Badge color="error" badgeContent={Object.keys(formState?.errors).length}>
-              <Button variant="outlined" onClick={openDefinitionDialog}>
-                Configure Definition
-              </Button>
+      <div className="w-full h-[80vh] justify-start items-start gap-y-1">
+        <div className="flex flex-row justify-between items-center gap-x-0.5 w-full">
+          <div className="flex flex-row justify-start items-center gap-x-2">
+            <Badge variant="destructive"> 
+              {Object.keys(formState?.errors).length}
             </Badge>
-            <Button variant="contained" onClick={handleMenuOpen}>
-              Add Task
-            </Button>
-
-            <Menu
-              id="basic-menu"
-              anchorEl={menuEl}
-              open={open}
-              onClose={handleMenuClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={() => addNewTask('function')}>
-                <ListItemIcon>
-                  <FunctionsIcon />
-                </ListItemIcon>
-                <ListItemText>Function</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('start')}>
-                <ListItemIcon>
-                  <PlayCircleOutlineIcon />
-                </ListItemIcon>
-                <ListItemText>Start</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('end')}>
-                <ListItemIcon>
-                  <StopCircleIcon />
-                </ListItemIcon>
-                <ListItemText>End</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('guard')}>
-                <ListItemIcon>
-                  <ShieldIcon />
-                </ListItemIcon>
-                <ListItemText>Guard</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('wait')}>
-                <ListItemIcon>
-                  <PanToolIcon />
-                </ListItemIcon>
-                <ListItemText>Wait</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => addNewTask('listen')}>
-                <ListItemIcon>
-                  <WebhookIcon />
-                </ListItemIcon>
-                <ListItemText>Listen</ListItemText>
-              </MenuItem>
-            </Menu>
-          </Stack>
-          <LoadingButton variant="contained" loading={formLoading} onClick={submitHandle}>
+            <Sheet>
+              <Form {...form}>
+                <SheetTrigger asChild>
+                  <Button variant="secondary">Configure Definition&nbsp; <Cog width="15" height="15" /></Button>
+                </SheetTrigger>
+                <SheetContent className="sm:max-w-[540px]">
+                  <SheetHeader>
+                    <SheetTitle>Create Definition</SheetTitle>
+                    <SheetDescription>
+                      Make changes to your workflow definition here. Your work remains intact when this panel is closed.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <Separator className="mt-6" />
+                  <div className="grid gap-4 py-4">
+                    <div className="space-y-2 w-full">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                disabled={isLoading}
+                                placeholder="Definition name"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="space-y-2 w-full">
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                disabled={isLoading}
+                                placeholder="Definition description"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="space-y-2 w-full">
+                      <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Status</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="SelectTrigger">
+                                  <SelectValue placeholder="Choose definition status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="flex overflow-y-auto">
+                                {definitionStatus.map((status) => (
+                                  <SelectItem key={status.id} value={status.id}>
+                                    {status.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-1/2 space-y-5">
+                      <FormLabel>Global Editor</FormLabel>
+                      {globalEditorError && (
+                        <div className="flex gap-2">
+                          <FormLabel className="text-red-600">{globalEditorError}</FormLabel>
+                        </div>
+                      )}
+                      <WorkflowGlobalMonaco
+                        initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
+                        setValue={setValue}
+                        setError={handleGlobalEditorError}
+                      />
+                    </div>
+                  </div>  
+                </SheetContent>
+              </Form>
+            </Sheet>         
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="secondary" onClick={handleMenuOpen}>
+                  New Task&nbsp;
+                  <ChevronDown width="16" height="16" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[125px]">              
+                <DropdownMenuItem onClick={() => addNewTask('function')}>
+                  <Sigma width="18" height="18" />
+                  <span className="pl-4"> Function </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('start')}>
+                  <PlayCircle width="18" height="18" />
+                  <span className="pl-4"> Start </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('end')}>
+                  <CircleOff width="18" height="18" />
+                  <span className="pl-4"> End </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('guard')}>
+                  <ShieldCheck width="18" height="18" />
+                  <span className="pl-4"> Guard </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('wait')}>
+                  <Hand width="18" height="18" />
+                  <span className="pl-4"> Wait </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addNewTask('listen')}>
+                  <Webhook width="18" height="18" />
+                  <span className="pl-4"> Listen </span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <LoadingButton loading={formLoading} onClick={submitHandle}>
             Submit
           </LoadingButton>
-        </Stack>
+        </div>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -304,95 +383,10 @@ const WorkflowEdit = ({ data }: any) => {
             deleteEdge(edge);
           }}
         >
-          <MiniMap />
           <Controls />
           <Background />
         </ReactFlow>
-        <Dialog fullScreen open={definitionDialog} onClose={closeDefinitionDialog} TransitionComponent={Transition}>
-          <AppBar position="sticky">
-            <Toolbar>
-              <IconButton edge="start" color="inherit" onClick={closeDefinitionDialog} aria-label="close">
-                <CloseIcon />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                Configure Definition
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Container maxWidth="lg">
-            <Stack
-              sx={{
-                padding: 2,
-              }}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-              rowGap={4}
-            >
-              <Controller
-                control={control}
-                name="name"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Name"
-                    placeholder="Name of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    fullWidth
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="description"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Description"
-                    placeholder="Description about the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    multiline
-                    fullWidth
-                    minRows={4}
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="status"
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label="Status"
-                    placeholder="Status of the definition"
-                    error={!!fieldState?.error?.message}
-                    helperText={fieldState?.error?.message}
-                    select
-                    fullWidth
-                  >
-                    <MenuItem value={'active'}>Active</MenuItem>
-                    <MenuItem value={'inactive'}>Inactive</MenuItem>
-                  </TextField>
-                )}
-              />
-              <Typography>Global:</Typography>
-              {globalEditorError && (
-                <Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} columnGap={2}>
-                  <Error color="error" />
-                  <Typography>{globalEditorError}</Typography>
-                </Stack>
-              )}
-
-              <WorkflowGlobalMonaco
-                initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
-                setValue={setValue}
-                setError={handleGlobalEditorError}
-              />
-            </Stack>
-          </Container>
-        </Dialog>
-      </Stack>
+      </div>
     </Box>
   );
 };

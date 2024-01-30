@@ -61,29 +61,7 @@ export const POST = async (req: Request) => {
     prismadb.runtimes.findUnique({
       where: {
         id: requestBodyResult.data.workflowRuntimeId,
-      },
-      include: {
-        runtimeLogs: {
-          select: {
-            timestamp: true,
-            taskName: true,
-            log: true,
-            severity: true
-          },
-        },  
-        runtimeTasks: {
-          select: {
-            id: true,
-            name: true,
-            next: true,
-            previous: true,
-            params: true,
-            exec: true,
-            taskType: true,
-            taskStatus: true
-          }
-        }
-      }      
+      }
     })
   );
 
@@ -128,7 +106,7 @@ export const POST = async (req: Request) => {
     );
   }
 
-  const tasks = runtimeResult.data.runtimeTasks as unknown as Task[];
+  const tasks = runtimeResult.data.tasks as unknown as Task[];
 
   const listenTask = tasks?.find(
     (task) => task.name === requestBodyResult.data.taskName
