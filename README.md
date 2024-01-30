@@ -44,6 +44,7 @@ You can try it here [demo.saashq.org](https://demo.saashq.org), login via Google
 - [Auth.js](https://authjs.dev/) – Handle user authentication with ease with providers like Google, Twitter, GitHub, etc.
 - [Prisma](https://www.prisma.io/) – Typescript-first ORM for Node.js
 - [React Email](https://react.email/) – Versatile email framework for efficient and flexible email development
+- [Tembo](https://tembo.io) - Goodbye database sprawl and hello Postgres. Postgres hosting done the right way.
 
 ### Platforms
 
