@@ -37,7 +37,7 @@ export class Processor {
       });
     }
 
-    const tasks = workflowRuntimeData.runtimeTasks as unknown as Task[];
+    const tasks = workflowRuntimeData.tasks as unknown as Task[];
 
     const currentTask: Task | null | undefined = tasks.find(
       (item) => item.name === taskName

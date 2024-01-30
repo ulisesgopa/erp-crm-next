@@ -2,7 +2,7 @@
 
 import type { OnChange, OnMount } from '@monaco-editor/react';
 import { Editor } from '@monaco-editor/react';
-import { useTheme } from '@mui/material';
+import { useTheme } from "next-themes";
 import type { ElementRef, FC } from 'react';
 import { useRef } from 'react';
 
@@ -48,7 +48,7 @@ const ParamsMonaco: FC<Props> = ({ initialValue, setError, setValue }) => {
       onChange={handleChange}
       language="json"
       height={'50vh'}
-      theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'light'}
+      theme={theme.resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
     />
   );
 };

@@ -13,18 +13,9 @@ export async function GET(
   }
 
   try {
-    const definitions = await prismadb.definitions.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        definitionStatus: true,
-        createdAt: true,
-        updatedAt: true
-      },
-    })
+    const definitions = await prismadb.definitions.findMany({})
 
-    return NextResponse.json(definitions);
+    return NextResponse.json({definitions});
   } catch (error) {
     console.log("[DEFINITIONS_LIST_GET]", error);
     return new NextResponse("Initial error", { status: 500 });

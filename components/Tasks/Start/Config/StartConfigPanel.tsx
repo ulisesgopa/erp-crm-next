@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSnackbar } from 'notistack';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -64,8 +63,6 @@ const StartConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id })
   const form = useForm<StartConfigSchema>({
     resolver: zodResolver(startConfigSchema),
   });   
-
-  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const timeout = setTimeout(() => {

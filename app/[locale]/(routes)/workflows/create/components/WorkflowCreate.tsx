@@ -22,8 +22,8 @@ import {
   Webhook,
   Cog
 } from "lucide-react";
-import type { MouseEvent, ReactElement, Ref } from 'react';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Connection, Edge, Node } from 'reactflow';
 import ReactFlow, {
@@ -197,7 +197,7 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
   
-  const { control, setValue, watch, handleSubmit, formState } = useForm<WorkflowMetadataFormSchema>({
+  const { setValue, watch, handleSubmit, formState } = useForm<WorkflowMetadataFormSchema>({
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
@@ -254,6 +254,8 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const submitHandle = handleSubmit(async (values) => {
     setFormLoading(() => true);
+                  
+    console.log("Hello");
 
     const parsedTask = nodes.map((item) => ({
       id: item?.id,
@@ -284,35 +286,35 @@ const WorkflowCreate: React.FC<Props> = () => {
       status: values.status,
     };
 
-    await axios
-      .post(
-        `/definition/create`,
-        {
-          workflowData,
-          key: 'react',
-          ui: {
-            nodes,
-            edges,
-          },
-        },
-      )
-      .then(() => {
-        enqueueSnackbar('Workflow added successfully', {
-          variant: 'success',
-          autoHideDuration: 2 * 1000,
-        });
-        router.push('/workflows');
-      })
-      .catch((error) => {
-        console.error(error);
-        enqueueSnackbar('Workflow addition failed', {
-          variant: 'error',
-          autoHideDuration: 2 * 1000,
-        });
-      })
-      .finally(() => {
-        setFormLoading(() => false);
-      });
+    // await axios
+    //   .post(
+    //     `/definition/create`,
+    //     {
+    //       workflowData,
+    //       key: 'react',
+    //       ui: {
+    //         nodes,
+    //         edges,
+    //       },
+    //     },
+    //   )
+    //   .then(() => {
+    //     enqueueSnackbar('Workflow added successfully', {
+    //       variant: 'success',
+    //       autoHideDuration: 2 * 1000,
+    //     });
+    //     router.push('/workflows');
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     enqueueSnackbar('Workflow addition failed', {
+    //       variant: 'error',
+    //       autoHideDuration: 2 * 1000,
+    //     });
+    //   })
+    //   .finally(() => {
+    //     setFormLoading(() => false);
+    //   });
   });  
   
   return (
@@ -341,7 +343,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                       <FormField
                         control={form.control}
                         name="name"
-                        render={({ field }) => (
+                        render={({ field, fieldState }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
@@ -351,7 +353,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                                 {...field}
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage>{!!fieldState?.error?.message}</FormMessage>
                           </FormItem>
                         )}
                       />

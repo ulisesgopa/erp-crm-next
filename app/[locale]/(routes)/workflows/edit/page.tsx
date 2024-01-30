@@ -1,6 +1,5 @@
 "use client";
 
-import { Box, Typography } from '@mui/material';
 import { useEffect, type FC } from 'react';
 
 import { ReactFlowProvider } from 'reactflow';
@@ -8,8 +7,10 @@ import { ReactFlowProvider } from 'reactflow';
 import WorkflowEdit from './components/WorkflowEdit';
 import WorkflowDefinitionContextProvider from '@/app/contexts/WorkflowDefinitionContext';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useParams } from "next/navigation";
 import { getDefinitionSingle } from "@/actions/workflows/get-definition-single";
+import { Box } from "@radix-ui/themes";
+import { Label } from "@/components/ui/label";
 
 interface Props {}
 
@@ -27,17 +28,12 @@ const WorkflowDefinitionEditPage: FC<Props> = () => {
   });
 
   return (
-    <Box
-      sx={{
-        height: '80vh',
-        padding: 3,
-      }}
-    >
-      {isLoading && <Typography>Loading ...</Typography>}
+    <Box className="h=[80vh] p-3">
+      {isLoading && <Label>Loading ...</Label>}
       {!isLoading && data && (
         <ReactFlowProvider>
           <WorkflowDefinitionContextProvider>
-            <WorkflowEdit data={data} />
+            <WorkflowEdit definition={data} />
           </WorkflowDefinitionContextProvider>
         </ReactFlowProvider>
       )}

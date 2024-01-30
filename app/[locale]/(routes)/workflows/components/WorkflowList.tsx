@@ -26,20 +26,17 @@ const WorkflowListView = ({ data }: any) => {
         {!isLoading && data && (
           <div className="justify-start items-start gap-y-0.5">
             {data.map((item: any) => (
-              <Link
-                style={{
-                  width: '100%',
-                }}
+              <Link className="w-full"
                 key={item.id}
                 href={`/workflows/${item.id}`}
               >
-                <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
+                <Card className="w-full hover:bg-slate-100">
                   <CardContent>
                     <div className="w-full flex flex-row justify-between items-center">
                       <span>{item.name}</span>
                       <Badge color={item.status === 'active' ? 'primary' : 'error'}>{item.status.toUpperCase()}</Badge>
                     </div>
-                    <span style={{paddingTop:2, width:'100%'}}>
+                    <span className="pt-2 w-full">
                       {item.description}
                     </span>
                     <div className="w-full flex flex-row justify-between items-center">
@@ -55,7 +52,7 @@ const WorkflowListView = ({ data }: any) => {
               </Link>
             ))}
             {data?.length < 1 ? (
-              <span style={{textAlign: "center", width: "100%"}}>
+              <span className="flex flex-row justify-center">
                 No workflow definitions found!
               </span>
             ) : null}
@@ -63,42 +60,42 @@ const WorkflowListView = ({ data }: any) => {
         )}
         {isLoading && (
           <div className="justify-start items-start gap-y-0.5">
-            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
+            <Card className="w-full hover:bg-slate-100">
               <CardContent>
                 <div className="w-full flex flex-row justify-between iteeems-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="height=30px width=75px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="h-[30px] w-[75px]" />
                 </div>
                 <Skeleton />
                 <div className="w-full flex flex-row justify-between items-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="width=100px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="w-[100px]" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
+            <Card className="w-full hover:bg-slate-100">
               <CardContent>
                 <div className="w-full flex flex-row juuustify-between items-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="height=30px width=75px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="h-[30px] w-[75px]" />
                 </div>
                 <Skeleton />
                 <div  className="w-full flex flex-row justify-between items-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="width=100px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="w-[100px]" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="width: 100%, :hover:(backgroundColor: theme.palette.grey['100'])">
+            <Card className="w-full hover:bg-slate-100">
               <CardContent>
                 <div className="w-full flex flex-row justify-between items-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="height=30px width=75px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="h-[30px] w-[75px]" />
                 </div>
                 <Skeleton />
                 <div className="w-full flex flex-row justify-between items-center">
-                  <Skeleton className="width=100px" />
-                  <Skeleton className="width=100px" />
+                  <Skeleton className="w-[100px]" />
+                  <Skeleton className="w-[100px]" />
                 </div>
               </CardContent>
             </Card>

@@ -91,9 +91,10 @@ export const POST = async (req: Request) => {
         workflowDefinitionId: definitionResult.data.id,
         workflowStatus: RuntimeStatus.pending,
         workflowResults: {},
-        runtimeTasks: {
-          create: []
-        },  
+        tasks: tasks.map((t) => ({
+          ...t,
+          status: TaskStatus.pending,
+        })),
         global: {
           ...(globalObject && {
             ...globalObject,
@@ -102,14 +103,8 @@ export const POST = async (req: Request) => {
             ...requestBodyResult.data?.globalParams,
           }),
         },
-        runtimeLogs: {
-          create: [],
-        },  
+        logs: [],
       },
-      include: {
-        runtimeTasks: {},
-        runtimeLogs: {}
-      }
     })
   );
 
@@ -141,7 +136,7 @@ export const POST = async (req: Request) => {
     );
   }
 
-  const runtimeTask = runtimeResult.data.runtimeTasks as unknown as Task[];
+  const runtimeTask = runtimeResult.data.tasks as unknown as Task[];
 
   const startTaskName = runtimeTask.find(
     (val) => val.type === TaskType.START

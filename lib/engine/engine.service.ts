@@ -10,10 +10,6 @@ export class EngineService {
     return await prismadb.runtimes.findUnique({
       where: {
         id: id,
-      },
-      include: {
-        runtimeTasks: {},
-        runtimeLogs: {}
       }
     });
   }
@@ -26,10 +22,6 @@ export class EngineService {
     const runtimeData = await prismadb.runtimes.findUnique({
       where: {
         id: workflowRuntimeId,
-      },
-      include: {
-        runtimeTasks: {},
-        runtimeLogs: {}
       }
     });
 
@@ -37,7 +29,7 @@ export class EngineService {
       return;
     }
 
-    const taskList = runtimeData.runtimeTasks as unknown as Task[];
+    const taskList = runtimeData.tasks as unknown as Task[];
 
     const mappedTask = taskList?.map((val) => {
       if (val?.id === currentTaskId) {
@@ -75,10 +67,6 @@ export class EngineService {
     const runtimeData = await prismadb.runtimes.findUnique({
       where: {
         id: workflowRuntimeId,
-      },
-      include: {
-        runtimeTasks: {},
-        runtimeLogs: {}
       }      
     });
 
@@ -102,12 +90,6 @@ export class EngineService {
       },
       data: {
         workflowResults: updatedResult,
-        runtimeTasks: {
-          update: []
-        },
-        runtimeLogs: {
-          update: []
-        }
       },
     });
   }
@@ -122,12 +104,6 @@ export class EngineService {
       },
       data: {
         workflowStatus: newStatus,
-        runtimeTasks: {
-          update: []
-        },
-        runtimeLogs: {
-          update: []
-        }        
       },
     });
   }
@@ -136,10 +112,6 @@ export class EngineService {
     const runtimeData = await prismadb.runtimes.findUnique({
       where: {
         id: workflowRuntimeId,
-      },
-      include: {
-        runtimeTasks: {},
-        runtimeLogs: {}
       }      
     });
 
@@ -147,7 +119,7 @@ export class EngineService {
       return;
     }
 
-    let updatedLogs = runtimeData.runtimeLogs as unknown as LogObject[];
+    let updatedLogs = runtimeData.logs as unknown as LogObject[];
 
     updatedLogs.push(...logs);
 
@@ -158,12 +130,6 @@ export class EngineService {
       data: {
         //@ts-ignore-next-line
         logs: updatedLogs,
-        runtimeTasks: {
-          update: []
-        },
-        runtimeLogs: {
-          update: []
-        }
       },
     });
   }
