@@ -254,7 +254,7 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const submitHandle = handleSubmit(async (values) => {
     setFormLoading(() => true);
-                  
+
     console.log("Hello");
 
     const parsedTask = nodes.map((item) => ({
@@ -458,7 +458,7 @@ const WorkflowCreate: React.FC<Props> = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <LoadingButton loading={formLoading} onClick={submitHandle}>
+          <LoadingButton loading={formLoading} onClick={() => {submitHandle}}>
             Submit
           </LoadingButton>
         </div>
