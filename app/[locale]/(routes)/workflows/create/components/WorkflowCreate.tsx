@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Box } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { 
   ChevronDown,
@@ -48,7 +47,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 import {
   Form,
@@ -202,7 +200,7 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
   
-  const { setValue, watch, handleSubmit, formState } = useForm<WorkflowMetadataFormSchema>({
+  const { setValue, watch, handleSubmit } = useForm<WorkflowMetadataFormSchema>({
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
@@ -342,15 +340,15 @@ const WorkflowCreate: React.FC<Props> = () => {
                 <SheetTrigger>
                   <Button variant="secondary" className="relative" onClick={openDefinitionDialog}>Configure Definition&nbsp; <Cog className="w-[15px] h-[15px]" />
                     <span>
-                      {Object.keys(formState?.errors).length > 0 ? (
+                      {Object.keys(form?.formState.errors).length > 0 ? (
                         <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
-                          {Object.keys(formState?.errors).length}
+                          {Object.keys(form?.formState.errors).length}
                         </span>  
-                      ) : <span></span>}
+                      ) : null}
                     </span>                  
                   </Button>
                 </SheetTrigger>
-                <SheetContent className="sm:max-w-[540px]" onClose={() => setDefinitionDialog(false)}>
+                <SheetContent className="sm:max-w-[540px]" onClose={() => closeDefinitionDialog}>
                   <SheetHeader>
                     <SheetTitle>Create Definition</SheetTitle>
                     <SheetDescription>
