@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-SaasHQ is a CRM / ERP starter built on top of Next.JS 14 using TypeScript, great UI library shadcn, Prisma and Postgresql as a database. Upload things as an S3 blob for document storage. SaasHQ is based on the awesome NextCRM project by Pavel Dovhomilja. The Workflow engne is inspired by 
-the Workflow-Engine project by Nisarg Bhatt. 
+SaasHQ is a CRM / ERP starter built on top of Next.JS 14 using TypeScript, the great UI library shadCN and Prisma, Postgresql+Tembo as the backend infrastructure. Upload things as an S3 blob for document storage. SaasHQ is based on the awesome NextCRM project by Pavel Dovhomilja. The Workflow engne is inspired by 
+the Workflow-Engine project by Nisarg Bhatt.
 </p>
 
 <p align="center">
