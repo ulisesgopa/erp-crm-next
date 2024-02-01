@@ -48,6 +48,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import {
   Form,
@@ -62,6 +63,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectGroup,
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -193,7 +195,10 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const [nodes, _, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  
   const { addNodes } = useReactFlow();
+
+  const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
 
   const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
   
@@ -212,6 +217,13 @@ const WorkflowCreate: React.FC<Props> = () => {
 
   const form = useForm<WorkflowMetadataFormSchema>({
     resolver: zodResolver(workflowMetadataFormSchema),
+    mode: 'all',
+    values: {
+      name: '',
+      description: '',
+      global: {},
+      status: 'active',
+    },  
   });
 
   useEffect(() => {
@@ -221,11 +233,6 @@ const WorkflowCreate: React.FC<Props> = () => {
   const handleGlobalEditorError = (error: string | null) => {
     setGlobalEditorError(() => error);
   };
-
-  const definitionStatus = [
-    { name: "Active", id: "Active" },
-    { name: "Inactive", id: "Inactive" },
-  ];  
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
@@ -247,12 +254,20 @@ const WorkflowCreate: React.FC<Props> = () => {
     setMenuEl(() => null);
   };
 
+  const openDefinitionDialog = () => {
+    setDefinitionDialog(() => true);
+  };
+
+  const closeDefinitionDialog = () => {
+    setDefinitionDialog(() => false);
+  };  
+
   const addNewTask = (type: keyof typeof taskCreator) => {
     addNodes(taskCreator[type]());
     handleMenuClose();
   };
 
-  const submitHandle = handleSubmit(async (values) => {
+  const submitHandle = handleSubmit(async (values: z.infer<typeof workflowMetadataFormSchema>) => {
     setFormLoading(() => true);
 
     console.log("Hello");
@@ -321,16 +336,21 @@ const WorkflowCreate: React.FC<Props> = () => {
     <Box>
       <div className="w-full h-[80vh] justify-start items-start gap-y-1">
         <div className="flex flex-row justify-between items-center gap-x-0.5 w-full">
-          <div className="flex flex-row justify-start items-center gap-x-2">
-            <Badge variant="destructive"> 
-              {Object.keys(formState?.errors).length}
-            </Badge>
-            <Sheet>
+          <div className="flex flex-row justify-start items-center gap-x-4">
+            <Sheet open={definitionDialog} onOpenChange={setDefinitionDialog}>
               <Form {...form}>
-                <SheetTrigger asChild>
-                  <Button variant="secondary">Configure Definition&nbsp; <Cog width="15" height="15" /></Button>
+                <SheetTrigger>
+                  <Button variant="secondary" className="relative" onClick={openDefinitionDialog}>Configure Definition&nbsp; <Cog className="w-[15px] h-[15px]" />
+                    <span>
+                      {Object.keys(formState?.errors).length > 0 ? (
+                        <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
+                          {Object.keys(formState?.errors).length}
+                        </span>  
+                      ) : <span></span>}
+                    </span>                  
+                  </Button>
                 </SheetTrigger>
-                <SheetContent className="sm:max-w-[540px]">
+                <SheetContent className="sm:max-w-[540px]" onClose={() => setDefinitionDialog(false)}>
                   <SheetHeader>
                     <SheetTitle>Create Definition</SheetTitle>
                     <SheetDescription>
@@ -343,7 +363,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                       <FormField
                         control={form.control}
                         name="name"
-                        render={({ field, fieldState }) => (
+                        render={({ field }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
@@ -353,7 +373,7 @@ const WorkflowCreate: React.FC<Props> = () => {
                                 {...field}
                               />
                             </FormControl>
-                            <FormMessage>{!!fieldState?.error?.message}</FormMessage>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
@@ -394,11 +414,10 @@ const WorkflowCreate: React.FC<Props> = () => {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent className="flex overflow-y-auto">
-                                {definitionStatus.map((status) => (
-                                  <SelectItem key={status.id} value={status.id}>
-                                    {status.name}
-                                  </SelectItem>
-                                ))}
+                                <SelectGroup>
+                                  <SelectItem value="active">Active</SelectItem>
+                                  <SelectItem value="inactive">Inactive</SelectItem>
+                                </SelectGroup>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -458,7 +477,7 @@ const WorkflowCreate: React.FC<Props> = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <LoadingButton loading={formLoading} onClick={() => {submitHandle}}>
+          <LoadingButton loading={formLoading} onClick={submitHandle}>
             Submit
           </LoadingButton>
         </div>
