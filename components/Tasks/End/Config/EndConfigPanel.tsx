@@ -90,7 +90,7 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
     };
   }, [getNodes, id, labelValue]);
 
-  const submitHandler = handleSubmit(async (value) => {
+  const submitHandler = handleSubmit(async (value: z.infer<typeof endConfigSchema>) => {
     onSubmit(value);
     toast({
       title: "Success",
@@ -111,71 +111,73 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
     <>
       <Sheet open={openConfigPanel} onOpenChange={setOpenConfigPanel}>
         <Form {...form}>
-          <SheetTrigger asChild>
-            <Button variant="outline" onClick={handleConfigPanelOpen}>
-              Configure
-              <span>
-                {Object.keys(form?.formState.errors).length > 0 ? (
-                  <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
-                    {Object.keys(form?.formState.errors).length + (labelUniqueError ? 1 : 0)}
-                  </span>  
-                ) : null}
-              </span>            
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="sm:max-w-[540px]">
-            <SheetHeader>
-              <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
-                <SheetDescription>
-                  Make changes to End Configuration panel.
-                </SheetDescription>
-              </SheetHeader>
-            <Separator className="mt-6" />
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2 w-full">
-                <FormField
-                  control={form.control}
-                  name="label"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Label</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isLoading}
-                          placeholder="Name of the Task"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>                
-            </div>
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button 
-                  type="submit"
-                  onClick={() => {
-                    toast({
-                      title: "Success",
-                      description: "Task changed successfully."
-                    })
-                  }}                  
-                >
-                  Submit
-                </Button>
-              </SheetClose>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  deleteNode();
-                }}
-              >
-                Delete Task
+          <form onSubmit={form.handleSubmit(submitHandler as any)}>
+            <SheetTrigger asChild>
+              <Button variant="outline" onClick={handleConfigPanelOpen}>
+                Configure
+                <span>
+                  {Object.keys(form?.formState.errors).length > 0 ? (
+                    <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
+                      {Object.keys(form?.formState.errors).length + (labelUniqueError ? 1 : 0)}
+                    </span>  
+                  ) : null}
+                </span>            
               </Button>
-            </SheetFooter>
-          </SheetContent>
+            </SheetTrigger>
+            <SheetContent className="sm:max-w-[540px]">
+              <SheetHeader>
+                <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
+                  <SheetDescription>
+                    Make changes to End Configuration panel.
+                  </SheetDescription>
+                </SheetHeader>
+              <Separator className="mt-6" />
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2 w-full">
+                  <FormField
+                    control={form.control}
+                    name="label"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Name of the Task"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>                
+              </div>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button 
+                    type="submit"
+                    onClick={() => {
+                      toast({
+                        title: "Success",
+                        description: "Task changed successfully."
+                      })
+                    }}                  
+                  >
+                    Submit
+                  </Button>
+                </SheetClose>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    deleteNode();
+                  }}
+                >
+                  Delete Task
+                </Button>
+              </SheetFooter>
+            </SheetContent>
+          </form>
         </Form>
       </Sheet>
     </>

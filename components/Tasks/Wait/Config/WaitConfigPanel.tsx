@@ -27,7 +27,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector';
-import { Badge } from '@/components/ui/badge';
 
 const waitConfigSchema = z.object({
   label: z
@@ -49,9 +48,11 @@ interface Props {
   id: string;
 }
 
-const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
+const WaitConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
   const [isLoading] = useState<boolean>(false);
-  const { toast } = useToast();  
+  const { toast } = useToast();
+
+  const [ openConfigPanel, setOpenConfigPanel ] = useState<boolean>(false);  
   const { getNodes } = useReactFlow();
 
   let OPTIONS: Option[] = useMemo(() => [], []);
@@ -59,7 +60,7 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
   const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
   const [taskNamesUnknownError, setTaskNamesUnknownError] = useState<string | null>(null);
 
-  const { control, formState, watch } = useForm<WaitConfigSchema>({
+  const { handleSubmit, watch } = useForm<WaitConfigSchema>({
     resolver: zodResolver(waitConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -74,6 +75,12 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
 
   const form = useForm<WaitConfigSchema>({
     resolver: zodResolver(waitConfigSchema),
+    values: {
+      label: initialValue?.label ?? '',
+      params: initialValue?.params ?? {
+        taskNames: [],
+      },
+    },    
   });
 
   useEffect(() => {
@@ -119,95 +126,120 @@ const WaitConfigPanel: FC<Props> = ({ initialValue, deleteNode, id }) => {
     };
   }, [OPTIONS, getNodes, id]);   
 
+  const submitHandler = handleSubmit(async (value: z.infer<typeof waitConfigSchema>) => {
+    onSubmit(value);
+    toast({
+      title: "Success",
+      description: "Config changed successfully."
+    })
+    handleConfigPanelClose();
+  });
+
+  const handleConfigPanelOpen = () => {
+    setOpenConfigPanel(() => true);
+  };
+
+  const handleConfigPanelClose = () => {
+    setOpenConfigPanel(() => false);
+  };  
+
   return (
     <>
-      <Badge variant="destructive" className="mr-3">
-        {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0) + (taskNamesUnknownError ? 1 : 0)}
-      </Badge>
-      <Sheet>
+      <Sheet open={openConfigPanel} onOpenChange={setOpenConfigPanel}>
         <Form {...form}>
-          <SheetTrigger asChild>
-            <Button variant="outline">Configure</Button>
-          </SheetTrigger>
-          <SheetContent className="sm:max-w-[540px]">
-            <SheetHeader>
-              <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
-                <SheetDescription>
-                  Make changes to Wait Configuration panel.
-                </SheetDescription>
-              </SheetHeader>
-            <Separator className="mt-6" />
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2 w-full">
-                <FormField
-                  control={form.control}
-                  name="label"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Label</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isLoading}
-                          placeholder="Name of the Task"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="space-y-2 w-full">
-                <FormField
-                  control={form.control}
-                  name="params.taskNames"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tasks</FormLabel>
-                      <FormControl>
-                        <MultipleSelector
-                          value={field.value as unknown as Option[]}
-                          onChange={field.onChange}
-                          defaultOptions={OPTIONS}
-                          hidePlaceholderWhenSelected={true}
-                          placeholder="Select tasks to wait on..."
-                          emptyIndicator={
-                            <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                              no results found.
-                            </p>
-                          }
-                        />
-                      </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <SheetFooter className="mt-25">
-              <SheetClose asChild>
-                <Button 
-                  type="submit"
-                  onClick={() => {
-                    toast({
-                      title: "Success",
-                      description: "Task changed successfully."
-                    });
-                  }}                  
-                >
-                  Submit
-                </Button>
-              </SheetClose>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  deleteNode();
-                }}
-              >
-                Delete Task
+          <form onSubmit={form.handleSubmit(submitHandler as any)}>          
+            <SheetTrigger asChild>
+              <Button variant="outline" onClick={handleConfigPanelOpen}>
+                Configure
+                <span>
+                  {Object.keys(form?.formState.errors).length > 0 ? (
+                    <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
+                      {Object.keys(form?.formState.errors).length + (labelUniqueError ? 1 : 0) + (taskNamesUnknownError ? 1 : 0)}
+                    </span>  
+                  ) : null}
+                </span>            
               </Button>
-            </SheetFooter>
-          </SheetContent>
+            </SheetTrigger>
+            <SheetContent className="sm:max-w-[540px]">
+              <SheetHeader>
+                <SheetTitle>{[initialValue?.label, 'Configuration'].join(' ')}</SheetTitle>
+                  <SheetDescription>
+                    Make changes to Wait Configuration panel.
+                  </SheetDescription>
+                </SheetHeader>
+              <Separator className="mt-6" />
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2 w-full">
+                  <FormField
+                    control={form.control}
+                    name="label"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Name of the Task"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="space-y-2 w-full">
+                  <FormField
+                    control={form.control}
+                    name="params.taskNames"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tasks</FormLabel>
+                        <FormControl>
+                          <MultipleSelector
+                            value={field.value as unknown as Option[]}
+                            onChange={field.onChange}
+                            defaultOptions={OPTIONS}
+                            hidePlaceholderWhenSelected={true}
+                            placeholder="Select tasks to wait on..."
+                            emptyIndicator={
+                              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                                no results found.
+                              </p>
+                            }
+                          />
+                        </FormControl>
+                      <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <SheetFooter className="mt-25">
+                <SheetClose asChild>
+                  <Button 
+                    type="submit"
+                    onClick={() => {
+                      toast({
+                        title: "Success",
+                        description: "Task changed successfully."
+                      });
+                    }}                  
+                  >
+                    Submit
+                  </Button>
+                </SheetClose>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    deleteNode();
+                  }}
+                >
+                  Delete Task
+                </Button>
+              </SheetFooter>
+            </SheetContent>
+          </form>  
         </Form>
       </Sheet>
     </>
