@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useReactFlow } from 'reactflow';
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +27,6 @@ import {
 } from "@/components/ui/form";
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
-import { ToastAction } from "@/components/ui/toast"
 
 const endConfigSchema = z.object({
   label: z
@@ -48,12 +46,14 @@ interface Props {
 }
 
 const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) => {
-  const [isLoading] = useState<boolean>(false);
+  const [ isLoading ] = useState<boolean>(false);
   const { toast } = useToast();
+
+  const [ openConfigPanel, setOpenConfigPanel ] = useState<boolean>(false);  
   const { getNodes } = useReactFlow();
-  const [labelUniqueError, setLabelUniqueError] = useState<string | null>(null);
+  const [ labelUniqueError, setLabelUniqueError ] = useState<string | null>(null);
   
-  const { formState, watch } = useForm<EndConfigSchema>({
+  const { handleSubmit, watch } = useForm<EndConfigSchema>({
     resolver: zodResolver(endConfigSchema),
     values: {
       label: initialValue?.label ?? '',
@@ -64,6 +64,9 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
 
   const form = useForm<EndConfigSchema>({
     resolver: zodResolver(endConfigSchema),
+    values: {
+      label: initialValue?.label ?? '',
+    },
   });
 
   useEffect(() => {
@@ -87,15 +90,38 @@ const EndConfigPanel: FC<Props> = ({ onSubmit, initialValue, deleteNode, id }) =
     };
   }, [getNodes, id, labelValue]);
 
+  const submitHandler = handleSubmit(async (value) => {
+    onSubmit(value);
+    toast({
+      title: "Success",
+      description: "Config changed successfully."
+    })
+    handleConfigPanelClose();
+  });
+
+  const handleConfigPanelOpen = () => {
+    setOpenConfigPanel(() => true);
+  };
+
+  const handleConfigPanelClose = () => {
+    setOpenConfigPanel(() => false);
+  };
+
   return (
     <>
-      <Badge variant="destructive" className="mr-3">
-        {Object.keys(formState.errors).length + (labelUniqueError ? 1 : 0)}
-      </Badge>
-      <Sheet>
+      <Sheet open={openConfigPanel} onOpenChange={setOpenConfigPanel}>
         <Form {...form}>
           <SheetTrigger asChild>
-            <Button variant="outline">Configure</Button>
+            <Button variant="outline" onClick={handleConfigPanelOpen}>
+              Configure
+              <span>
+                {Object.keys(form?.formState.errors).length > 0 ? (
+                  <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
+                    {Object.keys(form?.formState.errors).length + (labelUniqueError ? 1 : 0)}
+                  </span>  
+                ) : null}
+              </span>            
+            </Button>
           </SheetTrigger>
           <SheetContent className="sm:max-w-[540px]">
             <SheetHeader>
