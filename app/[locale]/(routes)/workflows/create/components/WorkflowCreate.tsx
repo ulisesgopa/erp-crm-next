@@ -265,10 +265,8 @@ const WorkflowCreate: React.FC<Props> = () => {
     handleMenuClose();
   };
 
-  const submitHandle = handleSubmit(async (values: z.infer<typeof workflowMetadataFormSchema>) => {
+  const onSubmit = handleSubmit(async (values: z.infer<typeof workflowMetadataFormSchema>) => {  
     setFormLoading(() => true);
-
-    console.log("Hello");
 
     const parsedTask = nodes.map((item) => ({
       id: item?.id,
@@ -335,111 +333,116 @@ const WorkflowCreate: React.FC<Props> = () => {
       <div className="w-full h-[80vh] justify-start items-start gap-y-1">
         <div className="flex flex-row justify-between items-center gap-x-0.5 w-full">
           <div className="flex flex-row justify-start items-center gap-x-4">
-            <Sheet open={definitionDialog} onOpenChange={setDefinitionDialog}>
-              <Form {...form}>
-                <SheetTrigger>
-                  <Button variant="secondary" className="relative" onClick={openDefinitionDialog}>Configure Definition&nbsp; <Cog className="w-[15px] h-[15px]" />
-                    <span>
-                      {Object.keys(form?.formState.errors).length > 0 ? (
-                        <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
-                          {Object.keys(form?.formState.errors).length}
-                        </span>  
-                      ) : null}
-                    </span>                  
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="sm:max-w-[540px]" onClose={() => closeDefinitionDialog}>
-                  <SheetHeader>
-                    <SheetTitle>Create Definition</SheetTitle>
-                    <SheetDescription>
-                      Make changes to your workflow definition here. Your work remains intact when this panel is closed.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <Separator className="mt-6" />
-                  <div className="grid gap-4 py-4">
-                    <div className="space-y-2 w-full">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                disabled={isLoading}
-                                placeholder="Definition name"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="space-y-2 w-full">
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                disabled={isLoading}
-                                placeholder="Definition description"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="space-y-2 w-full">
-                      <FormField
-                        control={form.control}
-                        name="status"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Status</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit as any)}>            
+                <Sheet open={definitionDialog} onOpenChange={setDefinitionDialog}>
+                  <SheetTrigger asChild>
+                    <Button variant="secondary" className="relative" onClick={openDefinitionDialog}>Configure Definition&nbsp; <Cog className="w-[15px] h-[15px]" />
+                      <span>
+                        {Object.keys(form?.formState.errors).length > 0 ? (
+                          <span className="absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-2 -right-2">
+                            {Object.keys(form?.formState.errors).length}
+                          </span>  
+                        ) : null}
+                      </span>                  
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="sm:max-w-[540px]" onClose={() => closeDefinitionDialog}>
+                    <SheetHeader>
+                      <SheetTitle>Create Definition</SheetTitle>
+                      <SheetDescription>
+                        Make changes to your workflow definition here. Your work remains intact when this panel is closed.
+                      </SheetDescription>
+                    </SheetHeader>
+                    <Separator className="mt-6" />
+                    <div className="grid gap-4 py-4">
+                      <div className="space-y-2 w-full">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
                               <FormControl>
-                                <SelectTrigger className="SelectTrigger">
-                                  <SelectValue placeholder="Choose definition status" />
-                                </SelectTrigger>
+                                <Input
+                                  disabled={isLoading}
+                                  placeholder="Definition name"
+                                  {...field}
+                                />
                               </FormControl>
-                              <SelectContent className="flex overflow-y-auto">
-                                <SelectGroup>
-                                  <SelectItem value="active">Active</SelectItem>
-                                  <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="space-y-2 w-full">
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  disabled={isLoading}
+                                  placeholder="Definition description"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="space-y-2 w-full">
+                        <FormField
+                          control={form.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="SelectTrigger">
+                                    <SelectValue placeholder="Choose definition status" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="flex overflow-y-auto">
+                                  <SelectGroup>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-1/2 space-y-5">
+                        <FormLabel>Global Editor</FormLabel>
+                        {globalEditorError && (
+                          <div className="flex gap-2">
+                            <FormLabel className="text-red-600">{globalEditorError}</FormLabel>
+                          </div>
                         )}
-                      />
-                    </div>
-                    <div className="w-1/2 space-y-5">
-                      <FormLabel>Global Editor</FormLabel>
-                      {globalEditorError && (
-                        <div className="flex gap-2">
-                          <FormLabel className="text-red-600">{globalEditorError}</FormLabel>
-                        </div>
-                      )}
-                      <WorkflowGlobalMonaco
-                        initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
-                        setValue={setValue}
-                        setError={handleGlobalEditorError}
-                      />
-                    </div>
-                  </div>  
-                </SheetContent>
-              </Form>
-            </Sheet>         
+                        <WorkflowGlobalMonaco
+                          initialValue={JSON.stringify(globalObjectValue, undefined, 4)}
+                          setValue={setValue}
+                          setError={handleGlobalEditorError}
+                        />
+                      </div>
+                    </div>  
+                  </SheetContent>
+                </Sheet>
+                <Button type="submit" className="absolute right-10 mr-10">
+                  Submit
+                </Button>
+              </form>
+            </Form>                     
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="secondary" onClick={handleMenuOpen}>
@@ -475,9 +478,6 @@ const WorkflowCreate: React.FC<Props> = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <LoadingButton loading={formLoading} onClick={submitHandle}>
-            Submit
-          </LoadingButton>
         </div>
         <ReactFlow
           nodes={nodes}
