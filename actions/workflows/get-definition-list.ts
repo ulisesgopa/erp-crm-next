@@ -7,8 +7,8 @@ const ResponseSchema = z.array(
     name: z.string(),
     description: z.string(),
     definitionStatus: z.enum(['active', 'inactive']),
-    createdAt: z.string().datetime(),
-    updatedAt: z.string().datetime(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
   })
 );
 

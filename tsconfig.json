@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -23,7 +23,7 @@
     "paths": {
       "@/*": ["./*"],
       "react": [ "./node_modules/@types/react" ],
-      "@/ui/*": ["./components/ui/*"]      
+      "@/ui/*": ["./components/ui/*"]
     },
     "baseUrl": ".",
   },

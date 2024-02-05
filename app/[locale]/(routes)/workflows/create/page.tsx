@@ -1,26 +1,30 @@
-"use client";
-
 import { Box } from '@radix-ui/themes';
-import { Suspense, type FC } from 'react';
+import { Suspense } from 'react';
 
-import { ReactFlowProvider } from 'reactflow';
+import ReactFlowProvider from "./ReactFlow";
 
 import WorkflowCreate from './components/WorkflowCreate';
 import WorkflowDefinitionContextProvider from '@/app/contexts/WorkflowDefinitionContext';
 import Loading from '../loading';
 
-interface Props {}
+import { getUser } from "@/actions/get-user";
 
-const WorkflowDefinitionCreatePage: FC<Props> = () => (
-  <Box className="height: 80vh padding: 3">
-    <ReactFlowProvider>
-      <WorkflowDefinitionContextProvider>
-        <Suspense fallback={<Loading />}>
-          <WorkflowCreate />
-        </Suspense>
-      </WorkflowDefinitionContextProvider>
-    </ReactFlowProvider>
-  </Box>
-);
+const WorkflowDefinitionCreatePage = async () => {
+
+  const userData = await getUser();
+  const userId = userData.id;
+
+  return (
+    <Box className="height: 80vh padding: 3">
+      <ReactFlowProvider>
+        <WorkflowDefinitionContextProvider>
+          <Suspense fallback={<Loading />}>
+            <WorkflowCreate userId={userId} />
+          </Suspense>
+        </WorkflowDefinitionContextProvider>
+      </ReactFlowProvider>
+    </Box>
+  );
+};
 
 export default WorkflowDefinitionCreatePage;

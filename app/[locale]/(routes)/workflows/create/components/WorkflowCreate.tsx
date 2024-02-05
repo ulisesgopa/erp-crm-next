@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Box } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { LoadingButton } from "@/components/ui/loading-button";
 import { 
   ChevronDown,
   Sigma,
@@ -34,7 +33,6 @@ import ReactFlow, {
   useReactFlow,
 } from 'reactflow';
 import { z } from 'zod';
-import { enqueueSnackbar } from 'notistack';
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useRouter } from 'next/navigation';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
@@ -67,6 +65,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/components/ui/use-toast';
+import { LoadingButton } from '@/components/ui/loading-button';
 
 const workflowMetadataFormSchema = z.object({
   name: z
@@ -81,6 +81,11 @@ const workflowMetadataFormSchema = z.object({
     .min(1, 'Description is required'),
   global: z.record(z.string(), z.any()).refine((val) => !Object.keys(val).includes(''), 'Empty keys is not valid'),
   status: z.enum(['active', 'inactive']),
+  userWfDefinitionId: z
+    .string({
+      required_error: "Userid is required",
+    })
+    .min(1, "Userid is required"),
 });
 
 type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
@@ -181,10 +186,14 @@ const initialEdges: Edge[] = [
   },
 ];
 
-type Props = {}
+interface WorkflowFormProps {
+  userId: string;
+}
 
-const WorkflowCreate: React.FC<Props> = () => {
+export function WorkflowCreate({ userId }: WorkflowFormProps) {
   const [isLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+
   const { setConfig } = useWorkflowDefinitionContext();
   const [menuEl, setMenuEl] = useState<null | HTMLElement>(null);
 
@@ -199,8 +208,8 @@ const WorkflowCreate: React.FC<Props> = () => {
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
 
   const [globalEditorError, setGlobalEditorError] = useState<string | null>(null);
-  
-  const { setValue, watch, handleSubmit } = useForm<WorkflowMetadataFormSchema>({
+
+  const { setValue, watch } = useForm<WorkflowMetadataFormSchema>({
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
@@ -208,6 +217,7 @@ const WorkflowCreate: React.FC<Props> = () => {
       description: '',
       global: {},
       status: 'active',
+      userWfDefinitionId: userId,
     },
   });
 
@@ -221,6 +231,7 @@ const WorkflowCreate: React.FC<Props> = () => {
       description: '',
       global: {},
       status: 'active',
+      userWfDefinitionId: userId,      
     },  
   });
 
@@ -265,8 +276,10 @@ const WorkflowCreate: React.FC<Props> = () => {
     handleMenuClose();
   };
 
-  const onSubmit = handleSubmit(async (values: z.infer<typeof workflowMetadataFormSchema>) => {  
+  const onSubmit = async (data: WorkflowMetadataFormSchema) => {  
     setFormLoading(() => true);
+
+    console.log(data);
 
     const parsedTask = nodes.map((item) => ({
       id: item?.id,
@@ -290,43 +303,42 @@ const WorkflowCreate: React.FC<Props> = () => {
     }));
 
     const workflowData = {
-      name: values.name,
-      description: values.description,
-      global: values.global,
+      name: data.name,
+      description: data.description,
+      global: data.global,
       tasks: parsedTask,
-      status: values.status,
+      status: data.status,
+      userWfDefinitionId: data.userWfDefinitionId,
     };
 
-    // await axios
-    //   .post(
-    //     `/definition/create`,
-    //     {
-    //       workflowData,
-    //       key: 'react',
-    //       ui: {
-    //         nodes,
-    //         edges,
-    //       },
-    //     },
-    //   )
-    //   .then(() => {
-    //     enqueueSnackbar('Workflow added successfully', {
-    //       variant: 'success',
-    //       autoHideDuration: 2 * 1000,
-    //     });
-    //     router.push('/workflows');
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     enqueueSnackbar('Workflow addition failed', {
-    //       variant: 'error',
-    //       autoHideDuration: 2 * 1000,
-    //     });
-    //   })
-    //   .finally(() => {
-    //     setFormLoading(() => false);
-    //   });
-  });  
+    try {    
+      await axios
+      .post(
+        "/api/definition/create",
+        {
+          workflowData,
+          key: 'react',
+          ui: {
+            nodes,
+            edges,
+          },
+        },
+      ),
+      toast({
+        title: "Success",
+        description: "Workflow added successfully."
+      });
+      router.push("/workflows");
+    } catch (error: any) {
+        console.error(error);
+        toast({
+          title: "Error",
+          description: "Workflow addition failed."
+        });
+    } finally {
+        setFormLoading(false);
+    }
+  };  
   
   return (
     <Box>
@@ -334,7 +346,7 @@ const WorkflowCreate: React.FC<Props> = () => {
         <div className="flex flex-row justify-between items-center gap-x-0.5 w-full">
           <div className="flex flex-row justify-start items-center gap-x-4">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit as any)}>            
+              <form onSubmit={form.handleSubmit(onSubmit)}>            
                 <Sheet open={definitionDialog} onOpenChange={setDefinitionDialog}>
                   <SheetTrigger asChild>
                     <Button variant="secondary" className="relative" onClick={openDefinitionDialog}>Configure Definition&nbsp; <Cog className="w-[15px] h-[15px]" />
@@ -435,12 +447,30 @@ const WorkflowCreate: React.FC<Props> = () => {
                           setError={handleGlobalEditorError}
                         />
                       </div>
+                      <div className="space-y-2 w-full">
+                        <FormField
+                          control={form.control}
+                          name="userWfDefinitionId"
+                          render={({ field }: any) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="hidden"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>                      
                     </div>  
                   </SheetContent>
                 </Sheet>
-                <Button type="submit" className="absolute right-10 mr-10">
+                <LoadingButton type="submit" loading={formLoading} className="absolute right-10 mr-10">
                   Submit
-                </Button>
+                </LoadingButton> 
               </form>
             </Form>                     
             <DropdownMenu>

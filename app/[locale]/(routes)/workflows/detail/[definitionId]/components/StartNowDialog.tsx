@@ -21,7 +21,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-
 const startNowSchema = z.object({
   global: z.record(z.string(), z.any()).refine((val) => !Object.keys(val).includes(''), 'Empty keys is not valid'),
 });
@@ -94,11 +93,6 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
           workflowDefinitionId,
           globalParams: values.global,
         },
-        {
-          headers: {
-            //Authorization: ['Bearer', token].join(' '),
-          },
-        }
       )
       .then((res) => {
         console.log(res.data);
