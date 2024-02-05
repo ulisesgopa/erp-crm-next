@@ -38,12 +38,12 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/components/ui/calendar";
 
 //TODO: fix all the types
-type NewTaskFormProps = {
+type NewEmployeeFormProps = {
   initialData: any;
   setOpen: (value: boolean) => void;
 };
 
-export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
+export function UpdateEmployeeForm({ initialData, setOpen }: NewEmployeeFormProps) {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -71,7 +71,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     salary: z.coerce.number().positive(),
   });
 
-  type NewAccountFormValues = z.infer<typeof formSchema>;
+  type NewEmployeeFormValues = z.infer<typeof formSchema>;
 
   //TODO: fix this any
   const form = useForm<any>({
@@ -79,7 +79,7 @@ export function UpdateEmployeeForm({ initialData, setOpen }: NewTaskFormProps) {
     defaultValues: initialData,
   });
 
-  const onSubmit = async (data: NewAccountFormValues) => {
+  const onSubmit = async (data: NewEmployeeFormValues) => {
     setIsLoading(true);
     try {
       await axios.put("/api/employee", data);

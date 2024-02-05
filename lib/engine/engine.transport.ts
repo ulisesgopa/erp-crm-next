@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
-const SELF_URL = process.env?.VERCEL_URL
-  ? `https://${process.env?.VERCEL_URL}`
+const SELF_URL = process.env?.SELF_URL
+  ? `http://${process.env?.SELF_URL}`
   : process.env.SELF_URL;
 
 export class EngineTransport {
@@ -13,7 +13,7 @@ export class EngineTransport {
     axios({
       method: "POST",
       baseURL: SELF_URL,
-      url: "/api/engine/internal",
+      url: "@/app/api/engine/internal",
       data: {
         workflowRuntimeId: body.workflowRuntimeId,
         taskName: body.taskName,

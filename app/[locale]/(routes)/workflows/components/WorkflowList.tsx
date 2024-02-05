@@ -28,13 +28,13 @@ const WorkflowListView = ({ data }: any) => {
             {data.map((item: any) => (
               <Link className="w-full"
                 key={item.id}
-                href={`/workflows/${item.id}`}
+                href={`/workflows/detail/${item.id}`}
               >
                 <Card className="w-full hover:bg-slate-100">
                   <CardContent>
                     <div className="w-full flex flex-row justify-between items-center">
                       <span>{item.name}</span>
-                      <Badge color={item.status === 'active' ? 'primary' : 'error'}>{item.status.toUpperCase()}</Badge>
+                      <Badge color={item.definitionStatus === 'active' ? 'primary' : 'error'}>{item.definitionStatus}</Badge>
                     </div>
                     <span className="pt-2 w-full">
                       {item.description}

@@ -807,7 +807,7 @@ model Definitions {
   definitionStatus    DefinitionStatus      @default(active)
   uiObject            Json?
   createdAt           DateTime?             @default(now()) @db.Date
-  updatedAt           DateTime?             @db.Date
+  updatedAt           DateTime?             @updatedAt @db.Date
   userWfDefinitionId  String
   runtimes            Runtimes[]
   userWfDefinition    Users                 @relation(fields: [userWfDefinitionId], references: [id])
@@ -829,5 +829,5 @@ model Runtimes {
   workflowDefinitionId      String
   definitions               Definitions        @relation(fields: [workflowDefinitionId], references: [id])
   createdAt                 DateTime?          @default(now()) @db.Date
-  updatedAt                 DateTime?          @db.Date
+  updatedAt                 DateTime?          @updatedAt @db.Date
 }
