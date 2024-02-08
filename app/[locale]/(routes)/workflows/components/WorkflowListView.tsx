@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 
 const WorkflowListView = ({ data }: any) => {
   const [isLoading] = useState(false);
-
+  
   return (
     <Box>
       <div className="gap-y-1">
@@ -24,27 +24,32 @@ const WorkflowListView = ({ data }: any) => {
           </Link>
         </div>
         {!isLoading && data && (
-          <div className="justify-start items-start gap-y-0.5">
+          <div className="hidden items-start justify-center gap-6 rounded-lg p-8 md:grid lg:grid-cols-2 xl:grid-cols-3">
             {data.map((item: any) => (
               <Link className="w-full"
                 key={item.id}
                 href={`/workflows/detail/${item.id}`}
               >
-                <Card className="w-full hover:bg-slate-100">
-                  <CardContent>
-                    <div className="w-full flex flex-row justify-between items-center">
-                      <span>{item.name}</span>
-                      <Badge color={item.definitionStatus === 'active' ? 'primary' : 'error'}>{item.definitionStatus}</Badge>
-                    </div>
-                    <span className="pt-2 w-full">
+                <Card className="hover:bg-slate-100">
+                  <CardContent className="grid gap-6">
+                    <div className="w-full flex flex-row items-end">
+                      <span className="text-xl ml-10 mt-10">{item.name}</span>
+                      <div>
+                        { item.definitionStatus === 'active' ?  
+                          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">{item.definitionStatus}</span> :
+                          <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">{item.definitionStatus}</span>
+                        }
+                      </div>
+                    </div>    
+                    <span className="text-lg pt-2 w-full">
                       {item.description}
                     </span>
                     <div className="w-full flex flex-row justify-between items-center">
                       <span>
-                        Created at: {format(new Date(item.createdAt), 'dd MMM, yyyy')}
+                        <span className="font-medium">Created at: {format(new Date(item.createdAt), 'dd MMM, yyyy')}</span>
                       </span>
                       <span>
-                        Updated at: {format(new Date(item.updatedAt), 'dd MMM, yyyy')}
+                      <span className="font-medium">Updated at: {format(new Date(item.updatedAt), 'dd MMM, yyyy')}</span>
                       </span>
                     </div>
                   </CardContent>
