@@ -29,7 +29,7 @@ const WorkflowDetailPage = async ({
     <Box className="p-3">
       {detailData && (
         <div className="justify-start items-start gap-y-0.5 w-full">
-          <Heading4>Workflow Definition</Heading4>
+          <h4>Workflow Definition</h4>
           <Card className="w-full">
             <CardHeader>
               <CardTitle>={<Heading4>{detailData?.name}</Heading4>}</CardTitle>
@@ -55,14 +55,14 @@ const WorkflowDetailPage = async ({
                   prefetch={false}
               >    
                 <Button variant="outline">
-                  Edit&nbsp;
-                  <Pencil />
+                  Edit
+                  <Pencil className="w-[15px] h-[15px] pl-2" />
                 </Button>
               </Link>
               <StartNowDialog workflowDefinitionId={detailData.id} />
             </CardFooter>
           </Card>
-          <Heading4>Workflow Runtimes</Heading4>
+          <h4>Workflow Runtimes</h4>
           {detailData.runtimes.map((runtime) => (
             <Link style={{ width: '100%' }} key={runtime.id} href={`/api/workflow/runtime-detail?id=${runtime.id}`}>
               <Card className="w-full">
@@ -84,8 +84,8 @@ const WorkflowDetailPage = async ({
             </Link>
           ))}
           {detailData.runtimes?.length < 1 ? (
-            <Label className="text-center w-full">
-              No runtime found!
+            <Label className="flex flex-row justify-center">
+              No runtimes found!
             </Label>
           ) : null}
         </div>

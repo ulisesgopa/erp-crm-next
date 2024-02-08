@@ -21,7 +21,7 @@ import {
   Webhook,
   Cog
 } from "lucide-react";
-import type { FC, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Connection, Edge } from 'reactflow';
@@ -393,9 +393,6 @@ export function WorkflowEditPage({ editData }: EditFormProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <LoadingButton loading={formLoading} onClick={submitHandle}>
-            Submit
-          </LoadingButton>
         </div>
         <ReactFlow
           nodes={nodes}
