@@ -21,7 +21,7 @@ import {
   Webhook,
   Cog
 } from "lucide-react";
-import type { MouseEvent } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Connection, Edge } from 'reactflow';
@@ -37,7 +37,6 @@ import { z } from 'zod';
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkflowDefinitionContext } from '@/app/contexts/WorkflowDefinitionContext';
 import { useRouter } from 'next/navigation';
-import type { ResponseSchemaType } from '@/app/api/workflow/WorkflowDefinitionSingle/route';
 import { nodeTypes, taskCreator } from '@/lib/creators/task';
 import axios from 'axios';
 import { Input } from "@/components/ui/input";
@@ -65,8 +64,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import WorkflowGlobalMonaco from '../../components/WorkflowGlobalMonaco';
+import WorkflowGlobalMonaco from '../../../components/WorkflowGlobalMonaco';
 import { Separator } from '@/components/ui/separator';
+import { ResponseSchemaType } from '@/actions/workflows/get-definition-single';
 
 const workflowMetadataFormSchema = z.object({
   name: z
@@ -85,11 +85,11 @@ const workflowMetadataFormSchema = z.object({
 
 type WorkflowMetadataFormSchema = z.infer<typeof workflowMetadataFormSchema>;
 
-interface Props {
-  definition: ResponseSchemaType;
-};
+interface EditFormProps {
+  editData: ResponseSchemaType;
+}
 
-const WorkflowEdit: React.FC<Props> = ( definition ) => {
+export function WorkflowEditPage({ editData }: EditFormProps) {
   const [isLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -101,8 +101,8 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
   const router = useRouter();
   const [formLoading, setFormLoading] = useState<boolean>(false);
 
-  const [nodes, _, onNodesChange] = useNodesState(definition.definition.uiObject.react.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(definition.definition.uiObject.react.edges);
+  const [nodes, _, onNodesChange] = useNodesState(editData.uiObject.react.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(editData.uiObject.react.edges);
   const { addNodes } = useReactFlow();
 
   const [definitionDialog, setDefinitionDialog] = useState<boolean>(false);
@@ -113,10 +113,10 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
-      name: definition.definition.name,
-      description: definition.definition.description,
-      global: definition.definition?.global ?? {},
-      status: definition.definition.definitionStatus,
+      name: editData.name,
+      description: editData.description,
+      global: editData?.global ?? {},
+      status: editData.definitionStatus,
     },
   });
 
@@ -126,12 +126,12 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
     resolver: zodResolver(workflowMetadataFormSchema),
     mode: 'all',
     values: {
-      name: definition.definition.name,
-      description: definition.definition.description,
-      global: definition.definition?.global ?? {},
-      status: definition.definition.definitionStatus,
+      name: editData.name,
+      description: editData.description,
+      global: editData?.global ?? {},
+      status: editData.definitionStatus,
     },    
-  });  
+  });
 
   useEffect(() => {
     setConfig(globalObjectValue);
@@ -213,7 +213,7 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
 
     await axios
       .put(
-        `@/app/api/definition/${definition.definition.id}`,
+        `/api/workflow/definition-single/${editData.id}`,
         {
           workflowData,
           key: 'react',
@@ -228,7 +228,7 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
           title: "Success",
           description: "Workflow updated successfully."
         });
-        router.push(`/workflows/${definition.definition.id}`);
+        router.push(`/workflows/${editData.id}`);
       })
       .catch((error) => {
         console.error(error);
@@ -418,4 +418,4 @@ const WorkflowEdit: React.FC<Props> = ( definition ) => {
   );
 };
 
-export default WorkflowEdit;
+export default WorkflowEditPage;

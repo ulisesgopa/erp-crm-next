@@ -190,7 +190,7 @@ interface WorkflowFormProps {
   userId: string;
 }
 
-export function WorkflowCreate({ userId }: WorkflowFormProps) {
+export function WorkflowCreatePage({ userId }: WorkflowFormProps) {
   const [isLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -530,4 +530,4 @@ export function WorkflowCreate({ userId }: WorkflowFormProps) {
   );
 };
 
-export default WorkflowCreate;
+export default WorkflowCreatePage;

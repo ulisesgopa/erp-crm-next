@@ -7,8 +7,8 @@ const ResponseSchema = z.object({
   description: z.string(),
   global: z.record(z.string(), z.any()).optional(),
   definitionStatus: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   uiObject: z.object({
     react: z.object({
       nodes: z.array(z.any()),
