@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -9,11 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getDefinitionDetail } from "@/actions/workflows/get-definition-detail";
-import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { type FC } from 'react';
 import Link from "next/link";
-import { useParams } from "next/navigation"; 
 import { Heading4, Pencil } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,58 +17,54 @@ import { Box } from "@radix-ui/themes";
 
 import StartNowDialog from './components/StartNowDialog';
 
-interface Props {}
+const WorkflowDetailPage = async ({ 
+  params: { definitionId },
+}: {
+  params: { definitionId: string };
+}) => {
 
-const WorkflowDetailPage: FC<Props> = () => {
-  const params = useParams<{ id: string }>();
-
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: [params?.id],
-    queryFn: async () => {
-      if (params?.id) {
-        return getDefinitionDetail(params.id);
-      }
-      return null;
-    },
-  });
+  const detailData = await getDefinitionDetail(definitionId);
 
   return (
     <Box className="p-3">
-      {isLoading && <Label>Loading...</Label>}
-      {!isLoading && data && (
+      {detailData && (
         <div className="justify-start items-start gap-y-0.5 w-full">
-          <Heading4>Workflow Definition</Heading4>
+          <h4>Workflow Definition</h4>
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>={<Heading4>{data?.name}</Heading4>}</CardTitle>
-              <Badge color={data?.definitionStatus === 'active' ? 'success' : 'error'}>
-                {data?.definitionStatus?.toUpperCase()}
+              <CardTitle>={<Heading4>{detailData?.name}</Heading4>}</CardTitle>
+              <Badge color={detailData?.definitionStatus === 'active' ? 'success' : 'error'}>
+                {detailData?.definitionStatus?.toUpperCase()}
               </Badge>
             </CardHeader>
             <CardContent>
               <div className="gap-y-0.5">
                 <CardDescription>
-                  {data?.description}
+                  {detailData?.description}
                 </CardDescription>
                 <div className="grid grid-flow-row auto-rows-auto grid-flow auto-cols-auto gap-y-0.5 gap-x-0.5 justify-between items-center"> 
-                  <Label>Last Updated: {format(new Date(data?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
-                  <Label>Created: {format(new Date(data?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                  <Label>Last Updated: {format(new Date(detailData?.updatedAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
+                  <Label>Created: {format(new Date(detailData?.createdAt as any), 'dd MMM yyyy, hh:mm aa')}</Label>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="gap-y-0.5">
-              <Link href={`/edit/${data.id}`}>
+              <Link 
+                  key={detailData.id}
+                  href={`/workflows/edit/${detailData.id}`}
+                  prefetch={false}
+              >    
                 <Button variant="outline">
-                  Edit&nbsp;
-                  <Pencil />
+                  Edit
+                  <Pencil className="w-[15px] h-[15px] pl-2" />
                 </Button>
               </Link>
-              <StartNowDialog refetch={refetch} workflowDefinitionId={data.id} />
+              <StartNowDialog workflowDefinitionId={detailData.id} />
             </CardFooter>
           </Card>
-          <Heading4>Workflow Runtimes</Heading4>
-          {data.runtimes.map((runtime) => (
-            <Link style={{ width: '100%' }} key={runtime.id} href={`/runtime/${runtime.id}`}>
+          <h4>Workflow Runtimes</h4>
+          {detailData.runtimes.map((runtime) => (
+            <Link style={{ width: '100%' }} key={runtime.id} href={`/api/workflow/runtime-detail?id=${runtime.id}`}>
               <Card className="w-full">
                 <CardHeader>
                   <CardTitle>{<Label>{runtime.id}</Label>}</CardTitle>
@@ -92,9 +83,9 @@ const WorkflowDetailPage: FC<Props> = () => {
               </Card>
             </Link>
           ))}
-          {data.runtimes?.length < 1 ? (
-            <Label className="text-center w-full">
-              No runtime found!
+          {detailData.runtimes?.length < 1 ? (
+            <Label className="flex flex-row justify-center">
+              No runtimes found!
             </Label>
           ) : null}
         </div>

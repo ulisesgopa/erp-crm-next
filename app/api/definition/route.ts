@@ -12,8 +12,7 @@ export async function POST(req: Request) {
   const {
     name, 
     description, 
-    definitionStatus,
-    userWfDefinitionId
+    definitionStatus
   } = body;
   
   if (!session) {
@@ -66,7 +65,6 @@ export async function PUT(req: Request) {
       name,
       description,
       definitionStatus,
-      userWfDefinitionId
     } = body;
 
     const updateDefinition = await prismadb.definitions.update({

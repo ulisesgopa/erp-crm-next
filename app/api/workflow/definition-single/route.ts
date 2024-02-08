@@ -41,15 +41,6 @@ export async function GET(
       where: {
         id: params.definitionId,
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        definitionStatus: true,
-        createdAt: true,
-        updatedAt: true,
-        uiObject: true
-      },
     })
 
     return NextResponse.json({definitions});

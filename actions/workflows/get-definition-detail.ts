@@ -1,5 +1,4 @@
 import { prismadb } from "@/lib/prisma";
-import { NextResponse } from "next/server";
 import { z } from 'zod';
 
 const ResponseSchema = z.object({
@@ -7,14 +6,14 @@ const ResponseSchema = z.object({
   name: z.string(),
   description: z.string(),
   definitionStatus: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   runtimes: z.array(
     z.object({
       id: z.string(),
       workflowStatus: z.enum(['pending', 'completed']),
-      createdAt: z.string().datetime(),
-      updatedAt: z.string().datetime(),
+      createdAt: z.coerce.date(),
+      updatedAt: z.coerce.date(),
     })
   ),
 });

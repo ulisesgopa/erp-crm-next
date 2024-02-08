@@ -29,10 +29,9 @@ type StartNowSchema = z.infer<typeof startNowSchema>;
 
 interface Props {
   workflowDefinitionId: string;
-  refetch: Function;
 }
 
-const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
+const StartNowDialog: FC<Props> = ({ workflowDefinitionId }) => {
   const { toast } = useToast();
   const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -100,7 +99,6 @@ const StartNowDialog: FC<Props> = ({ workflowDefinitionId, refetch }) => {
           title: "Success",
           description: "Workflow started successfully."
         });
-        refetch();
         handleDialogClose();
       })
       .catch((error) => {
