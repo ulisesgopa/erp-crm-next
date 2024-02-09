@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Box } from '@radix-ui/themes';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { Separator } from "@/components/ui/separator";
+import { GitFork } from "lucide-react";
 
 const WorkflowListView = ({ data }: any) => {
   const [isLoading] = useState(false);
@@ -31,25 +32,27 @@ const WorkflowListView = ({ data }: any) => {
                 href={`/workflows/detail/${item.id}`}
               >
                 <Card className="hover:bg-slate-100">
-                  <CardContent className="grid gap-6">
-                    <div className="w-full flex flex-row items-end">
-                      <span className="text-xl ml-10 mt-10">{item.name}</span>
-                      <div>
+                  <CardContent className="grid gap-4">
+                    <div className="md:grid lg:grid-cols-1 xl:grid-cols-2 gap-6">
+                      <div className="text-xl mt-2 font-medium flex flex-row gap-2 p-2"><GitFork className="text-xl pt-1" />{item.name}</div>
+                      <div className="pt-5 pl-11">
+                        <div className="pl-20">
                         { item.definitionStatus === 'active' ?  
-                          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">{item.definitionStatus}</span> :
-                          <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">{item.definitionStatus}</span>
+                          <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{item.definitionStatus}</span> :
+                          <span className="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{item.definitionStatus}</span>
                         }
-                      </div>
-                    </div>    
-                    <span className="text-lg pt-2 w-full">
-                      {item.description}
-                    </span>
+                        </div>
+                      </div>                       
+                    </div>
+  
+                    <Separator />
+                    <span className="font-normal">Description:</span><span className="font-normal ml-1 w-full">{item.description}</span>
                     <div className="w-full flex flex-row justify-between items-center">
                       <span>
-                        <span className="font-medium">Created at: {format(new Date(item.createdAt), 'dd MMM, yyyy')}</span>
+                        <span className="font-light">Created at:</span><span className="font-normal pl-1">{format(new Date(item.createdAt), 'dd MMM, yyyy')}</span>
                       </span>
                       <span>
-                      <span className="font-medium">Updated at: {format(new Date(item.updatedAt), 'dd MMM, yyyy')}</span>
+                      <span className="font-light">Updated at:</span><span className="font-normal pl-1">{format(new Date(item.updatedAt), 'dd MMM, yyyy')}</span>
                       </span>
                     </div>
                   </CardContent>
