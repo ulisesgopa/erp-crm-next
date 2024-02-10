@@ -31,20 +31,17 @@ const WorkflowListView = ({ data }: any) => {
                 key={item.id}
                 href={`/workflows/detail/${item.id}`}
               >
-                <Card className="hover:bg-slate-100">
+                <Card className="rounded-lg border bg-card text-card-foreground shadow-md hover:bg-slate-100">
                   <CardContent className="grid gap-4">
                     <div className="md:grid lg:grid-cols-1 xl:grid-cols-2 gap-6">
                       <div className="text-xl mt-2 font-medium flex flex-row gap-2 p-2"><GitFork className="text-xl pt-1" />{item.name}</div>
-                      <div className="pt-5 pl-11">
-                        <div className="pl-20">
+                      <div className="flex flex-row justify-end h-8 mt-3">
                         { item.definitionStatus === 'active' ?  
-                          <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{item.definitionStatus}</span> :
-                          <span className="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{item.definitionStatus}</span>
+                          <span className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300">{item.definitionStatus}</span> :
+                          <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-1.5 rounded dark:bg-red-900 dark:text-red-300">{item.definitionStatus}</span>
                         }
-                        </div>
                       </div>                       
                     </div>
-  
                     <Separator />
                     <span className="font-normal">Description:</span><span className="font-normal ml-1 w-full">{item.description}</span>
                     <div className="w-full flex flex-row justify-between items-center">
