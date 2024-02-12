@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { getDictionary } from "@/dictionaries";
+
 import Container from "./components/ui/Container";
 import NotionsBox from "./components/dasboard/notions";
 import LoadingBox from "./components/dasboard/loading-box";
@@ -37,7 +39,6 @@ import { getOpportunitiesCount } from "@/actions/dashboard/get-opportunities-cou
 import { getExpectedRevenue } from "@/actions/crm/opportunity/get-expected-revenue";
 import { getEmployeeCount } from "@/actions/dashboard/get-employee-count";
 import { getWorkflowCount } from "@/actions/dashboard/get-workflow-count";
-import { getDictionary } from "@/dictionaries";
 
 const DashboardPage = async () => {
   const session = await getServerSession(authOptions);

@@ -468,9 +468,9 @@ export function WorkflowCreatePage({ userId }: WorkflowFormProps) {
                     </div>  
                   </SheetContent>
                 </Sheet>
-                <LoadingButton type="submit" loading={formLoading} className="absolute right-10 mr-10">
+                <Button type="submit" className="absolute right-10 mr-10">
                   Submit
-                </LoadingButton> 
+                </Button>
               </form>
             </Form>                     
             <DropdownMenu>

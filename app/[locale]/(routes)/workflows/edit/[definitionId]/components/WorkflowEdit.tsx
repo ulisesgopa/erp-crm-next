@@ -213,7 +213,7 @@ export function WorkflowEditPage({ editData }: EditFormProps) {
 
     await axios
       .put(
-        `/api/workflow/definition-single/${editData.id}`,
+        `/api/definition/${editData.id}`,
         {
           workflowData,
           key: 'react',

@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Session } from "next-auth";
 
-import WorkflowListPage from "./components/WorkflowList";
+import WorkflowListView from "./components/WorkflowListView";
 import SuspenseLoading from "@/components/loadings/suspense";
 
 import { getDefinitionList } from "@/actions/workflows/get-definition-list";
@@ -27,7 +27,7 @@ const WorkflowsPage = async () => {
       description={"Everything you need to know about workflows"}
     >
       <Suspense fallback={<SuspenseLoading />}>
-        <WorkflowListPage data={workflows} />
+        <WorkflowListView data={workflows} />
       </Suspense>
     </Container>
   );
