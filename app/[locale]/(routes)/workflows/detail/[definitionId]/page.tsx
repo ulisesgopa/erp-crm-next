@@ -32,7 +32,7 @@ const WorkflowDetailPage = async ({
           <h4>Workflow Definition</h4>
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>={<Heading4>{detailData?.name}</Heading4>}</CardTitle>
+              <CardTitle className="text-xl">{detailData?.name}</CardTitle>
               <Badge color={detailData?.definitionStatus === 'active' ? 'success' : 'error'}>
                 {detailData?.definitionStatus?.toUpperCase()}
               </Badge>
