@@ -33,7 +33,7 @@ const ProfilePage = async () => {
         <div>
           <h1>Open AI key not found</h1>
           <p>
-            Please add your open ai key in your
+            Please add your open ai key in your{" "}
             <Link href={"/profile"} className="text-blue-500">
               profile settings page{" "}
             </Link>
