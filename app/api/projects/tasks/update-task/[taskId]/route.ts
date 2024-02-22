@@ -20,7 +20,17 @@ export async function PUT(
   const resend = await resendHelper();  
   const session = await getServerSession(authOptions);
   const body = await req.json();
-  const { title, user, board, priority, content, notionUrl, dueDateAt } = body;
+  //console.log(body, "body");
+  const {
+    title,
+    user,
+    board,
+    boardId,
+    priority,
+    content,
+    notionUrl,
+    dueDateAt,
+  } = body;
 
   const taskId = params.taskId;
 
@@ -76,6 +86,16 @@ export async function PUT(
         user: user,
       },
     });
+
+    //Update Board updated at field
+    await prismadb.boards.update({
+      where: {
+        id: boardId,
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    });    
 
     /*  //Notification to user who is not a task creator
     if (user !== session.user.id) {

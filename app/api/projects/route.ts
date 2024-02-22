@@ -30,6 +30,8 @@ export async function POST(req: Request) {
         description: description,
         position: boardsCount > 0 ? boardsCount : 0,
         visibility: visibility,
+        sharedWith: [session.user.id],
+        createdBy: session.user.id,        
       },
     });
 
@@ -74,6 +76,8 @@ export async function PUT(req: Request) {
         title: title,
         description: description,
         visibility: visibility,
+        updatedBy: session.user.id,
+        updatedAt: new Date(),        
       },
     });
 
