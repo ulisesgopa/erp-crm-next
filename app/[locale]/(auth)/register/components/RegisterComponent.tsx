@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,  
+  CardDescription,
 } from "@/components/ui/card";
 import {
   Form,
@@ -43,7 +43,7 @@ export function RegisterComponent() {
   const router = useRouter();
   const { toast } = useToast();
 
-  //Local states  
+  //Local states
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [show, setShow] = React.useState<boolean>(false);
 
@@ -118,7 +118,7 @@ export function RegisterComponent() {
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   //Localizations
   const t = useTranslations("RegisterComponent");
@@ -132,9 +132,9 @@ export function RegisterComponent() {
       <CardContent className="grid gap-4">
         {/*  <pre>
           <code>{JSON.stringify(form.watch(), null, 2)}</code>
-        </pre> */}        
+        </pre> */}
         <div className="grid grid-cols-2 gap-6">
-          <Button 
+          <Button
             variant="outline"
             onClick={loginWithGithub}
             disabled={isLoading}
@@ -165,7 +165,7 @@ export function RegisterComponent() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or create new account
+              O registra tus datos
             </span>
           </div>
         </div>
@@ -177,7 +177,7 @@ export function RegisterComponent() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nombre y apellido</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
@@ -194,7 +194,7 @@ export function RegisterComponent() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Nombre de usuario</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
@@ -228,24 +228,22 @@ export function RegisterComponent() {
                 name="language"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Choose your language</FormLabel>
+                    <FormLabel>Selecciona tu idioma</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a language" />
+                          <SelectValue placeholder="Selecciona una opción" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="flex overflow-y-auto h-56">
-                        {["en", "de", "cz", "uk"].map(
-                          (lng: string, index: number) => (
-                            <SelectItem key={index} value={lng}>
-                              {t("locale", { locale: lng })}
-                            </SelectItem>
-                          )
-                        )}
+                      <SelectContent className="flex overflow-y-auto h-18 ">
+                        {["es", "en"].map((lng: string, index: number) => (
+                          <SelectItem key={index} value={lng}>
+                            {t("locale", { locale: lng })}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -258,12 +256,12 @@ export function RegisterComponent() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Contraseña</FormLabel>
                       <FormControl>
                         <Input
                           className="w-full"
                           disabled={isLoading}
-                          placeholder="Password"
+                          placeholder="********"
                           type={show ? "text" : "password"}
                           {...field}
                         />
@@ -285,12 +283,12 @@ export function RegisterComponent() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel>Confirmar contraseña</FormLabel>
                       <FormControl>
                         <Input
                           className="w-full"
                           disabled={isLoading}
-                          placeholder="Password"
+                          placeholder="********"
                           type={show ? "text" : "password"}
                           {...field}
                         />
@@ -310,7 +308,7 @@ export function RegisterComponent() {
 
             <div className="grid gap-2 py-5">
               <Button disabled={isLoading} type="submit">
-                Create account
+                Crear cuenta
               </Button>
             </div>
           </form>
@@ -318,9 +316,9 @@ export function RegisterComponent() {
       </CardContent>
       <CardFooter className="flex flex-col space-y-5">
         <div className="text-sm text-gray-500">
-          Already have an account?{" "}
+          Ya tienes una cuenta?{" "}
           <Link href={"/sign-in"} className="text-blue-500">
-            sign-in
+            Inicia sesión
           </Link>
         </div>
       </CardFooter>

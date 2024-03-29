@@ -22,7 +22,7 @@ import { any } from "cypress/types/bluebird";
 type Props = {
   modules: any;
   dict: any;
-  build: number;  
+  build: number;
 };
 
 const ModuleMenu = ({ modules, dict, build }: Props) => {
@@ -35,7 +35,7 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
 
   if (!isMounted) {
     return null;
-  }  
+  }
 
   return (
     <div className="flex flex-col">
@@ -51,7 +51,7 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
             }`}
             onClick={() => setOpen(!open)}
           >
-            HQ
+            ST
           </div>
 
           <h1
@@ -78,7 +78,7 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
             (menuItem: any) => menuItem.name === "emails" && menuItem.enabled
           ) ? (
             <EmailsModuleMenu open={open} title={dict.ModuleMenu.emails} />
-          ) : null}          
+          ) : null}
           {modules.find(
             (menuItem: any) =>
               menuItem.name === "secondBrain" && menuItem.enabled
@@ -98,8 +98,11 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
           {modules.find(
             (menuItem: any) => menuItem.name === "workflows" && menuItem.enabled
           ) ? (
-            <WorkflowsModuleMenu open={open} title={dict.ModuleMenu.workflows} />
-          ) : null}          
+            <WorkflowsModuleMenu
+              open={open}
+              title={dict.ModuleMenu.workflows}
+            />
+          ) : null}
           {modules.find(
             (menuItem: any) => menuItem.name === "reports" && menuItem.enabled
           ) ? (
@@ -134,7 +137,7 @@ const ModuleMenu = ({ modules, dict, build }: Props) => {
         <span className="text-xs text-gray-500 pb-2">
           build: 0.0.3-beta-{build}
         </span>
-      </div>      
+      </div>
     </div>
   );
 };

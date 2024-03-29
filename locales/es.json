@@ -40,13 +40,13 @@
   },
   "RegisterComponent": {
     "cardTitle": "Crear nueva cuenta",
-    "cardDescription": "Haz click para crear una cuenta con",
+    "cardDescription": "Crea una cuenta iniciando sesión con",
     "label": "Idioma",
     "locale": "{locale, select, es {Español} en {English} other {Unknown}}"
   },
   "CrmModuleMenuComponent": {
     "menuTitle": "CRM",
-    "cardDescription": "Haz click para registrarte con",
+    "cardDescription": "Crea una cuenta iniciando sesión con",
     "label": "Idioma",
     "locale": "{locale, select, es {Español} en {English} other {Unknown}}"
   }

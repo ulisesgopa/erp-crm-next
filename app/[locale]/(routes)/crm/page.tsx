@@ -6,7 +6,7 @@ import SuspenseLoading from "@/components/loadings/suspense";
 const CrmPage = async () => {
   return (
     <Container
-      title="CRM"
+      title="Customer Relationship Management"
       description={"Everything you need to know about sales"}
     >
       {/*

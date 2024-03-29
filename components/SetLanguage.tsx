@@ -36,15 +36,13 @@ import { useState } from "react";
 import LoadingModal from "./modals/loading-modal";
 
 const languages = [
+  { label: "Español", value: "es" },
   { label: "English", value: "en" },
-  { label: "Czech", value: "cz" },
-  { label: "German", value: "de" },
-  { label: "Ukrainian", value: "uk" },  
 ] as const;
 
 const FormSchema = z.object({
   language: z.string({
-    required_error: "Please select a language.",
+    required_error: "Selecciona un idioma.",
   }),
 });
 
@@ -66,14 +64,14 @@ export function SetLanguage({ userId }: Props) {
     try {
       await axios.put(`/api/user/${userId}/set-language`, data);
       toast({
-        title: "Success",
-        description: "You change user language to: " + data.language,
+        title: "Completado",
+        description: "Cambiaste el idioma a: " + data.language,
       });
     } catch (e) {
       console.log(e, "error");
       toast({
         title: "Error",
-        description: "Something went wrong.",
+        description: "Algo salió mal.",
         variant: "destructive",
       });
     } finally {
@@ -83,12 +81,7 @@ export function SetLanguage({ userId }: Props) {
   }
 
   if (isLoading) {
-    return (
-      <LoadingModal
-        isOpen={isLoading}
-        description="Changing SaasHQ language"
-      />
-    );
+    return <LoadingModal isOpen={isLoading} description="Cambiando idioma" />;
   }
 
   return (
@@ -117,15 +110,15 @@ export function SetLanguage({ userId }: Props) {
                         ? languages.find(
                             (language) => language.value === field.value
                           )?.label
-                        : "Select language"}
+                        : "Seleccionar idioma"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search language ..." />
-                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandInput placeholder="Buscar idioma ..." />
+                    <CommandEmpty>Idioma no encontrado.</CommandEmpty>
                     <CommandGroup>
                       {languages.map((language) => (
                         <CommandItem

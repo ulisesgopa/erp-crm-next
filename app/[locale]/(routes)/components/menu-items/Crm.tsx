@@ -12,7 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 type Props = {
   open: boolean;
-  localizations: any;  
+  localizations: any;
 };
 
 const CrmModuleMenu = ({ open, localizations }: Props) => {
@@ -41,13 +41,13 @@ const CrmModuleMenu = ({ open, localizations }: Props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[250px] ml-10">
           <DropdownMenuItem onClick={() => router.push("/crm/dashboard")}>
-            Dashboard
+            Kanban Board
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/crm/dashboard/user")}>
+          {/* <DropdownMenuItem onClick={() => router.push("/crm/dashboard/user")}>
             My Dashboard
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => router.push("/crm")}>
-            Overview
+            Vista General
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => router.push("/crm/accounts")}>

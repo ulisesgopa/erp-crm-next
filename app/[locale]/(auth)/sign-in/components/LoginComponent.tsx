@@ -72,7 +72,7 @@ export function LoginComponent() {
     try {
       await signIn("google", {
         callbackUrl: process.env.NEXT_PUBLIC_APP_URL,
-        //callbackUrl: "/",        
+        //callbackUrl: "/",
       });
     } catch (error) {
       console.log(error, "error");
@@ -80,7 +80,7 @@ export function LoginComponent() {
         variant: "destructive",
         description:
           "Something went wrong while logging into your Google account.",
-      });      
+      });
     } finally {
       setIsLoading(false);
     }
@@ -98,12 +98,11 @@ export function LoginComponent() {
         variant: "destructive",
         description:
           "Something went wrong while logging into your Github account.",
-      });      
+      });
     } finally {
       setIsLoading(false);
     }
   };
-
 
   //Login with username(email)/password
   async function onSubmit(data: LoginFormValues) {
@@ -127,8 +126,8 @@ export function LoginComponent() {
         //console.log("Status OK");
         toast({
           description: "Login successful.",
-        });        
-      }      
+        });
+      }
     } catch (error: any) {
       console.log(error);
       toast({
@@ -169,12 +168,12 @@ export function LoginComponent() {
   return (
     <Card className="shadow-lg my-5 ">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>Click here to login with: </CardDescription>
+        <CardTitle className="text-2xl">Inicio de sesión</CardTitle>
+        <CardDescription>Haz click para iniciar sesión con </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-2 gap-6">
-          <Button 
+          <Button
             variant="outline"
             onClick={loginWithGithub}
             disabled={isLoading}
@@ -205,7 +204,7 @@ export function LoginComponent() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              O continua con
             </span>
           </div>
         </div>
@@ -221,7 +220,7 @@ export function LoginComponent() {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        placeholder="John Doe"
+                        placeholder="tuemail@mail.com"
                         {...field}
                       />
                     </FormControl>
@@ -235,12 +234,12 @@ export function LoginComponent() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Contraseña</FormLabel>
                       <FormControl>
                         <Input
                           className="w-full"
                           disabled={isLoading}
-                          placeholder="Password"
+                          placeholder="Ingresa tu contraseña"
                           type={show ? "text" : "password"}
                           {...field}
                         />
@@ -272,8 +271,8 @@ export function LoginComponent() {
                 >
                   Q
                 </span>
-                <span className={isLoading ? " " : "hidden"}>Loading ...</span>
-                <span className={isLoading ? "hidden" : ""}>Login</span>
+                <span className={isLoading ? " " : "hidden"}>Cargando ...</span>
+                <span className={isLoading ? "hidden" : ""}>Inicia sesión</span>
               </Button>
             </div>
           </form>
@@ -281,17 +280,17 @@ export function LoginComponent() {
       </CardContent>
       <CardFooter className="flex flex-col space-y-5">
         <div className="text-sm text-gray-500">
-          Need account? Register{" "}
+          Necesitas una cuenta? Registrate{" "}
           <Link href={"/register"} className="text-blue-500">
-            here
+            acá
           </Link>
         </div>
         <div className="text-sm text-gray-500">
-          Need password reset? Click
+          Necesitas recuperar tu contraseña? Click
           {/* Dialog start */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger className="text-blue-500">
-              <span className="px-2">here</span>
+              <span className="px-2">acá</span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

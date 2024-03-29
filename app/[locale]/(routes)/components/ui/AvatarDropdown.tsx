@@ -57,7 +57,7 @@ const AvatarDropdown = ({ avatar, userId, name, email }: Props) => {
           <div className="text-xs text-gray-500">{email}</div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/projects/dashboard")}>
           Todo dashboard
         </DropdownMenuItem>
@@ -66,15 +66,15 @@ const AvatarDropdown = ({ avatar, userId, name, email }: Props) => {
         >
           Sales dashboard
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
         <DropdownMenuItem onClick={() => router.push("/profile")}>
           <Settings className="w-4 h-4 inline-block mr-2 stroke-current text-gray-500" />
-          <span>Profile settings</span>
+          <span>Configuración de Perfil</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>
           <LogOut className="w-4 h-4 inline-block mr-2 stroke-current text-gray-500" />
-          <span>Sign out</span>
+          <span>Cerrar sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

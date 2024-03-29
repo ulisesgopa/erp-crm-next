@@ -62,7 +62,7 @@ export default async function RootLayout({
   const messages = await getLocales(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={'es'}>
       <head>
         <meta
           name="viewport"

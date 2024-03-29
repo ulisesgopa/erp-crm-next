@@ -38,7 +38,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col justify-center items-center h-screen w-full">
       <div className="flex justify-end items-center space-x-5 w-full p-5">
-        <Link
+        {/* <Link
           href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "#"}
           className=" border rounded-md p-2"
         >
@@ -53,7 +53,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
           <Link href="https://discord.gg/kBhAUKBMgf">
             <DiscordLogoIcon className="w-5 h-5" />
           </Link>
-        </div>
+        </div> */}
         <ThemeToggle />
       </div>
       <div className="flex items-center h-full overflow-hidden">{children}</div>

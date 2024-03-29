@@ -84,7 +84,7 @@ const DashboardPage = async () => {
     <Container
       title={dict.DashboardPage.containerTitle}
       description={
-        "Welcome to the SaasHQ cockpit, here you can see your company overview"
+        "Welcome to the Startup Dashboard, here you can see your company overview"
       }
     >
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

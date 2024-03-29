@@ -28,7 +28,7 @@ const Header = ({ id, name, email, avatar, lang }: Props) => {
           <SetLanguage userId={id} />
           <Feedback />
           <ThemeToggle />
-          <SupportComponent />          
+          {/* <SupportComponent />           */}
           <AvatarDropdown
             avatar={avatar}
             userId={id}

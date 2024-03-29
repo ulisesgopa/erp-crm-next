@@ -18,7 +18,7 @@ const EmployeesModuleMenu = ({ open }: Props) => {
         className={`flex gap-2 p-2 ${isPath ? "text-muted-foreground" : null}`}
       >
         <Users className="w-6" />
-        <span className={open ? "" : "hidden"}>Employees</span>
+        <span className={open ? "" : "hidden"}>Empleados</span>
       </Link>
     </div>
   );

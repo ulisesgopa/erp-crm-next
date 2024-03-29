@@ -527,7 +527,7 @@ model Users {
   password             String?
   username             String?
   userStatus           ActiveStatus          @default(PENDING)
-  userLanguage         Language              @default(en)
+  userLanguage         Language              @default(es)
   tasksComment         tasksComments[]
   created_by_documents Documents[]           @relation(name: "created_by_user")
   assigned_documents   Documents[]           @relation(name: "assigned_to_user")
@@ -553,6 +553,7 @@ model Users {
 }
 
 enum Language {
+  es
   cz
   de
   en
